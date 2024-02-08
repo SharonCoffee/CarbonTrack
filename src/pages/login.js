@@ -12,7 +12,7 @@ const Login = () => {
     const auth = getAuth();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate('/'); // Navigate to the homepage or dashboard after login
+      navigate('/BerRatingForm'); // Navigate to the BerRating Form after login
     } catch (error) {
       alert(error.message);
     }

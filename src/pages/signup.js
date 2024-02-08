@@ -12,7 +12,7 @@ const Signup = () => {
     const auth = getAuth();
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      navigate('/'); // Navigate to the homepage or dashboard after signup
+      navigate('/ber'); // Navigate to the BerRating Form after signup
     } catch (error) {
       alert(error.message);
     }
@@ -50,7 +50,7 @@ const Signup = () => {
                 />
                 <button type="submit" style={buttonStyle}>Signup</button>
             </form>
-            <p style={{ marginTop: '10px' }}> {/* Additional style for spacing */}
+            <p style={{ marginTop: '10px' }}>
                 Already have an account? <Link to="/login">Log in</Link>
             </p>
         </div>

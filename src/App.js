@@ -9,7 +9,7 @@ import Contact from './pages/contact';
 import Faq from './pages/faq';
 import LoginPage from './pages/login';
 import SignupPage from './pages/signup';
-import BerRatingForm from './pages/ber';
+import BerPage from './pages/ber';
 import GraphQuery from './pages/graphquery';
 import ProtectedRoute from './components/protectedRoute';
 import './App.css';
@@ -28,18 +28,14 @@ function App () {
                         <Route path="/faq" element={<Faq />} />
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/signup" element={<SignupPage />} />
-                        <Route
-                            path="/ber"
-                            element={
+                        <Route path="/BerRatingForm" element={
                                 <ProtectedRoute>
-                                    <BerRatingForm />
+                                    <BerPage />
                                 </ProtectedRoute>
                             }
                         />
                         {/* Protected Route for GraphQuery */}
-                        <Route
-                            path="/graphquery"
-                            element={
+                        <Route path="/graphquery" element={
                                 <ProtectedRoute>
                                     <GraphQuery />
                                 </ProtectedRoute>

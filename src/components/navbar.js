@@ -22,6 +22,7 @@ const Navbar = () => {
                     {currentUser && (
                         <>
                             <li><NavLink to="/graphquery" className={({ isActive }) => getNavLinkClass(isActive)}>GraphQuery</NavLink></li>
+                            <li><NavLink to="/suggestions" className={({ isActive }) => getNavLinkClass(isActive)}>Suggestions</NavLink></li>
                             <li><NavLink to="/BerRatingForm" className={({ isActive }) => getNavLinkClass(isActive)}>BerRating</NavLink></li>
                         </>
                     )}

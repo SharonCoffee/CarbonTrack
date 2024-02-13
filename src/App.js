@@ -10,6 +10,7 @@ import Faq from './pages/faq';
 import LoginPage from './pages/login';
 import SignupPage from './pages/signup';
 import BerPage from './pages/ber';
+import Suggestions from './pages/suggestions';
 import GraphQuery from './pages/graphquery';
 import ProtectedRoute from './components/protectedRoute';
 import './App.css';
@@ -34,6 +35,11 @@ function App () {
                                 </ProtectedRoute>
                             }
                         />
+                        <Route path="/suggestions" element={
+                            <ProtectedRoute>
+                                <Suggestions />
+                            </ProtectedRoute>
+                        } />
                         {/* Protected Route for GraphQuery */}
                         <Route path="/graphquery" element={
                                 <ProtectedRoute>

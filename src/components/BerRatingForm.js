@@ -50,12 +50,31 @@ function BerRatingForm () {
     }
   }, [selectedCounty]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Submission', { selectedCounty, currentBerRating, desiredBerRating });
 
-    // Navigate to the suggestions page and pass the data
-    navigate('/suggestions', { state: { selectedCounty, currentBerRating, desiredBerRating, squareMeters: 100 /* replace with actual value */ } });
+    // Here you would gather the data from the form, for example:
+    const formData = {
+      county: selectedCounty,
+      currentRating: currentBerRating,
+      desiredRating: desiredBerRating,
+      propertyType
+    // Add other form data as needed
+    };
+
+    try {
+      const response = await fetch('http://localhost:8000/api/suggestions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ /* form data */ })
+      });
+      const data = await response.json();
+      navigate('/suggestions', { state: { data } });
+    } catch (error) {
+      console.error('There was an error!', error);
+    }
   };
 
   // Dynamically filter desired BerRatings based on the current selection

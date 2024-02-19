@@ -68,7 +68,7 @@ function BerRatingForm () {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ /* form data */ })
+        body: JSON.stringify(formData) // Ensure formData is passed here
       });
       const data = await response.json();
       navigate('/suggestions', { state: { data } });

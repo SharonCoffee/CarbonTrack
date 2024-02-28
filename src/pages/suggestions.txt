@@ -1,0 +1,57 @@
+import React, { useState, useEffect } from 'react';
+import Papa from 'papaparse';
+
+function SuggestionsPage () {
+  const [properties, setProperties] = useState([]);
+
+  useEffect(() => {
+    fetch('/data/data_building_archetype.csv')
+      .then(response => response.text())
+      .then(csvText => {
+        Papa.parse(csvText, {
+          header: true, // Assuming your CSV has headers
+          complete: (result) => {
+            console.log(result.data);
+            setProperties(result.data);
+          }
+        });
+      });
+  }, []);
+
+  // Assuming you have a Property component to display each
+  return (
+        <div>
+            <h1>Property List</h1>
+            <table>
+                <thead>
+                <tr>
+                    <th>Dwelling Type</th>
+                    <th>Energy Rating</th>
+                    <th>Ber Rating Mean</th>
+                    <th>UValue Wall Mean</th>
+                    <th>UValue Roof Mean</th>
+                    <th>UValue Floor Mean</th>
+                    <th>UValue Window Mean</th>
+                    <th>UValue Door Mean</th>
+                </tr>
+                </thead>
+                <tbody>
+                {properties.map((property, index) => (
+                    <tr key={index}>
+                        <td>{property.DwellingType}</td>
+                        <td>{property.EnergyRating}</td>
+                        <td>{property.BerRatingMean}</td>
+                        <td>{property.UValueWallMean}</td>
+                        <td>{property.UValueRoofMean}</td>
+                        <td>{property.UValueFloorMean}</td>
+                        <td>{property.UValueWindowMean}</td>
+                        <td>{property.UValueDoorMean}</td>
+                    </tr>
+                ))}
+                </tbody>
+            </table>
+        </div>
+  );
+}
+
+export default SuggestionsPage;

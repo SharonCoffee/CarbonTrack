@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getStorage, ref, getDownloadURL } from 'firebase/storage';
+import Papa from 'papaparse';
 
 function BerRatingForm () {
   const [selectedCounty, setSelectedCounty] = useState('');
-  const [currentBerRating, setCurrentBerRating] = useState('');
-  const [desiredBerRating, setDesiredBerRating] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
-
   const counties = [
     'Carlow', 'Cavan', 'Clare', 'Cork', 'Donegal', 'Dublin', 'Galway', 'Kerry',
     'Kildare', 'Kilkenny', 'Laois', 'Leitrim', 'Limerick', 'Louth', 'Longford',
@@ -15,10 +11,7 @@ function BerRatingForm () {
     'Tipperary', 'Waterford', 'Westmeath', 'Wexford', 'Wicklow'
   ];
 
-  const berRatings = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3', 'D1', 'D2', 'E1', 'E2', 'F', 'G'];
-
-  const [propertyType, setPropertyType] = useState(''); // New state for property type
-
+  const [propertyType, setPropertyType] = useState('');
   const propertyTypes = [
     'Apartment',
     'Basement Dwelling',
@@ -33,64 +26,48 @@ function BerRatingForm () {
     'Top-floor apartment'
   ];
 
+  const [constructionYear, setConstructionYear] = useState('');
+  // Years range from 1700 to 2023
+  const constructionYears = Array.from(new Array(2024 - 1700), (_, index) => 1700 + index);
+
+  const [energyRating, setEnergyRating] = useState('');
+  const energyRatings = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3', 'D1', 'D2', 'E1', 'E2', 'F', 'G'];
+
+  const [berRating, setBerRating] = useState('');
+
+  const [selectedProperty, setSelectedProperty] = useState(null);
+  const [properties, setProperties] = useState([]);
+  const [isPropertyConfirmed, setIsPropertyConfirmed] = useState(false);
+
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (selectedCounty) {
-      const storage = getStorage();
-      const pathReference = ref(storage, `graphs/${selectedCounty}.png`);
-
-      getDownloadURL(pathReference)
-        .then((url) => {
-          setImageUrl(url);
-        })
-        .catch((error) => {
-          console.error('Error fetching image:', error);
-        });
-    }
-  }, [selectedCounty]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Here you would gather the data from the form, for example:
-    const formData = {
-      county: selectedCounty,
-      currentRating: currentBerRating,
-      desiredRating: desiredBerRating,
-      propertyType
-    // Add other form data as needed
-    };
-
-    try {
-      const response = await fetch('http://localhost:8000/api/suggestions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData) // Ensure formData is passed here
-      });
-      const data = await response.json();
-      navigate('/suggestions', { state: { data } });
-    } catch (error) {
-      console.error('There was an error!', error);
-    }
+  const handleSearch = () => {
+    // CSV is stored in public/data/data_leitrim.csv
+    Papa.parse('/data/data_leitrim.csv', {
+      download: true,
+      header: true,
+      complete: (result) => {
+        console.log('Parsed data:', result.data);
+        const filteredProperties = result.data.filter(property =>
+          property.CountyName === selectedCounty &&
+          property.DwellingTypeDescr === propertyType &&
+          property.Year_of_Construction.toString() === constructionYear &&
+          property.EnergyRating === energyRating &&
+          property.BerRating.trim() === parseFloat(berRating).toString().trim()
+        );
+        console.log('Filtered properties:', filteredProperties);
+        setProperties(filteredProperties);
+      }
+    });
   };
 
-  // Dynamically filter desired BerRatings based on the current selection
-  const getFilteredDesiredBerRatings = () => {
-    const currentIndex = berRatings.indexOf(currentBerRating);
-    const maxDesiredIndex = berRatings.indexOf('D2'); // Index of 'D2' rating
-    // Determine if the current rating is 'E1' or higher
-    const isCurrentRatingBeyondD2 = currentIndex > maxDesiredIndex;
-
-    // If current rating is 'E1', 'E2', 'F', or 'G', limit desired ratings up to 'D2'
-    if (isCurrentRatingBeyondD2) {
-      return berRatings.slice(0, maxDesiredIndex + 1); // Include up to 'D2'
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (selectedProperty && isPropertyConfirmed) {
+      navigate('/suggestions', { state: { selectedProperty } });
+    } else {
+      alert('Please select and confirm a property before submitting.');
     }
-
-    // For all other ratings, include up to the current rating
-    return berRatings.slice(0, currentIndex);
   };
 
   return (
@@ -102,33 +79,65 @@ function BerRatingForm () {
                 <option key={index} value={county}>{county}</option>
             ))}
           </select>
-
           <select value={propertyType} onChange={(e) => setPropertyType(e.target.value)}>
             <option value="">Select Property Type</option>
             {propertyTypes.map((type, index) => (
                 <option key={index} value={type}>{type}</option>
             ))}
           </select>
-
-          <select value={currentBerRating} onChange={(e) => setCurrentBerRating(e.target.value)}>
-            <option value="">Select Current BerRating</option>
-            {berRatings.map((rating, index) => (
+          <select value={constructionYear} onChange={(e) => setConstructionYear(e.target.value)}>
+            <option value="">Select Construction Year</option>
+            {constructionYears.map((year, index) => (
+                <option key={index} value={year}>{year}</option>
+            ))}
+          </select>
+          <select value={energyRating} onChange={(e) => setEnergyRating(e.target.value)}>
+            <option value="">Select Energy Rating</option>
+            {energyRatings.map((rating, index) => (
                 <option key={index} value={rating}>{rating}</option>
             ))}
           </select>
+          <input
+              type="text"
+              value={berRating}
+              onChange={(e) => setBerRating(e.target.value)}
+              placeholder="Enter BER Rating (e.g., 150.5)"
+          />
+          <button type="button" onClick={handleSearch}>Search Properties</button>
 
-          {currentBerRating && (
-              <select value={desiredBerRating} onChange={(e) => setDesiredBerRating(e.target.value)}>
-                <option value="">Select Desired BerRating</option>
-                {getFilteredDesiredBerRatings().map((rating, index) => (
-                    <option key={index} value={rating}>{rating}</option>
-                ))}
-              </select>
+          {/* Result properties list */}
+          {properties && properties.length > 0 && (
+              <div>
+                <ul>
+                  {properties.map((property, index) => (
+                      <li key={index}>
+                        {property.PropertyID}: {property.DwellingTypeDescr} - {property.BerRating}
+                        <button type="button" onClick={() => {
+                          setSelectedProperty(property);
+                          setIsPropertyConfirmed(false);
+                        }}>Select</button>
+                      </li>
+                  ))}
+                </ul>
+                {selectedProperty && (
+                    <div>
+                      <h3>Selected Property Details:</h3>
+                      <ul>
+                        {Object.keys(selectedProperty)
+                          .slice(0, 20) // Adjust the number based on how many columns you want to display
+                          .map((key, index) => (
+                                <li key={index}>
+                                  <strong>{key.replace(/([A-Z])/g, ' $1').trim()}:</strong> {selectedProperty[key]}
+                                </li>
+                          ))}
+                      </ul>
+                      <button type="button" onClick={() => setIsPropertyConfirmed(true)}>Confirm Property</button>
+                    </div>
+                )}
+              </div>
           )}
 
-          {currentBerRating && desiredBerRating && <button type="submit">Submit</button>}
-
-          {imageUrl && <img src={imageUrl} alt={`BER Rating for ${selectedCounty}`}/>}
+          <button type="submit">Submit</button>
         </div>
       </form>
   );

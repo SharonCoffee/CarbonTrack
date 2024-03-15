@@ -15,6 +15,8 @@ function SuggestionsPage () {
   };
 
   useEffect(() => {
+    // Scrolls the window to the top of the page
+    window.scrollTo(0, 0);
     // Fetch archetype data once at the start
     fetch('/data/data_building_archetype.csv')
       .then(response => response.text())
@@ -118,15 +120,21 @@ function SuggestionsPage () {
                   <p>
                     Choosing a new Energy Rating for your home is a proactive step towards enhancing your living
                     environment and reducing your energy costs.
+                  </p>
+                  <p>
                     A higher Energy Rating signifies better thermal efficiency, meaning your home retains heat more
-                    effectively during winter and stays cooler
-                    during summer. This not only improves comfort but also reduces the need for excessive heating or
-                    cooling, leading to significant savings on
-                    energy bills. Additionally, upgrading your home&apos;s energy performance can increase its market
-                    value
-                    and reduce its environmental impact
-                    by lowering carbon emissions. Select a new Energy Rating below to see how you can achieve these
-                    benefits.
+                    effectively during winter and stays cooler during summer.
+                  </p>
+                  <p>
+                    This not only improves comfort but also reduces the need for excessive heating or
+                    cooling, leading to significant savings on energy bills.
+                  </p>
+                  <p>
+                    Additionally, upgrading your home&apos;s energy performance can increase its market
+                    value and reduce its environmental impact by lowering carbon emissions.
+                  </p>
+                  <p>
+                    Select a new Energy Rating below to see how you can achieve these benefits.
                   </p>
                   <select value={newEnergyRating} onChange={e => setNewEnergyRating(e.target.value)}>
                     <option value="">Select New Energy Rating</option>
@@ -180,6 +188,7 @@ function SuggestionsPage () {
                         <th>Estimated Works Cost</th>
                         <th>Available SEAI Grant</th>
                         <th>Estimated Cost to Homeowner</th>
+                        <th>Apply for Grant</th>
                       </tr>
                       </thead>
                       <tbody>
@@ -190,27 +199,35 @@ function SuggestionsPage () {
                               <td>€9,000</td>
                               <td>€4,500</td>
                               <td>€4,500</td>
+                              <td><a href="https://www.seai.ie/grants/home-energy-grants/insulation-grants/"
+                                     target="_blank" rel="noopener noreferrer" className="button-blue">Apply</a></td>
                             </tr>
                             <tr>
                               <td>External Wall Insulation</td>
                               <td>€16,000</td>
                               <td>€8,000</td>
                               <td>€8,000</td>
+                              <td><a href="https://www.seai.ie/grants/home-energy-grants/insulation-grants/"
+                                     target="_blank" rel="noopener noreferrer" className="button-blue">Apply</a></td>
                             </tr>
                             <tr>
                               <td>Cavity Wall Insulation</td>
                               <td>€2,200</td>
                               <td>€1,700</td>
                               <td>€500</td>
+                              <td><a href="https://www.seai.ie/grants/home-energy-grants/insulation-grants/"
+                                     target="_blank" rel="noopener noreferrer" className="button-blue">Apply</a></td>
                             </tr>
                           </>
                       )}
                       {selectedUValues.UValueRoof && (
                           <tr>
-                            <td>Roof Insulation</td>
+                            <td>Roof/Attic Insulation</td>
                             <td>€2,000</td>
                             <td>€1,500</td>
                             <td>€500</td>
+                            <td><a href="https://www.seai.ie/grants/home-energy-grants/insulation-grants/"
+                                   target="_blank" rel="noopener noreferrer" className="button-blue">Apply</a></td>
                           </tr>
                       )}
                       {/* Repeat similar structures for UValueFloor, UValueWindow, UValueDoor if necessary */}

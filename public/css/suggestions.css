@@ -1,67 +1,77 @@
 /* Style for the U-values card */
 .u-values-card {
-    background-color: #f9f9f9; /* Light background for the card */
-    border: 1px solid #ddd; /* Light grey border */
-    border-top: 5px solid #4a90e2; /* Blue top border */
-    border-radius: 5px; /* Rounded corners */
-    padding: 20px; /* Padding inside the card */
-    margin-bottom: 20px; /* Space below the card */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow */
-    width: auto; /* Width according to content */
+    background-color: #ffffff; /* White background for the card */
+    border: 1px solid #e0e0e0; /* Light grey border */
+    border-top: 4px solid #4a90e2; /* Blue top border */
+    border-radius: 10px; /* Rounded corners */
+    padding: 25px; /* Padding inside the card */
+    margin: 20px 0; /* Space above and below the card */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1); /* More prominent shadow */
+    max-width: 90%; /* Control maximum width */
     margin-left: auto;
     margin-right: auto;
+    display: block; /* Ensure it's a block for centering */
 }
 
 .u-values-card p {
-    font-size: 1.2rem; /* Increase the font size */
+    font-size: 1.2rem; /* Slightly larger font size */
+    line-height: 1.6; /* Improved line height for readability */
+    color: #333; /* Darker text for better readability */
 }
 
 .u-values-card p strong {
-    font-weight: bold; /* Make text bold */
+    font-weight: 600; /* Slightly less bold than full bold for subtlety */
 }
 
 /* Style for the U-values explanations text */
 .u-value-explanation {
-    font-size: 0.9rem; /* Smaller text size */
-    color: #666; /* Dark grey color */
-    margin-top: 5px; /* Space above the text */
-    margin-bottom: 15px; /* Space below the text */
+    font-size: 1rem; /* Standard text size */
+    color: #555; /* Softer dark color */
+    margin-top: 10px; /* More space above the text */
+    margin-bottom: 20px; /* More space below the text */
 }
 
 /* Style for the U-values table */
 .u-values-table {
-    width: 100%; /* Full width of the card */
-    border-collapse: collapse; /* Remove gaps between cells */
+    width: calc(100% - 40px); /* Account for padding */
     margin-top: 20px; /* Space above the table */
+    border-collapse: collapse; /* Remove gaps between cells */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for depth */
 }
 
 .u-values-table th, .u-values-table td {
     text-align: left; /* Align text to the left */
-    padding: 8px; /* Padding inside cells */
+    padding: 12px; /* More padding for larger table */
+    vertical-align: top; /* Align to top for better readability */
 }
 
 .u-values-table th {
-    background-color: #f2f2f2; /* Light grey background for headers */
-    color: black; /* Black text for headers */
+    background-color: #4a90e2; /* Blue background for headers */
+    color: white; /* White text for headers */
+    font-size: 1rem; /* Standard font size for headers */
 }
 
 .u-values-table td {
-    border-bottom: 1px solid #ddd; /* Light grey line below each row */
+    border-bottom: 2px solid #e0e0e0; /* Slightly thicker bottom border for separation */
+    color: #333; /* Darker text color for contrast */
 }
 
 /* Styling for buttons */
 .button-blue {
     background-color: #4a90e2; /* Blue background */
     color: white; /* White text */
-    padding: 10px 20px; /* Padding around text */
+    padding: 12px 24px; /* More padding for bigger button */
     border: none; /* No border */
-    border-radius: 4px; /* Rounded corners */
+    border-radius: 5px; /* Slightly rounded corners */
     cursor: pointer; /* Hand cursor on hover */
-    display: inline-block; /* Make the button only as wide as its content */
-    text-align: center; /* Center the text inside the button */
-    box-sizing: border-box; /* Include padding and border in width */
+    font-size: 1rem; /* Standard button text size */
+    font-weight: 500; /* Medium font weight */
+    letter-spacing: 0.05em; /* Slight spacing between letters */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth color and slight scale transition */
+    margin-top: 20px; /* Space above button */
 }
 
 .button-blue:hover {
     background-color: #357abd; /* Slightly darker blue on hover */
+    transform: scale(1.05); /* Slightly larger on hover for interaction feedback */
 }

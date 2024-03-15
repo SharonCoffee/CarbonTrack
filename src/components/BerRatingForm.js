@@ -133,7 +133,7 @@ function BerRatingForm () {
           {/* Result properties list */}
           {properties && properties.length > 0 && (
               <div>
-                <ul>
+                <ul className="property-list">
                   {properties.map((property, index) => (
                       <li key={index}>
                         {property.PropertyID}: {property.DwellingTypeDescr} - {property.BerRating}
@@ -146,7 +146,7 @@ function BerRatingForm () {
                   ))}
                 </ul>
                 <div>
-                  {selectedProperty && (
+                {selectedProperty && (
                       <div className="property-card">
                         <h3>Selected Property Details:</h3>
                         <ul className="property-details">
@@ -167,7 +167,7 @@ function BerRatingForm () {
                         }} className="button-blue">Confirm Property
                         </button>
                       </div>
-                  )}
+                )}
                 </div>
               </div>
           )}

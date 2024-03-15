@@ -1,116 +1,141 @@
-/* Card styling */
+//* Card styling */
 .property-card {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: ghostwhite;
-    border: 1px solid #ddd;
-    border-top: 5px solid #4a90e2; /* Color for the top border */
-    border-radius: 5px;
+    background-color: #ffffff; /* Changed to pure white for a clean look */
+    border: 1px solid #ccc; /* Lighter border for subtleness */
+    border-top: 5px solid #4a90e2; /* Color for the top border remains */
+    border-radius: 8px; /* Slightly larger radius for modern look */
     padding: 20px;
-    margin-bottom: 20px; /* Space between cards */
-    width: auto; /* Adjust based on content */
-    max-width: 100%; /* Maximum width */
-    margin-left: auto; /* Center card */
-    margin-right: auto; /* Center card */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Updated shadow around card */
+    margin-bottom: 30px; /* More space between cards for clarity */
+    width: 90%; /* Controlled width for better readability */
+    max-width: 600px; /* Restricting maximum width for better alignment */
+    margin-left: auto; /* Center card horizontally */
+    margin-right: auto; /* Center card horizontally */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Softer shadow for depth */
 }
 
 /* Table styling inside the card */
 .property-card table {
-    width: 100%; /* Full width of the card */
-    border-collapse: collapse; /* Remove space between borders */
+    width: 100%; /* Maintains full width of the card */
+    border-collapse: collapse; /* Ensure borders are merged */
     margin-top: 20px; /* Space above the table */
 }
 
 .property-card th, .property-card td {
-    border: 1px solid #ddd; /* Border color for table cells */
-    padding: 8px; /* Padding inside table cells */
-    text-align: left; /* Align text to the left */
+    border: 1px solid #ddd; /* Light grey border for less intrusiveness */
+    padding: 12px; /* More padding for readability */
+    text-align: left; /* Text alignment remains */
 }
 
 .property-card th {
-    background-color: #4a90e2; /* Blue background for table headers */
-    color: white; /* White text for headers */
+    background-color: #4a90e2; /* Keeping blue background for headers */
+    color: #ffffff; /* White text for contrast */
 }
 
 .property-card tr:nth-child(even) {
-    background-color: #f2f2f2; /* Light grey background for even rows */
+    background-color: #f9f9f9; /* Slightly changed color for modern look */
 }
 
 .property-card tr:hover {
-    background-color: #ddd; /* Lighter grey background on row hover */
+    background-color: #efefef; /* Subtle hover effect */
 }
 
 /* Card title styling */
 .property-card h2 {
-    margin-top: 0; /* Remove default margin */
+    margin-top: 0; /* Remove top margin */
+    color: #333; /* Darker color for emphasis */
 }
 
 /* Button styling */
 .button-blue {
     background-color: #4a90e2; /* Blue background */
-    color: #fff; /* White text */
+    color: white; /* White text */
     border: none;
-    border-radius: 4px;
-    padding: 10px 20px;
+    border-radius: 20px; /* More rounded borders for modern buttons */
+    padding: 12px 25px; /* Slightly larger padding */
     cursor: pointer;
     transition: background-color 0.3s ease;
-    display: inline-block; /* Make the button only as wide as its content */
-    text-align: center; /* Center the text inside the button */
-    box-sizing: border-box; /* Include padding and border in width */
+    display: inline-block; /* Ensuring button is only as wide as necessary */
+    text-align: center; /* Centering text */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 
 .button-blue:hover {
-    background-color: #357abd; /* Darker shade of blue on hover */
+    background-color: #357abd; /* Darker shade on hover for interaction feedback */
 }
 
 /* Space between select boxes */
 .select-box {
-    margin-bottom: 10px; /* Space below each select box */
-    width: 100%; /* Full width */
-    padding: 20px; /* Padding for aesthetics */
-    border-radius: 4px; /* Rounded borders */
-    border: 1px solid #ddd; /* Border color */
+    margin-bottom: 20px; /* More space below each select box for clarity */
+    width: 100%; /* Full width to match form layout */
+    padding: 10px; /* Sufficient padding for touch friendliness */
+    border-radius: 4px; /* Uniform rounded borders */
+    border: 1px solid #ccc; /* Lighter border for subtleness */
+    background-color: #f9f9f9; /* Slightly off-white background for differentiation */
 }
 
-/* Style for the list inside the card */
-.property-details {
-    list-style-type: none; /* Remove default list styling */
+/* Style for the property list */
+.property-list {
+    list-style-type: none; /* Remove default list bullets */
     padding: 0; /* Remove default padding */
     margin: 0; /* Remove default margin */
 }
 
+.property-list li {
+    margin-bottom: 10px; /* Space between list items */
+    background-color: #f9f9f9; /* Optional: background color for each item */
+    padding: 10px; /* Padding inside each list item */
+    border-radius: 4px; /* Optional: rounded corners for the list items */
+}
+
+.property-list li .button-blue {
+    margin-left: 10px; /* Space between the text and the button */
+}
+
+/* Style for the list inside the card to display in two columns */
+.property-details {
+    list-style-type: none; /* Remove default list styling */
+    padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
+    display: grid; /* Use grid layout */
+    grid-template-columns: repeat(2, 1fr); /* Two columns of equal width */
+    gap: 10px; /* Gap between grid items */
+}
+
 /* Style for the property details list items */
 .property-details li {
-    list-style-type: none; /* Remove default list styling */
     display: flex;
     align-items: center; /* Aligns the label and value nicely */
     margin-bottom: 10px; /* Space between list items */
+    background-color: #f9f9f9; /* Background color for each item */
+    padding: 10px; /* Padding inside each list item */
+    border-radius: 4px; /* Rounded corners for the list items */
 }
 
 .property-details strong {
-    min-width: 150px; /* Adjust based on your longest label */
+    font-weight: bold; /* Emphasize the labels */
+    color: #4a90e2; /* Color matching the theme */
+    min-width: 140px; /* Minimum width for labels to ensure alignment */
     margin-right: 10px; /* Space between label and value */
     display: inline-block; /* Allows setting a width */
     text-align: right; /* Aligns the text to the right of the block */
 }
 
-.form-elements {
+/* Styling for form elements and the search button container */
+.form-elements,
+.search-button-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px; /* Adjust the gap to your preference */
+    gap: 20px; /* More distinct separation between elements */
+    width: 100%; /* Ensure full width for alignment */
 }
 
 .search-button-container {
-    margin-top: 20px; /* Space above the button */
-    text-align: center; /* Center the button horizontally */
+    margin-top: 30px; /* More distinct separation from form elements */
 }
-
-
-
-
 
 
 

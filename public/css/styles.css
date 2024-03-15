@@ -18,3 +18,23 @@ h1 {
 #loginButton:hover {
     background-color: #0097A7; /* Darker shade for hover effect */
 }
+
+h2 {
+    color: #4a90e2; /* Blue text for the header */
+}
+
+.about-header {
+    margin: 20px 0;
+}
+
+
+.about-container {
+    max-width: 800px; /* Adjust as needed */
+    margin: auto; /* Center the container */
+    padding: 20px; /* Add padding around the container */
+}
+
+.about-segment p {
+    margin-bottom: 20px; /* Paragraph spacing */
+}
+

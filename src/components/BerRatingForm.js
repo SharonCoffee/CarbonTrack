@@ -95,7 +95,7 @@ function BerRatingForm () {
 
   return (
       <form onSubmit={handleSubmit}>
-        <div>
+        <div className="form-elements">
           <select value={selectedCounty} onChange={(e) => setSelectedCounty(e.target.value)}>
             <option value="">Select a County</option>
             {counties.map((county, index) => (
@@ -126,7 +126,9 @@ function BerRatingForm () {
               onChange={(e) => setBerRating(e.target.value)}
               placeholder="Enter BER Rating (e.g., 150.5)"
           />
-          <button type="button" onClick={handleSearch}>Search Properties</button>
+          <div className="search-button-container">
+            <button type="button" className="button-blue" onClick={handleSearch}>Search Properties</button>
+          </div>
 
           {/* Result properties list */}
           {properties && properties.length > 0 && (
@@ -135,7 +137,7 @@ function BerRatingForm () {
                   {properties.map((property, index) => (
                       <li key={index}>
                         {property.PropertyID}: {property.DwellingTypeDescr} - {property.BerRating}
-                        <button type="button" onClick={() => {
+                        <button type="button" className="button-blue" onClick={() => {
                           setSelectedProperty(property);
                           setIsPropertyConfirmed(false);
                         }}>Select
@@ -144,32 +146,32 @@ function BerRatingForm () {
                   ))}
                 </ul>
                 <div>
-                {selectedProperty && (
-                    <div className="property-card">
-                      <h3>Selected Property Details:</h3>
-                      <ul className="property-details">
-                        {Object.keys(selectedProperty)
-                          .filter(key => propertyLabels[key]) // Only include keys that are in the mapping
-                          .map((key, index) => (
-                                <li key={index}>
-                                  <strong>{propertyLabels[key]}:</strong> {selectedProperty[key]}
-                                </li>
-                          ))}
-                      </ul>
-                      <button type="button" onClick={() => setIsPropertyConfirmed(true)} className="button-blue">Confirm
-                        Property
-                      </button>
-                    </div>
-                )}
+                  {selectedProperty && (
+                      <div className="property-card">
+                        <h3>Selected Property Details:</h3>
+                        <ul className="property-details">
+                          {Object.keys(selectedProperty)
+                            .filter(key => propertyLabels[key]) // Only include keys that are in the mapping
+                            .map((key, index) => (
+                                  <li key={index}>
+                                    <strong>{propertyLabels[key]}:</strong> {selectedProperty[key]}
+                                  </li>
+                            ))}
+                        </ul>
+                        <button type="submit" onClick={() => {
+                          const confirmSelection = window.confirm('Are you sure this is the correct property?');
+                          if (confirmSelection) {
+                            setIsPropertyConfirmed(true);
+                            navigate('/suggestions', { state: { selectedProperty } });
+                          }
+                        }} className="button-blue">Confirm Property
+                        </button>
+                      </div>
+                  )}
                 </div>
-                <select value={selectedCounty} onChange={(e) => setSelectedCounty(e.target.value)}
-                        className="select-box">
-                  {/* options */}
-                </select>
               </div>
           )}
 
-          <button type="submit">Submit</button>
         </div>
       </form>
   )

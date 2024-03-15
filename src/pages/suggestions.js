@@ -26,7 +26,7 @@ function SuggestionsPage () {
       });
   }, []);
 
-  const availableRatings = selectedProperty && ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3', 'D1', 'D2'].filter(rating => rating !== selectedProperty.EnergyRating && rating < selectedProperty.EnergyRating);
+  const availableRatings = selectedProperty && ['A1', 'A2', 'A3', 'B1', 'B2'].filter(rating => rating !== selectedProperty.EnergyRating && rating < selectedProperty.EnergyRating);
 
   const thresholdValues = {
     wall: 0.36,
@@ -62,14 +62,20 @@ function SuggestionsPage () {
     // You might want to set some results state here based on the new U-values
   };
 
+  const submitNewEnergyRating = () => {
+    // Logic to calculate predicted results based on new U-values
+    console.log('New U-Values submitted:', selectedUValues);
+    // You might want to set some results state here based on the new U-values
+  };
+
   // Display the selected property and inputs for modifying U-values
   return (
         <div>
             <h1>Selected Property</h1>
             {selectedProperty && (
                 <div className="u-values-card">
-                  <p>Dwelling Type: {selectedProperty.DwellingTypeDescr}</p>
-                  <p>Current Energy Rating: {selectedProperty.EnergyRating}</p>
+                  <p><strong>Dwelling Type:</strong> {selectedProperty.DwellingTypeDescr}</p>
+                  <p><strong>Current Energy Rating:</strong> {selectedProperty.EnergyRating}</p>
                   <h2>Current U-Values</h2>
                   <table className="u-values-table">
                     <thead>
@@ -116,7 +122,8 @@ function SuggestionsPage () {
                     effectively during winter and stays cooler
                     during summer. This not only improves comfort but also reduces the need for excessive heating or
                     cooling, leading to significant savings on
-                    energy bills. Additionally, upgrading your home&pos;s energy performance can increase its market value
+                    energy bills. Additionally, upgrading your home&apos;s energy performance can increase its market
+                    value
                     and reduce its environmental impact
                     by lowering carbon emissions. Select a new Energy Rating below to see how you can achieve these
                     benefits.
@@ -126,6 +133,7 @@ function SuggestionsPage () {
                     {availableRatings && availableRatings.map(rating => <option key={rating}
                                                                                 value={rating}>{rating}</option>)}
                   </select>
+                  <button onClick={submitNewEnergyRating} className="button-blue">Submit</button>
                   <h2>Select U-Values to Modify</h2>
                   <div>
                     <label>
@@ -162,7 +170,7 @@ function SuggestionsPage () {
                       Door
                     </label>
                   </div>
-                  <button onClick={submitNewUValues} className="button-blue">Submit New U-Values</button>
+
                   <div className="u-values-card">
                     <h2>Improvement Estimates</h2>
                     <table className="u-values-table">
@@ -170,26 +178,42 @@ function SuggestionsPage () {
                       <tr>
                         <th>Improvement</th>
                         <th>Estimated Works Cost</th>
-                        <th>Available Grant</th>
+                        <th>Available SEAI Grant</th>
                         <th>Estimated Cost to Homeowner</th>
                       </tr>
                       </thead>
                       <tbody>
-                      {Object.entries(modifiedValues).map(([key, value]) => {
-                        // Only display rows for values the user chose to modify
-                        if (value) {
-                          return (
-                              <tr key={key}>
-                                <td>{key.replace('UValue', '')} Insulation</td>
-                                <td>{improvementCosts[key]}</td>
-                                <td>{availableGrants[key]}</td>
-                                <td>{improvementCosts[key] - availableGrants[key]}</td>
-                              </tr>
-                          );
-                        } else {
-                          return null;
-                        }
-                      })}
+                      {selectedUValues.UValueWall && (
+                          <>
+                            <tr>
+                              <td>Internal Wall Insulation</td>
+                              <td>€9,000</td>
+                              <td>€4,500</td>
+                              <td>€4,500</td>
+                            </tr>
+                            <tr>
+                              <td>External Wall Insulation</td>
+                              <td>€16,000</td>
+                              <td>€8,000</td>
+                              <td>€8,000</td>
+                            </tr>
+                            <tr>
+                              <td>Cavity Wall Insulation</td>
+                              <td>€2,200</td>
+                              <td>€1,700</td>
+                              <td>€500</td>
+                            </tr>
+                          </>
+                      )}
+                      {selectedUValues.UValueRoof && (
+                          <tr>
+                            <td>Roof Insulation</td>
+                            <td>€2,000</td>
+                            <td>€1,500</td>
+                            <td>€500</td>
+                          </tr>
+                      )}
+                      {/* Repeat similar structures for UValueFloor, UValueWindow, UValueDoor if necessary */}
                       </tbody>
                     </table>
                     {/* You can add additional instructions or information below the table */}

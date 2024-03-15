@@ -18,22 +18,10 @@ const Signup = () => {
     }
   };
 
-  // Inline styles
-  const formStyle = {
-    display: 'flex',
-    flexDirection: 'column', // Stack children vertically
-    alignItems: 'center', // Align items in the center horizontally
-    gap: '10px' // Space between form items
-  };
-
-  const buttonStyle = {
-    marginTop: '20px' // Space above the button
-  };
-
   return (
         <div>
             <h2>Signup</h2>
-            <form onSubmit={handleSignup} style={formStyle}>
+            <form onSubmit={handleSignup} className="signup-form">
                 <input
                     type="email"
                     value={email}
@@ -48,10 +36,11 @@ const Signup = () => {
                     placeholder="Password"
                     required
                 />
-                <button type="submit" style={buttonStyle}>Signup</button>
+                <button type="submit" className="signup-button">Register</button>
+
             </form>
             <p style={{ marginTop: '10px' }}>
-                Already have an account? <Link to="/login">Log in</Link>
+            Already have an account? <Link to="/login">Log in</Link>
             </p>
         </div>
   );

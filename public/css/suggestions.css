@@ -12,6 +12,14 @@
     margin-right: auto;
 }
 
+.u-values-card p {
+    font-size: 1.2rem; /* Increase the font size */
+}
+
+.u-values-card p strong {
+    font-weight: bold; /* Make text bold */
+}
+
 /* Style for the U-values explanations text */
 .u-value-explanation {
     font-size: 0.9rem; /* Smaller text size */
@@ -49,9 +57,9 @@
     border: none; /* No border */
     border-radius: 4px; /* Rounded corners */
     cursor: pointer; /* Hand cursor on hover */
-    text-align: center; /* Center the text */
-    display: inline-block; /* Allow setting dimensions */
-    margin-top: 20px; /* Space above the button */
+    display: inline-block; /* Make the button only as wide as its content */
+    text-align: center; /* Center the text inside the button */
+    box-sizing: border-box; /* Include padding and border in width */
 }
 
 .button-blue:hover {

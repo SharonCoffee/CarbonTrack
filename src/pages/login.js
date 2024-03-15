@@ -18,22 +18,10 @@ const Login = () => {
     }
   };
 
-  // Inline styles
-  const formStyle = {
-    display: 'flex',
-    flexDirection: 'column', // Stack children vertically
-    alignItems: 'center', // Align items in the center horizontally
-    gap: '10px' // Space between form items
-  };
-
-  const buttonStyle = {
-    marginTop: '20px' // Space above the button
-  };
-
   return (
         <div>
             <h2>Login</h2>
-            <form onSubmit={handleLogin} style={formStyle}>
+            <form onSubmit={handleLogin} className="login-form">
                 <input
                     type="email"
                     value={email}
@@ -48,7 +36,7 @@ const Login = () => {
                     placeholder="Password"
                     required
                 />
-                <button type="submit" style={buttonStyle}>Login</button>
+                <button type="submit" className="login-button">Login</button>
             </form>
             <p>
                 Don&apos;t have an account? <Link to="/signup">Sign up</Link>

@@ -4,7 +4,7 @@ import { Container, Header, Segment } from 'semantic-ui-react';
 const About = () => {
   return (
       <Container>
-        <Header as='h1' textAlign='center' style={{ margin: '20px 0' }}>
+        <Header as='h1' className="about-header" textAlign='center'>
           About CarbonTrack
         </Header>
         <Segment>

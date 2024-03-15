@@ -10,7 +10,7 @@
     padding: 20px;
     margin-bottom: 20px; /* Space between cards */
     width: auto; /* Adjust based on content */
-    max-width: 50%; /* Maximum width */
+    max-width: 100%; /* Maximum width */
     margin-left: auto; /* Center card */
     margin-right: auto; /* Center card */
     box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Updated shadow around card */
@@ -56,7 +56,8 @@
     padding: 10px 20px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    width: 100%; /* Full width */
+    display: inline-block; /* Make the button only as wide as its content */
+    text-align: center; /* Center the text inside the button */
     box-sizing: border-box; /* Include padding and border in width */
 }
 
@@ -66,9 +67,9 @@
 
 /* Space between select boxes */
 .select-box {
-    margin-bottom: 20px; /* Space below each select box */
+    margin-bottom: 10px; /* Space below each select box */
     width: 100%; /* Full width */
-    padding: 10px; /* Padding for aesthetics */
+    padding: 20px; /* Padding for aesthetics */
     border-radius: 4px; /* Rounded borders */
     border: 1px solid #ddd; /* Border color */
 }
@@ -77,10 +78,12 @@
 .property-details {
     list-style-type: none; /* Remove default list styling */
     padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
 }
 
 /* Style for the property details list items */
 .property-details li {
+    list-style-type: none; /* Remove default list styling */
     display: flex;
     align-items: center; /* Aligns the label and value nicely */
     margin-bottom: 10px; /* Space between list items */
@@ -91,6 +94,18 @@
     margin-right: 10px; /* Space between label and value */
     display: inline-block; /* Allows setting a width */
     text-align: right; /* Aligns the text to the right of the block */
+}
+
+.form-elements {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px; /* Adjust the gap to your preference */
+}
+
+.search-button-container {
+    margin-top: 20px; /* Space above the button */
+    text-align: center; /* Center the button horizontally */
 }
 
 

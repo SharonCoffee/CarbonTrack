@@ -1,0 +1,105 @@
+/* Card styling */
+.property-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: ghostwhite;
+    border: 1px solid #ddd;
+    border-top: 5px solid #4a90e2; /* Color for the top border */
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 20px; /* Space between cards */
+    width: auto; /* Adjust based on content */
+    max-width: 50%; /* Maximum width */
+    margin-left: auto; /* Center card */
+    margin-right: auto; /* Center card */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Updated shadow around card */
+}
+
+/* Table styling inside the card */
+.property-card table {
+    width: 100%; /* Full width of the card */
+    border-collapse: collapse; /* Remove space between borders */
+    margin-top: 20px; /* Space above the table */
+}
+
+.property-card th, .property-card td {
+    border: 1px solid #ddd; /* Border color for table cells */
+    padding: 8px; /* Padding inside table cells */
+    text-align: left; /* Align text to the left */
+}
+
+.property-card th {
+    background-color: #4a90e2; /* Blue background for table headers */
+    color: white; /* White text for headers */
+}
+
+.property-card tr:nth-child(even) {
+    background-color: #f2f2f2; /* Light grey background for even rows */
+}
+
+.property-card tr:hover {
+    background-color: #ddd; /* Lighter grey background on row hover */
+}
+
+/* Card title styling */
+.property-card h2 {
+    margin-top: 0; /* Remove default margin */
+}
+
+/* Button styling */
+.button-blue {
+    background-color: #4a90e2; /* Blue background */
+    color: #fff; /* White text */
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%; /* Full width */
+    box-sizing: border-box; /* Include padding and border in width */
+}
+
+.button-blue:hover {
+    background-color: #357abd; /* Darker shade of blue on hover */
+}
+
+/* Space between select boxes */
+.select-box {
+    margin-bottom: 20px; /* Space below each select box */
+    width: 100%; /* Full width */
+    padding: 10px; /* Padding for aesthetics */
+    border-radius: 4px; /* Rounded borders */
+    border: 1px solid #ddd; /* Border color */
+}
+
+/* Style for the list inside the card */
+.property-details {
+    list-style-type: none; /* Remove default list styling */
+    padding: 0; /* Remove default padding */
+}
+
+/* Style for the property details list items */
+.property-details li {
+    display: flex;
+    align-items: center; /* Aligns the label and value nicely */
+    margin-bottom: 10px; /* Space between list items */
+}
+
+.property-details strong {
+    min-width: 150px; /* Adjust based on your longest label */
+    margin-right: 10px; /* Space between label and value */
+    display: inline-block; /* Allows setting a width */
+    text-align: right; /* Aligns the text to the right of the block */
+}
+
+
+
+
+
+
+
+
+
+
+

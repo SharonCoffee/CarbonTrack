@@ -1,0 +1,59 @@
+/* Style for the U-values card */
+.u-values-card {
+    background-color: #f9f9f9; /* Light background for the card */
+    border: 1px solid #ddd; /* Light grey border */
+    border-top: 5px solid #4a90e2; /* Blue top border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 20px; /* Padding inside the card */
+    margin-bottom: 20px; /* Space below the card */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow */
+    width: auto; /* Width according to content */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Style for the U-values explanations text */
+.u-value-explanation {
+    font-size: 0.9rem; /* Smaller text size */
+    color: #666; /* Dark grey color */
+    margin-top: 5px; /* Space above the text */
+    margin-bottom: 15px; /* Space below the text */
+}
+
+/* Style for the U-values table */
+.u-values-table {
+    width: 100%; /* Full width of the card */
+    border-collapse: collapse; /* Remove gaps between cells */
+    margin-top: 20px; /* Space above the table */
+}
+
+.u-values-table th, .u-values-table td {
+    text-align: left; /* Align text to the left */
+    padding: 8px; /* Padding inside cells */
+}
+
+.u-values-table th {
+    background-color: #f2f2f2; /* Light grey background for headers */
+    color: black; /* Black text for headers */
+}
+
+.u-values-table td {
+    border-bottom: 1px solid #ddd; /* Light grey line below each row */
+}
+
+/* Styling for buttons */
+.button-blue {
+    background-color: #4a90e2; /* Blue background */
+    color: white; /* White text */
+    padding: 10px 20px; /* Padding around text */
+    border: none; /* No border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Hand cursor on hover */
+    text-align: center; /* Center the text */
+    display: inline-block; /* Allow setting dimensions */
+    margin-top: 20px; /* Space above the button */
+}
+
+.button-blue:hover {
+    background-color: #357abd; /* Slightly darker blue on hover */
+}

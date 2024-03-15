@@ -41,6 +41,29 @@ function BerRatingForm () {
 
   const navigate = useNavigate();
 
+  const propertyLabels = {
+    PropertyID: 'Property ID',
+    CountyName: 'County Name',
+    DwellingTypeDescr: 'Dwelling Type',
+    Year_of_Construction: 'Year of Construction',
+    TypeofRating: 'Type of Rating',
+    EnergyRating: 'Energy Rating',
+    BerRating: 'BER Rating',
+    TotalFloorArea: 'Total Floor Area',
+    UValueWall: 'U-Value Wall',
+    UValueRoof: 'U-Value Roof',
+    UValueFloor: 'U-Value Floor',
+    UValueWindow: 'U-Value Window',
+    UvalueDoor: 'U-Value Door',
+    WallArea: 'Wall Area',
+    RoofArea: 'Roof Area',
+    FloorArea: 'Floor Area',
+    WindowArea: 'Window Area',
+    DoorArea: 'Door Area',
+    NoStoreys: 'No. of Storeys',
+    CO2Rating: 'CO2 Rating'
+  };
+
   const handleSearch = () => {
     // CSV is stored in public/data/data_leitrim.csv
     Papa.parse('/data/data_leitrim.csv', {
@@ -50,10 +73,10 @@ function BerRatingForm () {
         console.log('Parsed data:', result.data);
         const filteredProperties = result.data.filter(property =>
           property.CountyName === selectedCounty &&
-          property.DwellingTypeDescr === propertyType &&
-          property.Year_of_Construction.toString() === constructionYear &&
-          property.EnergyRating === energyRating &&
-          property.BerRating.trim() === parseFloat(berRating).toString().trim()
+            property.DwellingTypeDescr === propertyType &&
+            property.Year_of_Construction.toString() === constructionYear &&
+            property.EnergyRating === energyRating &&
+            property.BerRating.trim() === parseFloat(berRating).toString().trim()
         );
         console.log('Filtered properties:', filteredProperties);
         setProperties(filteredProperties);
@@ -115,32 +138,42 @@ function BerRatingForm () {
                         <button type="button" onClick={() => {
                           setSelectedProperty(property);
                           setIsPropertyConfirmed(false);
-                        }}>Select</button>
+                        }}>Select
+                        </button>
                       </li>
                   ))}
                 </ul>
+                <div>
                 {selectedProperty && (
-                    <div>
+                    <div className="property-card">
                       <h3>Selected Property Details:</h3>
-                      <ul>
+                      <ul className="property-details">
                         {Object.keys(selectedProperty)
-                          .slice(0, 20) // Adjust the number based on how many columns you want to display
+                          .filter(key => propertyLabels[key]) // Only include keys that are in the mapping
                           .map((key, index) => (
                                 <li key={index}>
-                                  <strong>{key.replace(/([A-Z])/g, ' $1').trim()}:</strong> {selectedProperty[key]}
+                                  <strong>{propertyLabels[key]}:</strong> {selectedProperty[key]}
                                 </li>
                           ))}
                       </ul>
-                      <button type="button" onClick={() => setIsPropertyConfirmed(true)}>Confirm Property</button>
+                      <button type="button" onClick={() => setIsPropertyConfirmed(true)} className="button-blue">Confirm
+                        Property
+                      </button>
                     </div>
                 )}
+                </div>
+                <select value={selectedCounty} onChange={(e) => setSelectedCounty(e.target.value)}
+                        className="select-box">
+                  {/* options */}
+                </select>
               </div>
           )}
 
           <button type="submit">Submit</button>
         </div>
       </form>
-  );
+  )
+  ;
 }
 
 export default BerRatingForm;

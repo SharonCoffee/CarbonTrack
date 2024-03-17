@@ -78,43 +78,6 @@ function SuggestionsPage () {
                 <div className="u-values-card">
                   <p><strong>Dwelling Type:</strong> {selectedProperty.DwellingTypeDescr}</p>
                   <p><strong>Current Energy Rating:</strong> {selectedProperty.EnergyRating}</p>
-                  <h2>Current U-Values</h2>
-                  <table className="u-values-table">
-                    <thead>
-                    <tr>
-                      <th>U-Value Types</th>
-                      <th>Existing Value</th>
-                      <th>Description</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                      <th>Walls UValue</th>
-                      <td>{selectedProperty.UValueWall}</td>
-                      <td>{selectedProperty.UValueWall > thresholdValues.wall ? 'Your walls are not holding heat well. This could mean your wall insulation is thin, old, or missing. Your home may feel colder and your heating bills may be higher.' : 'Your walls are good at keeping heat inside your home. This means your wall insulation is effective. Your home should feel warmer and your heating bills should be lower..'}</td>
-                    </tr>
-                    <tr>
-                      <th>Roof UValue</th>
-                      <td>{selectedProperty.UValueRoof}</td>
-                      <td>{selectedProperty.UValueRoof > thresholdValues.roof ? 'Heat is escaping through your roof. This often means your roof insulation is insufficient or absent. Your top floors may be chilly, and heating costs could be high.' : 'Your roof is well insulated, keeping heat from escaping. This helps maintain a comfortable temperature throughout your home and can reduce heating costs.'}</td>
-                    </tr>
-                    <tr>
-                      <th>Floors UValue</th>
-                      <td>{selectedProperty.UValueFloor}</td>
-                      <td>{selectedProperty.UValueFloor > thresholdValues.floor ? 'Your floors are losing heat, which can make them feel cold underfoot. This usually means there\'s inadequate insulation beneath them. This can lead to colder room temperatures and higher heating bills.' : 'Your floors are effective at retaining heat, which can help keep your feet and room warmer. Good floor insulation contributes to overall warmth and energy efficiency in your home.'}</td>
-                    </tr>
-                    <tr>
-                      <th>Windows UValue</th>
-                      <td>{selectedProperty.UValueWindow}</td>
-                      <td>{selectedProperty.UValueWindow > thresholdValues.window ? 'Your windows are not very good at keeping heat inside. This could be because they are old, single-glazed, or poorly fitted, leading to drafts and cold spots near windows.' : 'Your windows are doing a good job of keeping heat in. They are likely double or triple-glazed and well-sealed, helping to maintain a comfortable temperature and reduce noise from outside.'}</td>
-                    </tr>
-                    <tr>
-                      <th>Doors UValue</th>
-                      <td>{selectedProperty.UvalueDoor}</td>
-                      <td>{selectedProperty.UvalueDoor > thresholdValues.door ? 'Your doors allow heat to escape easily, which can make your home feel drafty, particularly near doors. This might mean the doors are old, poorly insulated, or not fitting correctly.' : 'Your doors are well insulated and fitted, helping to keep heat in and cold out. This contributes to a warmer, more energy-efficient home.'}</td>
-                    </tr>
-                    </tbody>
-                  </table>
                   <p></p>
                   <h2>Select New Energy Rating</h2>
                   <p>
@@ -142,6 +105,83 @@ function SuggestionsPage () {
                                                                                 value={rating}>{rating}</option>)}
                   </select>
                   <button onClick={submitNewEnergyRating} className="button-blue">Submit</button>
+                  <h2>Current U-Values</h2>
+                  <table className="u-values-table">
+                    <thead>
+                    <tr>
+                      <th>U-Value Types</th>
+                      <th>Existing Value</th>
+                      <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <th>Walls UValue</th>
+                      <td className={`value-cell ${selectedProperty.UValueWall > thresholdValues.wall ? 'u-value-high' : selectedProperty.UValueWall === thresholdValues.wall ? 'u-value-medium' : 'u-value-low'}`}>
+                        {selectedProperty.UValueWall}
+                      </td>
+                      <td className={`${selectedProperty.UValueWall > thresholdValues.wall ? 'u-value-high' : selectedProperty.UValueWall === thresholdValues.wall ? 'u-value-medium' : 'u-value-low'}`}>
+                        {selectedProperty.UValueWall > thresholdValues.wall
+                          ? 'Your walls are not holding heat well. Consider upgrading insulation.'
+                          : selectedProperty.UValueWall === thresholdValues.wall
+                            ? 'Your walls meet the minimum standard, but improvements could still be beneficial.'
+                            : 'Your walls are well insulated against heat loss.'}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Roof UValue</th>
+                      <td className={`value-cell ${selectedProperty.UValueRoof > thresholdValues.roof ? 'u-value-high' : selectedProperty.UValueRoof === thresholdValues.roof ? 'u-value-medium' : 'u-value-low'}`}>
+                        {selectedProperty.UValueRoof}
+                      </td>
+                      <td className={`${selectedProperty.UValueRoof > thresholdValues.roof ? 'u-value-high' : selectedProperty.UValueRoof === thresholdValues.roof ? 'u-value-medium' : 'u-value-low'}`}>
+                        {selectedProperty.UValueRoof > thresholdValues.roof
+                          ? 'Heat is escaping through your roof. Consider upgrading insulation.'
+                          : selectedProperty.UValueRoof === thresholdValues.roof
+                            ? 'Your roof meets the minimum standard, but improvements could still be beneficial.'
+                            : 'Your roof is well insulated against heat loss.'}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Floors UValue</th>
+                      <td className={`value-cell ${selectedProperty.UValueFloor > thresholdValues.floor ? 'u-value-high' : selectedProperty.UValueFloor === thresholdValues.floor ? 'u-value-medium' : 'u-value-low'}`}>
+                        {selectedProperty.UValueFloor}
+                      </td>
+                      <td className={`${selectedProperty.UValueFloor > thresholdValues.floor ? 'u-value-high' : selectedProperty.UValueFloor === thresholdValues.floor ? 'u-value-medium' : 'u-value-low'}`}>
+                        {selectedProperty.UValueFloor > thresholdValues.floor
+                          ? 'Your floors are losing heat, consider improving insulation.'
+                          : selectedProperty.UValueFloor === thresholdValues.floor
+                            ? 'Your floors meet the standard, but consider enhancements for better warmth.'
+                            : 'Your floors are retaining heat efficiently.'}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Windows UValue</th>
+                      <td className={`value-cell ${selectedProperty.UValueWindow > thresholdValues.window ? 'u-value-high' : selectedProperty.UValueWindow === thresholdValues.window ? 'u-value-medium' : 'u-value-low'}`}>
+                        {selectedProperty.UValueWindow}
+                      </td>
+                      <td className={`${selectedProperty.UValueWindow > thresholdValues.window ? 'u-value-high' : selectedProperty.UValueWindow === thresholdValues.window ? 'u-value-medium' : 'u-value-low'}`}>
+                        {selectedProperty.UValueWindow > thresholdValues.window
+                          ? 'Your windows are not keeping heat in effectively. Consider updating them.'
+                          : selectedProperty.UValueWindow === thresholdValues.window
+                            ? 'Your windows are adequate, but newer models could offer more savings.'
+                            : 'Your windows are performing well in retaining heat.'}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Doors UValue</th>
+                      <td className={`value-cell ${selectedProperty.UvalueDoor > thresholdValues.door ? 'u-value-high' : selectedProperty.UvalueDoor === thresholdValues.door ? 'u-value-medium' : 'u-value-low'}`}>
+                        {selectedProperty.UvalueDoor}
+                      </td>
+                      <td className={`${selectedProperty.UvalueDoor > thresholdValues.door ? 'u-value-high' : selectedProperty.UvalueDoor === thresholdValues.door ? 'u-value-medium' : 'u-value-low'}`}>
+                        {selectedProperty.UvalueDoor > thresholdValues.door
+                          ? 'Your doors are not insulating well. Consider replacements or sealing gaps.'
+                          : selectedProperty.UvalueDoor === thresholdValues.door
+                            ? 'Your doors meet the current standard, yet there might be room for improvement.'
+                            : 'Your doors are well-sealed and insulated.'}
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
                   <h2>Select U-Values to Modify</h2>
                   <div>
                     <label>

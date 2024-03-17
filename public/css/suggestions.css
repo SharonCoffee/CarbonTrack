@@ -75,3 +75,31 @@
     background-color: #357abd; /* Slightly darker blue on hover */
     transform: scale(1.05); /* Slightly larger on hover for interaction feedback */
 }
+
+/* Additional styles for U-values traffic light system */
+.u-value-high { /* For values higher than the threshold */
+    background-color: #cc0000 !important; /* Darker red for the background */
+    color: #ffffff !important; /* White for the text */
+
+}
+
+.u-value-medium { /* For values equal to the threshold */
+    background-color: #ffa255 !important; /* Darker orange for the background */
+    color: #ffffff !important; /* White amber for the text */
+}
+
+.u-value-low { /* For values lower than the threshold */
+    background-color: #008000 !important; /* Darker green for the background */
+    color: #ffffff !important; /* White for the text */
+}
+
+/* Update to existing U-values table styling */
+.u-values-table td.value-cell { /* Style for cells containing the UValue */
+    font-weight: 600; /* Make the UValue stand out */
+}
+
+/* Update for better visibility of explanations */
+.u-value-explanation {
+    font-size: 0.9rem; /* Slightly smaller text size for explanations */
+    padding-left: 20px; /* Indent text for hierarchy */
+}

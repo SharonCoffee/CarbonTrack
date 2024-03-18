@@ -4,7 +4,8 @@ import Papa from 'papaparse';
 
 function SuggestionsPage () {
   const location = useLocation();
-  const [selectedProperty, setSelectedProperty] = useState(location.state ? location.state.selectedProperty : null);
+  const selectedProperty = location.state ? location.state.selectedProperty : null;
+  const selectedDwellingType = useState('');
   const [newEnergyRating, setNewEnergyRating] = useState('');
   const [archetypeData, setArchetypeData] = useState([]);
   const [modifiedValues, setModifiedValues] = useState({});
@@ -14,29 +15,15 @@ function SuggestionsPage () {
     setModifiedValues(prev => ({ ...prev, [field]: value }));
   };
 
-  useEffect(() => {
-    // Scrolls the window to the top of the page
-    window.scrollTo(0, 0);
-    // Fetch archetype data once at the start
-    fetch('/data/data_building_archetype.csv')
-      .then(response => response.text())
-      .then(text => {
-        Papa.parse(text, {
-          header: true,
-          complete: result => setArchetypeData(result.data)
-        });
-      });
-  }, []);
-
   const availableRatings = selectedProperty && ['A1', 'A2', 'A3', 'B1', 'B2'].filter(rating => rating !== selectedProperty.EnergyRating && rating < selectedProperty.EnergyRating);
 
-  const thresholdValues = {
-    wall: 0.36,
-    roof: 0.22,
-    floor: 0.34,
-    window: 2.10,
-    door: 2.05
-  };
+  const [thresholdValues, setThresholdValues] = useState({
+    wall: 0, // Default values, will be updated dynamically
+    roof: 0,
+    floor: 0,
+    window: 0,
+    door: 0
+  });
 
   const improvementCosts = {
     UValueWall: 5000, // example costs in currency units
@@ -69,6 +56,43 @@ function SuggestionsPage () {
     console.log('New U-Values submitted:', selectedUValues);
     // You might want to set some results state here based on the new U-values
   };
+
+  useEffect(() => {
+    // Scrolls the window to the top of the new page
+    window.scrollTo(0, 0);
+
+    // Fetch archetype data once at the start or when the selected property changes
+    fetch('/data/data_building_archetype.csv')
+      .then(response => response.text())
+      .then(text => {
+        Papa.parse(text, {
+          header: true,
+          complete: result => {
+            // Set the full dataset (if you need to use it elsewhere)
+            setArchetypeData(result.data);
+
+            // Assuming selectedDwellingType holds type like 'Semi-detached house'
+            const dwellingType = selectedProperty ? selectedProperty.DwellingTypeDescr : '';
+            const newRating = newEnergyRating;
+
+            // Find matching row for new energy rating and dwelling type
+            const matchedRow = result.data.find(row =>
+              row.DwellingType === dwellingType && row.EnergyRating === newRating);
+
+            // If a matching row is found, update the threshold values
+            if (matchedRow) {
+              setThresholdValues({
+                wall: parseFloat(matchedRow.UValueWallMean),
+                roof: parseFloat(matchedRow.UValueRoofMean),
+                floor: parseFloat(matchedRow.UValueFloorMean),
+                window: parseFloat(matchedRow.UValueWindowMean),
+                door: parseFloat(matchedRow.UValueDoorMean)
+              });
+            }
+          }
+        });
+      });
+  }, [selectedProperty, newEnergyRating]); // Ensure useEffect is triggered when these values change
 
   // Display the selected property and inputs for modifying U-values
   return (
@@ -110,30 +134,33 @@ function SuggestionsPage () {
                     <thead>
                     <tr>
                       <th>U-Value Types</th>
-                      <th>Existing Value</th>
+                      <th>Target U-Values</th>
+                      <th>Existing U-Values</th>
                       <th>Description</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
                       <th>Walls UValue</th>
-                      <td className={`value-cell ${selectedProperty.UValueWall > thresholdValues.wall ? 'u-value-high' : selectedProperty.UValueWall === thresholdValues.wall ? 'u-value-medium' : 'u-value-low'}`}>
+                      <td>{thresholdValues.wall}</td>
+                      <td className={`value-cell ${selectedProperty.UValueWall - thresholdValues.wall > 0.01 ? 'u-value-high' : selectedProperty.UValueWall - thresholdValues.wall < -0.01 ? 'u-value-low' : 'u-value-medium'}`}>
                         {selectedProperty.UValueWall}
                       </td>
-                      <td className={`${selectedProperty.UValueWall > thresholdValues.wall ? 'u-value-high' : selectedProperty.UValueWall === thresholdValues.wall ? 'u-value-medium' : 'u-value-low'}`}>
-                        {selectedProperty.UValueWall > thresholdValues.wall
+                      <td className={`${selectedProperty.UValueWall - thresholdValues.wall > 0.01 ? 'u-value-high' : selectedProperty.UValueWall - thresholdValues.wall < -0.01 ? 'u-value-low' : 'u-value-medium'}`}>
+                        {selectedProperty.UValueWall - thresholdValues.wall > 0.01
                           ? 'Your walls are not holding heat well. Consider upgrading insulation.'
-                          : selectedProperty.UValueWall === thresholdValues.wall
-                            ? 'Your walls meet the minimum standard, but improvements could still be beneficial.'
-                            : 'Your walls are well insulated against heat loss.'}
+                          : selectedProperty.UValueWall - thresholdValues.wall < -0.01
+                            ? 'Your walls are well insulated against heat loss.'
+                            : 'Your walls meet the minimum standard, but improvements could still be beneficial.'}
                       </td>
                     </tr>
                     <tr>
                       <th>Roof UValue</th>
-                      <td className={`value-cell ${selectedProperty.UValueRoof > thresholdValues.roof ? 'u-value-high' : selectedProperty.UValueRoof === thresholdValues.roof ? 'u-value-medium' : 'u-value-low'}`}>
+                      <td>{thresholdValues.roof}</td>
+                      <td className={`value-cell ${selectedProperty.UValueRoof - thresholdValues.roof > 0.01 ? 'u-value-high' : selectedProperty.UValueRoof - thresholdValues.roof < -0.01 ? 'u-value-low' : 'u-value-medium'}`}>
                         {selectedProperty.UValueRoof}
                       </td>
-                      <td className={`${selectedProperty.UValueRoof > thresholdValues.roof ? 'u-value-high' : selectedProperty.UValueRoof === thresholdValues.roof ? 'u-value-medium' : 'u-value-low'}`}>
+                      <td className={`${selectedProperty.UValueRoof - thresholdValues.roof > 0.01 ? 'u-value-high' : selectedProperty.UValueRoof - thresholdValues.roof < -0.01 ? 'u-value-low' : 'u-value-medium'}`}>
                         {selectedProperty.UValueRoof > thresholdValues.roof
                           ? 'Heat is escaping through your roof. Consider upgrading insulation.'
                           : selectedProperty.UValueRoof === thresholdValues.roof
@@ -143,10 +170,11 @@ function SuggestionsPage () {
                     </tr>
                     <tr>
                       <th>Floors UValue</th>
-                      <td className={`value-cell ${selectedProperty.UValueFloor > thresholdValues.floor ? 'u-value-high' : selectedProperty.UValueFloor === thresholdValues.floor ? 'u-value-medium' : 'u-value-low'}`}>
+                      <td>{thresholdValues.floor}</td>
+                      <td className={`value-cell ${selectedProperty.UValueFloor - thresholdValues.floor > 0.01 ? 'u-value-high' : selectedProperty.UValueFloor - thresholdValues.floor < -0.01 ? 'u-value-low' : 'u-value-medium'}`}>
                         {selectedProperty.UValueFloor}
                       </td>
-                      <td className={`${selectedProperty.UValueFloor > thresholdValues.floor ? 'u-value-high' : selectedProperty.UValueFloor === thresholdValues.floor ? 'u-value-medium' : 'u-value-low'}`}>
+                      <td className={`${selectedProperty.UValueFloor - thresholdValues.floor > 0.01 ? 'u-value-high' : selectedProperty.UValueFloor - thresholdValues.floor < -0.01 ? 'u-value-low' : 'u-value-medium'}`}>
                         {selectedProperty.UValueFloor > thresholdValues.floor
                           ? 'Your floors are losing heat, consider improving insulation.'
                           : selectedProperty.UValueFloor === thresholdValues.floor
@@ -156,10 +184,11 @@ function SuggestionsPage () {
                     </tr>
                     <tr>
                       <th>Windows UValue</th>
-                      <td className={`value-cell ${selectedProperty.UValueWindow > thresholdValues.window ? 'u-value-high' : selectedProperty.UValueWindow === thresholdValues.window ? 'u-value-medium' : 'u-value-low'}`}>
+                      <td>{thresholdValues.window}</td>
+                      <td className={`value-cell ${selectedProperty.UValueWindow - thresholdValues.window > 0.01 ? 'u-value-high' : selectedProperty.UValueWindow - thresholdValues.window < -0.01 ? 'u-value-low' : 'u-value-medium'}`}>
                         {selectedProperty.UValueWindow}
                       </td>
-                      <td className={`${selectedProperty.UValueWindow > thresholdValues.window ? 'u-value-high' : selectedProperty.UValueWindow === thresholdValues.window ? 'u-value-medium' : 'u-value-low'}`}>
+                      <td className={`${selectedProperty.UValueWindow - thresholdValues.window > 0.01 ? 'u-value-high' : selectedProperty.UValueWindow - thresholdValues.window < -0.01 ? 'u-value-low' : 'u-value-medium'}`}>
                         {selectedProperty.UValueWindow > thresholdValues.window
                           ? 'Your windows are not keeping heat in effectively. Consider updating them.'
                           : selectedProperty.UValueWindow === thresholdValues.window
@@ -169,10 +198,11 @@ function SuggestionsPage () {
                     </tr>
                     <tr>
                       <th>Doors UValue</th>
-                      <td className={`value-cell ${selectedProperty.UvalueDoor > thresholdValues.door ? 'u-value-high' : selectedProperty.UvalueDoor === thresholdValues.door ? 'u-value-medium' : 'u-value-low'}`}>
+                      <td>{thresholdValues.door}</td>
+                      <td className={`value-cell ${selectedProperty.UvalueDoor - thresholdValues.door > 0.01 ? 'u-value-high' : selectedProperty.UvalueDoor - thresholdValues.door < -0.01 ? 'u-value-low' : 'u-value-medium'}`}>
                         {selectedProperty.UvalueDoor}
                       </td>
-                      <td className={`${selectedProperty.UvalueDoor > thresholdValues.door ? 'u-value-high' : selectedProperty.UvalueDoor === thresholdValues.door ? 'u-value-medium' : 'u-value-low'}`}>
+                      <td className={`${selectedProperty.UvalueDoor - thresholdValues.door > 0.01 ? 'u-value-high' : selectedProperty.UvalueDoor - thresholdValues.door < -0.01 ? 'u-value-low' : 'u-value-medium'}`}>
                         {selectedProperty.UvalueDoor > thresholdValues.door
                           ? 'Your doors are not insulating well. Consider replacements or sealing gaps.'
                           : selectedProperty.UvalueDoor === thresholdValues.door

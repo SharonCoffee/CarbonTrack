@@ -1,0 +1,276 @@
+﻿DwellingTypes,GrantName,GrantValue,EstimatedImprovementCost
+Apartment,Attic insulation,800,30
+Basement Dwelling,Attic insulation,0,0
+Ground-floor apartment,Attic insulation,0,0
+Maisonette,Attic insulation,0,0
+Mid-floor apartment,Attic insulation,0,0
+Top-floor apartment,Attic insulation,800,30
+Mid-terrace house,Attic insulation,1200,30
+Semi-detached house,Attic insulation,1300,30
+End of terrace house,Attic insulation,1300,30
+House,Attic insulation,1500,30
+Detached house,Attic insulation,1500,30
+Apartment,Rafter insulation,1500,30
+Basement Dwelling,Rafter insulation,0,0
+Ground-floor apartment,Rafter insulation,0,0
+Maisonette,Rafter insulation,0,0
+Mid-floor apartment,Rafter insulation,0,0
+Top-floor apartment,Rafter insulation,1500,30
+Mid-terrace house,Rafter insulation,2000,30
+Semi-detached house,Rafter insulation,3000,30
+End of terrace house,Rafter insulation,3000,30
+House,Rafter insulation,3000,30
+Detached house,Rafter insulation,3000,30
+Apartment,Cavity wall insulation,700,10
+Basement Dwelling,Cavity wall insulation,700,10
+Ground-floor apartment,Cavity wall insulation,700,10
+Maisonette,Cavity wall insulation,700,10
+Mid-floor apartment,Cavity wall insulation,700,10
+Top-floor apartment,Cavity wall insulation,700,10
+Mid-terrace house,Cavity wall insulation,800,10
+Semi-detached house,Cavity wall insulation,1200,10
+End of terrace house,Cavity wall insulation,1200,10
+House,Cavity wall insulation,1700,10
+Detached house,Cavity wall insulation,1700,10
+Apartment,Internal Insulation (Dry Lining),1500,80
+Basement Dwelling,Internal Insulation (Dry Lining),1500,80
+Ground-floor apartment,Internal Insulation (Dry Lining),1500,80
+Maisonette,Internal Insulation (Dry Lining),1500,80
+Mid-floor apartment,Internal Insulation (Dry Lining),1500,80
+Top-floor apartment,Internal Insulation (Dry Lining),1500,80
+Mid-terrace house,Internal Insulation (Dry Lining),2000,80
+Semi-detached house,Internal Insulation (Dry Lining),3500,80
+End of terrace house,Internal Insulation (Dry Lining),3500,80
+House,Internal Insulation (Dry Lining),4500,80
+Detached house,Internal Insulation (Dry Lining),4500,80
+Apartment,External Wall Insulation (The Wrap),3000,120
+Basement Dwelling,External Wall Insulation (The Wrap),3000,120
+Ground-floor apartment,External Wall Insulation (The Wrap),3000,120
+Maisonette,External Wall Insulation (The Wrap),3000,120
+Mid-floor apartment,External Wall Insulation (The Wrap),3000,120
+Top-floor apartment,External Wall Insulation (The Wrap),3000,120
+Mid-terrace house,External Wall Insulation (The Wrap),3500,120
+Semi-detached house,External Wall Insulation (The Wrap),6000,120
+End of terrace house,External Wall Insulation (The Wrap),6000,120
+House,External Wall Insulation (The Wrap),8000,120
+Detached house,External Wall Insulation (The Wrap),8000,120
+Apartment,Windows (Complete Upgrade),1500,600
+Basement Dwelling,Windows (Complete Upgrade),1500,600
+Ground-floor apartment,Windows (Complete Upgrade),1500,600
+Maisonette,Windows (Complete Upgrade),1500,600
+Mid-floor apartment,Windows (Complete Upgrade),1500,600
+Top-floor apartment,Windows (Complete Upgrade),1500,600
+Mid-terrace house,Windows (Complete Upgrade),1800,600
+Semi-detached house,Windows (Complete Upgrade),3000,600
+End of terrace house,Windows (Complete Upgrade),3000,600
+House,Windows (Complete Upgrade),4000,600
+Detached house,Windows (Complete Upgrade),4000,600
+Apartment,External Back door,800,800
+Basement Dwelling,External Back door,800,800
+Ground-floor apartment,External Back door,800,800
+Maisonette,External Back door,800,800
+Mid-floor apartment,External Back door,800,800
+Top-floor apartment,External Back door,800,800
+Mid-terrace house,External Back door,800,800
+Semi-detached house,External Back door,800,800
+End of terrace house,External Back door,800,800
+House,External Back door,800,800
+Detached house,External Back door,800,800
+Apartment,External Front door,800,1200
+Basement Dwelling,External Front door,800,1200
+Ground-floor apartment,External Front door,800,1200
+Maisonette,External Front door,800,1200
+Mid-floor apartment,External Front door,800,1200
+Top-floor apartment,External Front door,800,1200
+Mid-terrace house,External Front door,800,1200
+Semi-detached house,External Front door,800,1200
+End of terrace house,External Front door,800,1200
+House,External Front door,800,1200
+Detached house,External Front door,800,1200
+Apartment,External Front and Back door,1600,2000
+Basement Dwelling,External Front and Back door,1600,2000
+Ground-floor apartment,External Front and Back door,1600,2000
+Maisonette,External Front and Back door,1600,2000
+Mid-floor apartment,External Front and Back door,1600,2000
+Top-floor apartment,External Front and Back door,1600,2000
+Mid-terrace house,External Front and Back door,1600,2000
+Semi-detached house,External Front and Back door,1600,2000
+End of terrace house,External Front and Back door,1600,2000
+House,External Front and Back door,1600,2000
+Detached house,External Front and Back door,1600,2000
+Apartment,Floor Insulation,3500,40
+Basement Dwelling,Floor Insulation,3500,40
+Ground-floor apartment,Floor Insulation,3500,40
+Maisonette,Floor Insulation,3500,40
+Mid-floor apartment,Floor Insulation,3500,40
+Top-floor apartment,Floor Insulation,3500,40
+Mid-terrace house,Floor Insulation,3500,40
+Semi-detached house,Floor Insulation,3500,40
+End of terrace house,Floor Insulation,3500,40
+House,Floor Insulation,3500,40
+Detached house,Floor Insulation,3500,40
+Apartment,Solar PV Grant,0,0
+Basement Dwelling,Solar PV Grant,0,0
+Ground-floor apartment,Solar PV Grant,0,0
+Maisonette,Solar PV Grant,0,0
+Mid-floor apartment,Solar PV Grant,0,0
+Top-floor apartment,Solar PV Grant,0,0
+Mid-terrace house,Solar PV Grant,1850,10550
+Semi-detached house,Solar PV Grant,2100,11100
+End of terrace house,Solar PV Grant,2100,10800
+House,Solar PV Grant,2100,12300
+Detached house,Solar PV Grant,2100,12300
+Apartment,Solar Hot Water,1200,2400
+Basement Dwelling,Solar Hot Water,1200,2400
+Ground-floor apartment,Solar Hot Water,1200,2400
+Maisonette,Solar Hot Water,1200,2400
+Mid-floor apartment,Solar Hot Water,1200,2400
+Top-floor apartment,Solar Hot Water,1200,2400
+Mid-terrace house,Solar Hot Water,1200,2400
+Semi-detached house,Solar Hot Water,1200,2400
+End of terrace house,Solar Hot Water,1200,2400
+House,Solar Hot Water,1200,2400
+Detached house,Solar Hot Water,1200,2400
+Apartment,Heat Pump Technical Assessment,200,
+Basement Dwelling,Heat Pump Technical Assessment,200,
+Ground-floor apartment,Heat Pump Technical Assessment,200,
+Maisonette,Heat Pump Technical Assessment,200,
+Mid-floor apartment,Heat Pump Technical Assessment,200,
+Top-floor apartment,Heat Pump Technical Assessment,200,
+Mid-terrace house,Heat Pump Technical Assessment,200,
+Semi-detached house,Heat Pump Technical Assessment,200,
+End of terrace house,Heat Pump Technical Assessment,200,
+House,Heat Pump Technical Assessment,200,
+Detached house,Heat Pump Technical Assessment,200,
+Apartment,Air to Water heat pump system,4500,8500
+Basement Dwelling,Air to Water heat pump system,4500,8500
+Ground-floor apartment,Air to Water heat pump system,4500,8500
+Maisonette,Air to Water heat pump system,4500,8500
+Mid-floor apartment,Air to Water heat pump system,4500,8500
+Top-floor apartment,Air to Water heat pump system,4500,8500
+Mid-terrace house,Air to Water heat pump system,6500,14500
+Semi-detached house,Air to Water heat pump system,6500,14500
+End of terrace house,Air to Water heat pump system,6500,14500
+House,Air to Water heat pump system,6500,14500
+Detached house,Air to Water heat pump system,6500,14500
+Apartment,Ground Source to Water heat pump system,4500,10000
+Basement Dwelling,Ground Source to Water heat pump system,4500,10000
+Ground-floor apartment,Ground Source to Water heat pump system,4500,10000
+Maisonette,Ground Source to Water heat pump system,4500,10000
+Mid-floor apartment,Ground Source to Water heat pump system,4500,10000
+Top-floor apartment,Ground Source to Water heat pump system,4500,10000
+Mid-terrace house,Ground Source to Water heat pump system,6500,20000
+Semi-detached house,Ground Source to Water heat pump system,6500,20000
+End of terrace house,Ground Source to Water heat pump system,6500,20000
+House,Ground Source to Water heat pump system,6500,20000
+Detached house,Ground Source to Water heat pump system,6500,20000
+Apartment,Exhaust Air to Water heat pump system,4500,8500
+Basement Dwelling,Exhaust Air to Water heat pump system,4500,8500
+Ground-floor apartment,Exhaust Air to Water heat pump system,4500,8500
+Maisonette,Exhaust Air to Water heat pump system,4500,8500
+Mid-floor apartment,Exhaust Air to Water heat pump system,4500,8500
+Top-floor apartment,Exhaust Air to Water heat pump system,4500,8500
+Mid-terrace house,Exhaust Air to Water heat pump system,6500,14500
+Semi-detached house,Exhaust Air to Water heat pump system,6500,14500
+End of terrace house,Exhaust Air to Water heat pump system,6500,14500
+House,Exhaust Air to Water heat pump system,6500,14500
+Detached house,Exhaust Air to Water heat pump system,6500,14500
+Apartment,Water to Water heat pump system,4500,8500
+Basement Dwelling,Water to Water heat pump system,4500,8500
+Ground-floor apartment,Water to Water heat pump system,4500,8500
+Maisonette,Water to Water heat pump system,4500,8500
+Mid-floor apartment,Water to Water heat pump system,4500,8500
+Top-floor apartment,Water to Water heat pump system,4500,8500
+Mid-terrace house,Water to Water heat pump system,6500,14500
+Semi-detached house,Water to Water heat pump system,6500,14500
+End of terrace house,Water to Water heat pump system,6500,14500
+House,Water to Water heat pump system,6500,14500
+Detached house,Water to Water heat pump system,6500,14500
+Apartment,Air to Air heat pump system,3500,7000
+Basement Dwelling,Air to Air heat pump system,3500,7000
+Ground-floor apartment,Air to Air heat pump system,3500,7000
+Maisonette,Air to Air heat pump system,3500,7000
+Mid-floor apartment,Air to Air heat pump system,3500,7000
+Top-floor apartment,Air to Air heat pump system,3500,7000
+Mid-terrace house,Air to Air heat pump system,3500,7000
+Semi-detached house,Air to Air heat pump system,3500,7000
+End of terrace house,Air to Air heat pump system,3500,7000
+House,Air to Air heat pump system,3500,7000
+Detached house,Air to Air heat pump system,3500,7000
+Apartment,Central Heating System for Heat Pump,1000,2000
+Basement Dwelling,Central Heating System for Heat Pump,1000,2000
+Ground-floor apartment,Central Heating System for Heat Pump,1000,2000
+Maisonette,Central Heating System for Heat Pump,1000,2000
+Mid-floor apartment,Central Heating System for Heat Pump,1000,2000
+Top-floor apartment,Central Heating System for Heat Pump,1000,2000
+Mid-terrace house,Central Heating System for Heat Pump,2000,2000
+Semi-detached house,Central Heating System for Heat Pump,2000,2000
+End of terrace house,Central Heating System for Heat Pump,2000,2000
+House,Central Heating System for Heat Pump,2000,2000
+Detached house,Central Heating System for Heat Pump,2000,2000
+Apartment,Heating Controls,700,2000
+Basement Dwelling,Heating Controls,700,2000
+Ground-floor apartment,Heating Controls,700,2000
+Maisonette,Heating Controls,700,2000
+Mid-floor apartment,Heating Controls,700,2000
+Top-floor apartment,Heating Controls,700,2000
+Mid-terrace house,Heating Controls,700,2000
+Semi-detached house,Heating Controls,700,2000
+End of terrace house,Heating Controls,700,2000
+House,Heating Controls,700,2000
+Detached house,Heating Controls,700,2000
+Apartment,Heat Pump Bonus,2000,
+Basement Dwelling,Heat Pump Bonus,2000,
+Ground-floor apartment,Heat Pump Bonus,2000,
+Maisonette,Heat Pump Bonus,2000,
+Mid-floor apartment,Heat Pump Bonus,2000,
+Top-floor apartment,Heat Pump Bonus,2000,
+Mid-terrace house,Heat Pump Bonus,2000,
+Semi-detached house,Heat Pump Bonus,2000,
+End of terrace house,Heat Pump Bonus,2000,
+House,Heat Pump Bonus,2000,
+Detached house,Heat Pump Bonus,2000,
+Apartment,Mechanical Ventilation,1500,2000
+Basement Dwelling,Mechanical Ventilation,1500,2000
+Ground-floor apartment,Mechanical Ventilation,1500,2000
+Maisonette,Mechanical Ventilation,1500,2000
+Mid-floor apartment,Mechanical Ventilation,1500,2000
+Top-floor apartment,Mechanical Ventilation,1500,2000
+Mid-terrace house,Mechanical Ventilation,1500,2000
+Semi-detached house,Mechanical Ventilation,1500,2000
+End of terrace house,Mechanical Ventilation,1500,2000
+House,Mechanical Ventilation,1500,2000
+Detached house,Mechanical Ventilation,1500,2000
+Apartment,Air Tightness,1000,2000
+Basement Dwelling,Air Tightness,1000,2000
+Ground-floor apartment,Air Tightness,1000,2000
+Maisonette,Air Tightness,1000,2000
+Mid-floor apartment,Air Tightness,1000,2000
+Top-floor apartment,Air Tightness,1000,2000
+Mid-terrace house,Air Tightness,1000,2000
+Semi-detached house,Air Tightness,1000,2000
+End of terrace house,Air Tightness,1000,2000
+House,Air Tightness,1000,2000
+Detached house,Air Tightness,1000,2000
+Apartment,Home Energy Assessment,350,
+Basement Dwelling,Home Energy Assessment,350,
+Ground-floor apartment,Home Energy Assessment,350,
+Maisonette,Home Energy Assessment,350,
+Mid-floor apartment,Home Energy Assessment,350,
+Top-floor apartment,Home Energy Assessment,350,
+Mid-terrace house,Home Energy Assessment,350,
+Semi-detached house,Home Energy Assessment,350,
+End of terrace house,Home Energy Assessment,350,
+House,Home Energy Assessment,350,
+Detached house,Home Energy Assessment,350,
+Apartment,Project Management,800,
+Basement Dwelling,Project Management,800,
+Ground-floor apartment,Project Management,800,
+Maisonette,Project Management,800,
+Mid-floor apartment,Project Management,800,
+Top-floor apartment,Project Management,800,
+Mid-terrace house,Project Management,1200,
+Semi-detached house,Project Management,1600,
+End of terrace house,Project Management,1600,
+House,Project Management,2000,
+Detached house,Project Management,2000,

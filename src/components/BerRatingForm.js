@@ -38,6 +38,7 @@ function BerRatingForm () {
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [properties, setProperties] = useState([]);
   const [isPropertyConfirmed, setIsPropertyConfirmed] = useState(false);
+  const [berRatingError, setBerRatingError] = useState(''); // For BER rating validation error message
 
   const navigate = useNavigate();
 
@@ -64,7 +65,24 @@ function BerRatingForm () {
     CO2Rating: 'CO2 Rating'
   };
 
+  // Validation function for BER Rating
+  const validateBerRating = () => {
+    if (!berRating.match(/^\d+(\.\d+)?$/)) {
+      setBerRatingError('Invalid BER Rating. Please enter a number. If decimal, use a dot (e.g., 150.5)');
+      return false;
+    }
+    setBerRatingError('');
+    return true;
+  };
+
+  const handleBerRatingChange = (e) => {
+    setBerRating(e.target.value);
+  };
+
   const handleSearch = () => {
+    // Ensure BER Rating is valid before searching
+    if (!validateBerRating()) return;
+
     // CSV is stored in public/data/data_leitrim.csv
     Papa.parse('/data/data_leitrim.csv', {
       download: true,
@@ -86,16 +104,17 @@ function BerRatingForm () {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (selectedProperty && isPropertyConfirmed) {
-      navigate('/suggestions', { state: { selectedProperty } });
-    } else {
+    if (!selectedProperty || !isPropertyConfirmed) {
       alert('Please select and confirm a property before submitting.');
+      return;
     }
+    navigate('/suggestions', { state: { selectedProperty } });
   };
 
   return (
       <form onSubmit={handleSubmit}>
         <div className="form-elements">
+          <p>Please fill out this form with details from your latest Building Energy Rating (BER) certificate.</p>
           <select value={selectedCounty} onChange={(e) => setSelectedCounty(e.target.value)}>
             <option value="">Select a County</option>
             {counties.map((county, index) => (
@@ -123,9 +142,11 @@ function BerRatingForm () {
           <input
               type="text"
               value={berRating}
-              onChange={(e) => setBerRating(e.target.value)}
-              placeholder="Enter BER Rating (e.g., 150.5)"
+              onChange={handleBerRatingChange}
+              onBlur={validateBerRating} // Validate when user leaves the input field
+              placeholder="Enter BER Rating (e.g., 150.50)"
           />
+          {berRatingError && <div className="error-message">{berRatingError}</div>}
           <div className="search-button-container">
             <button type="button" className="button-blue" onClick={handleSearch}>Search Properties</button>
           </div>
@@ -146,7 +167,7 @@ function BerRatingForm () {
                   ))}
                 </ul>
                 <div>
-                {selectedProperty && (
+                  {selectedProperty && (
                       <div className="property-card">
                         <h3>Selected Property Details:</h3>
                         <ul className="property-details">
@@ -167,7 +188,7 @@ function BerRatingForm () {
                         }} className="button-blue">Confirm Property
                         </button>
                       </div>
-                )}
+                  )}
                 </div>
               </div>
           )}

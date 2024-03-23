@@ -8,6 +8,7 @@ import About from './pages/about';
 import Contact from './pages/contact';
 import Faq from './pages/faq';
 import LoginPage from './pages/login';
+import ResetPassword from './pages/resetpassword';
 import SignupPage from './pages/signup';
 import BerPage from './pages/ber';
 import Suggestions from './pages/suggestions';
@@ -28,6 +29,7 @@ function App () {
                         <Route path="/contact" element={<Contact />} />
                         <Route path="/faq" element={<Faq />} />
                         <Route path="/login" element={<LoginPage />} />
+                        <Route path="/resetpassword" element={<ResetPassword />} />
                         <Route path="/signup" element={<SignupPage />} />
                         <Route path="/BerRatingForm" element={
                                 <ProtectedRoute>

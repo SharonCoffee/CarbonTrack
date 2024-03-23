@@ -5,16 +5,20 @@ import { useNavigate, Link } from 'react-router-dom'; // Import Link from react-
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  const handleLogin = async (event) => {
+    event.preventDefault();
     const auth = getAuth();
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      setLoginError(''); // If login is successful, clear any previous error messages
       navigate('/BerRatingForm'); // Navigate to the BerRating Form after login
     } catch (error) {
-      alert(error.message);
+      // If login fails, set an error message
+      setLoginError('Your email address or password is incorrect.');
     }
   };
 
@@ -36,6 +40,10 @@ const Login = () => {
                     placeholder="Password"
                     required
                 />
+                {loginError && <div className="error-message">{loginError}</div>}
+                <p>
+                    <Link to="/resetpassword">Forgot your password?</Link>
+                </p>
                 <button type="submit" className="login-button">Login</button>
             </form>
             <p>

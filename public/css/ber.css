@@ -123,6 +123,11 @@
     text-align: right; /* Aligns the text to the right of the block */
 }
 
+/* Error message styling */
+.error-message {
+    color: red;
+}
+
 /* Styling for form elements and the search button container */
 .form-elements,
 .search-button-container {

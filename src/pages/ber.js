@@ -17,11 +17,12 @@ const BerPage = () => {
     });
   };
   return (
-        <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', paddingRight: '20px', paddingTop: '20px' }}>
-                <button onClick={handleLogout}>Logout</button>
+        <div>
+            <div>
+                {/* Add this where you want your logout button to appear */}
+                <button type="button" className="button-blue" onClick={handleLogout}>Logout</button>
             </div>
-            <div style={{ flex: 1 }}>
+            <div>
                 <h1>Building Energy Rating (BER)</h1>
                 <BerRatingForm />
                 {/* You can add more components or information related to BER here */}

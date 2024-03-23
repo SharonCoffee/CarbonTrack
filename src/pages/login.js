@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { useNavigate, Link } from 'react-router-dom'; // Import Link from react-router-dom
+import { useNavigate, Link } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -14,16 +14,14 @@ const Login = () => {
     const auth = getAuth();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      setLoginError(''); // If login is successful, clear any previous error messages
-      navigate('/BerRatingForm'); // Navigate to the BerRating Form after login
+      navigate('/BerRatingForm');
     } catch (error) {
-      // If login fails, set an error message
       setLoginError('Your email address or password is incorrect.');
     }
   };
 
   return (
-        <div>
+        <div className="login-container">
             <h2>Login</h2>
             <form onSubmit={handleLogin} className="login-form">
                 <input
@@ -41,14 +39,13 @@ const Login = () => {
                     required
                 />
                 {loginError && <div className="error-message">{loginError}</div>}
-                <p>
-                    <Link to="/resetpassword">Forgot your password?</Link>
-                </p>
                 <button type="submit" className="login-button">Login</button>
             </form>
-            <p>
+            <div className="login-links">
+                <Link to="/resetpassword">Forgot your password?</Link>
+                <br />
                 Don&apos;t have an account? <Link to="/signup">Sign up</Link>
-            </p>
+            </div>
         </div>
   );
 };

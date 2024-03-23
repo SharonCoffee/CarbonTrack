@@ -1,146 +1,90 @@
-//* Card styling */
-.property-card {
+h1 {
+    flex: 1;
+}
+
+.form-elements {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #ffffff; /* Changed to pure white for a clean look */
-    border: 1px solid #ccc; /* Lighter border for subtleness */
-    border-top: 5px solid #4a90e2; /* Color for the top border remains */
-    border-radius: 8px; /* Slightly larger radius for modern look */
-    padding: 20px;
-    margin-bottom: 30px; /* More space between cards for clarity */
-    width: 90%; /* Controlled width for better readability */
-    max-width: 600px; /* Restricting maximum width for better alignment */
-    margin-left: auto; /* Center card horizontally */
-    margin-right: auto; /* Center card horizontally */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Softer shadow for depth */
+    gap: 20px; /* Adjust the space between form elements */
 }
 
-/* Table styling inside the card */
+/* General card styling */
+.property-card {
+    background-color: #ffffff; /* White background for cleanliness */
+    border: 1px solid #ddd; /* Light gray border */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    border-radius: 8px; /* Rounded corners for modern look */
+    margin: 30px auto; /* Center the card with margin */
+    padding: 20px; /* Padding inside the card */
+    width: 100%; /* Full width */
+    max-width: 400px; /* Max width to match the login form */
+}
+
+/* Table styling inside the card for property details */
 .property-card table {
-    width: 100%; /* Maintains full width of the card */
-    border-collapse: collapse; /* Ensure borders are merged */
+    width: 100%; /* Full width of the card */
     margin-top: 20px; /* Space above the table */
+    border-collapse: collapse; /* Remove space between table borders */
 }
 
 .property-card th, .property-card td {
-    border: 1px solid #ddd; /* Light grey border for less intrusiveness */
-    padding: 12px; /* More padding for readability */
-    text-align: left; /* Text alignment remains */
+    text-align: left; /* Align text to the left */
+    padding: 12px; /* Padding for cells */
+    border: 1px solid #ddd; /* Light gray border for cells */
 }
 
 .property-card th {
-    background-color: #4a90e2; /* Keeping blue background for headers */
-    color: #ffffff; /* White text for contrast */
+    background-color: #4a90e2; /* Blue background for header */
+    color: #ffffff; /* White text for readability */
 }
 
 .property-card tr:nth-child(even) {
-    background-color: #f9f9f9; /* Slightly changed color for modern look */
+    background-color: #f9f9f9; /* Zebra striping for rows */
 }
 
 .property-card tr:hover {
-    background-color: #efefef; /* Subtle hover effect */
+    background-color: #efefef; /* Hover effect for rows */
 }
 
-/* Card title styling */
-.property-card h2 {
-    margin-top: 0; /* Remove top margin */
-    color: #333; /* Darker color for emphasis */
-}
-
-/* Button styling */
+/* Styling for card titles and button consistency with login form */
+.property-card h2,
 .button-blue {
     background-color: #4a90e2; /* Blue background */
     color: white; /* White text */
     border: none;
-    border-radius: 20px; /* More rounded borders for modern buttons */
-    padding: 12px 25px; /* Slightly larger padding */
+    border-radius: 4px;
+    padding: 10px 20px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    display: inline-block; /* Ensuring button is only as wide as necessary */
-    text-align: center; /* Centering text */
-    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    transition: background-color 0.3s;
+    text-align: center;
+    width: 80%; /* Adjust width as necessary */
+    margin-top: 10px; /* Add some space above the button */
 }
 
 .button-blue:hover {
-    background-color: #357abd; /* Darker shade on hover for interaction feedback */
+    background-color: #357abd; /* Darker shade on hover */
 }
 
-/* Space between select boxes */
+
+/* Adjustments to select boxes to align with form styling */
 .select-box {
-    margin-bottom: 20px; /* More space below each select box for clarity */
-    width: 100%; /* Full width to match form layout */
-    padding: 10px; /* Sufficient padding for touch friendliness */
-    border-radius: 4px; /* Uniform rounded borders */
-    border: 1px solid #ccc; /* Lighter border for subtleness */
-    background-color: #f9f9f9; /* Slightly off-white background for differentiation */
+    width: 100%; /* Full width to align with the form */
+    padding: 10px; /* Adequate padding for touch */
+    margin-bottom: 20px; /* Space below each select for clarity */
+    border-radius: 4px; /* Rounded corners */
+    border: 1px solid #ccc; /* Subtle border */
+    background-color: #f9f9f9; /* Slight off-white for differentiation */
 }
 
-/* Style for the property list */
-.property-list {
-    list-style-type: none; /* Remove default list bullets */
-    padding: 0; /* Remove default padding */
-    margin: 0; /* Remove default margin */
-}
-
-.property-list li {
-    margin-bottom: 10px; /* Space between list items */
-    background-color: #f9f9f9; /* Optional: background color for each item */
-    padding: 10px; /* Padding inside each list item */
-    border-radius: 4px; /* Optional: rounded corners for the list items */
-}
-
-.property-list li .button-blue {
-    margin-left: 10px; /* Space between the text and the button */
-}
-
-/* Style for the list inside the card to display in two columns */
-.property-details {
-    list-style-type: none; /* Remove default list styling */
-    padding: 0; /* Remove default padding */
-    margin: 0; /* Remove default margin */
-    display: grid; /* Use grid layout */
-    grid-template-columns: repeat(2, 1fr); /* Two columns of equal width */
-    gap: 10px; /* Gap between grid items */
-}
-
-/* Style for the property details list items */
-.property-details li {
-    display: flex;
-    align-items: center; /* Aligns the label and value nicely */
-    margin-bottom: 10px; /* Space between list items */
-    background-color: #f9f9f9; /* Background color for each item */
-    padding: 10px; /* Padding inside each list item */
-    border-radius: 4px; /* Rounded corners for the list items */
-}
-
-.property-details strong {
-    font-weight: bold; /* Emphasize the labels */
-    color: #4a90e2; /* Color matching the theme */
-    min-width: 140px; /* Minimum width for labels to ensure alignment */
-    margin-right: 10px; /* Space between label and value */
-    display: inline-block; /* Allows setting a width */
-    text-align: right; /* Aligns the text to the right of the block */
-}
-
-/* Error message styling */
+/* Error message styling for consistency */
 .error-message {
-    color: red;
+    color: red; /* Error message in red */
+    text-align: center; /* Centered text for visibility */
+    margin-top: 10px; /* Space above the error message */
 }
 
-/* Styling for form elements and the search button container */
-.form-elements,
-.search-button-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px; /* More distinct separation between elements */
-    width: 100%; /* Ensure full width for alignment */
-}
-
-.search-button-container {
-    margin-top: 30px; /* More distinct separation from form elements */
-}
+/* Additional styling as required to match login form aesthetics */
 
 
 

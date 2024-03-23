@@ -195,8 +195,8 @@ function BerRatingForm () {
 
         </div>
       </form>
-  )
-  ;
+
+  );
 }
 
 export default BerRatingForm;

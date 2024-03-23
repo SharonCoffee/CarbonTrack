@@ -1,56 +1,55 @@
 import React, { useState } from 'react';
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom'; // Add this line to import useNavigate
 
 function ResetPassword () {
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [passwordMismatchError, setPasswordMismatchError] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
+  const auth = getAuth();
 
-  const handleResetPassword = (error) => {
-    error.preventDefault();
-    if (password !== confirmPassword) {
-      setPasswordMismatchError(true);
-    } else {
-      // Proceed with the password reset logic here
-      console.log('Password successfully reset.');
+  const navigate = useNavigate(); // Instantiate useNavigate for navigation
+
+  const handleResetPassword = async (event) => {
+    event.preventDefault();
+    setError(''); // Clear any existing errors
+
+    if (!email) {
+      setError('Please enter your email address.');
+      return;
+    }
+
+    // Check if the email contains the '@' symbol
+    if (!email.includes('@')) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      alert('Please check your email to reset your password.'); // Notify user to check their email
+    } catch (error) {
+      // Here you handle errors and set them so they can be displayed
+      setError('Failed to send password reset email. Please make sure your email is correct and try again.');
     }
   };
 
   return (
-        <div className="reset-password-form">
+        <div className="reset-password-container">
             <h2>Reset Your Password</h2>
-            <form onSubmit={handleResetPassword}>
-                <label>
-                    New Password:
-                    <input
-                        type={showPassword ? 'text' : 'password'}
-                        value={password}
-                        onChange={(error) => setPassword(error.target.value)}
-                    />
-                </label>
-                <label>
-                    Confirm New Password:
-                    <input
-                        type={showPassword ? 'text' : 'password'}
-                        value={confirmPassword}
-                        onChange={(error) => setConfirmPassword(error.target.value)}
-                    />
-                </label>
-                <label>
-                    Show Password
-                    <input
-                        type="checkbox"
-                        checked={showPassword}
-                        onChange={() => setShowPassword(!showPassword)}
-                    />
-                </label>
-                <button type="submit">Reset Password</button>
-                {passwordMismatchError && (
-                    <div className="error-message">
-                        Your passwords do not match. Please try again.
-                    </div>
+            <form onSubmit={handleResetPassword} className="reset-password-form">
+                <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email address"
+                />
+                <button type="submit">Send Reset Email</button>
+                {error && (
+                    <div className="error-message">{error}</div>
                 )}
             </form>
+            <p>Or</p>
+            <button className="return-login-button" onClick={() => navigate('/login')}>Return to Login</button>
         </div>
   );
 }

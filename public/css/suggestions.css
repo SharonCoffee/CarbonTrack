@@ -1,5 +1,284 @@
-/* Style for the U-values card */
-.u-values-card {
+/* General styling for the suggestions page */
+.properties-container, .new-energy-rating-container, .optional-table-container, .u-values-table-container {
+    align-items: center; /* Center everything */
+    justify-content: center; /* Center horizontally for flex containers */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%; /* Adjust based on your layout */
+    margin: auto;
+}
+
+.optional-table, .u-values-table {
+    width: 100%; /* Full width */
+    max-width: 600px; /* Max width to match other form elements */
+    margin: 20px auto; /* Center the table */
+    border-collapse: collapse; /* Ensures no gaps between cells */
+}
+
+.optional-table th, .optional-table td, .u-values-table th, .u-values-table td {
+    text-align: center; /* Center text for all */
+    padding: 12px; /* Consistent padding */
+}
+
+
+/* Selected Property Table styling */
+.properties-container h3 {
+    text-align: center; /* Center the text within the h3 */
+    margin-top: 20px; /* Space above the heading */
+    margin-bottom: 20px; /* Space below the heading */
+    color: #4a90e2; /* Blue color for heading */
+    width: 100%; /* Ensure full width to maintain center alignment */
+}
+
+.properties-table {
+    width: auto; /* Table width */
+    max-width: 600px; /* Maximum width of the table */
+    border-collapse: collapse; /* Collapse borders */
+    margin-top: 20px; /* Space above the table */
+    margin-bottom: 20px; /* Space below the table */
+    border: 1px solid #ddd; /* Grey border */
+}
+
+.properties-table th, .properties-table td {
+    text-align: left; /* Align text to the left */
+    padding: 10px; /* Padding for cells */
+    border: 1px solid #ddd; /* Light gray border for cells */
+}
+
+.properties-table th {
+    background-color: #4a90e2; /* Blue background for header */
+    color: #ffffff; /* White text for readability */
+}
+
+.properties-table td {
+    background-color: #f5f5dc; /* Cream color for table cells */
+}
+
+.properties-table tr:hover {
+    background-color: #f0ead6; /* Slightly darker cream for row hover */
+}
+
+
+/* Container for the new energy rating section */
+.new-energy-rating-container {
+    background-color: #ffffff; /* White background for cleanliness */
+    border: 1px solid #ddd; /* Light gray border */
+    gap: 15px; /* Same gap as in login-form for consistency */
+    max-width: 80%; /* Max-width */
+    padding: 20px; /* Padding inside the container */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+    border-radius: 8px; /* Rounded corners for modern look */
+}
+
+/* Styling for titles and paragraphs inside the new energy rating container */
+.new-energy-rating-container h2 {
+    color: #4a90e2; /* Blue color for title */
+    margin-bottom: 20px; /* Space below the title */
+}
+
+.new-energy-rating-container p {
+    text-align: justify; /* Justify text for better readability */
+    font-size: medium; /* Medium font size for paragraphs */
+    margin-bottom: 20px; /* Space below the paragraph */
+}
+
+/* Styling for the select box in line with the ber.css styling */
+.new-energy-rating-container select {
+    width: 100%; /* Width to take full container width */
+    max-width: 300px; /* Maximum width for better readability */
+    padding: 10px; /* Adequate padding for touch interaction */
+    border: 1px solid #ddd; /* Subtle border */
+    border-radius: 4px; /* Rounded corners */
+    margin-bottom: 20px; /* Space below the select box for clarity */
+}
+
+/* Styling for buttons inside the new energy rating container to match ber.css */
+.new-energy-rating-container .button-blue {
+    background-color: #4a90e2; /* Blue background */
+    color: white; /* White text */
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: block; /* Make the button block level for full width */
+    width: auto; /* Auto width based on content */
+    text-align: center;
+    margin: 0 auto; /* Center the button horizontally */
+    margin-top: 10px; /* Space above the button */
+}
+
+.new-energy-rating-container .button-blue:hover {
+    background-color: #357abd; /* Darker shade on hover */
+}
+
+/* U-values color coding based on selected energy rating */
+.u-value-target-a { /* For A1, A2, A3 ratings */
+    background-color: #006400; /* Dark green */
+    color: white; /* White text */
+}
+
+.u-value-target-b { /* For B1, B2 ratings */
+    background-color: #008000; /* Green */
+    color: white; /* White text */
+}
+
+/* Styling for the energy rating selection block */
+.energy-rating-select {
+    display: block;
+    width: 100%; /* Full width */
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+/* Dynamic background color for energy rating select based on value */
+.energy-rating-select.a-rating {
+    background-color: #006400; /* Dark green for A ratings */
+    color: white;
+}
+
+/* Dynamic background color for energy rating select based on value */
+.energy-rating-select.b-rating {
+    background-color: #008000; /* Green for B ratings */
+    color: white;
+}
+
+
+/* Style for the U-values table */
+.u-values-table-container {
+    background-color: #ffffff; /* White background for cleanliness */
+    border: 1px solid #ddd; /* Light gray border */
+    gap: 15px; /* Same gap as in login-form for consistency */
+    max-width: 80%; /* Max-width */
+    padding: 20px; /* Padding inside the container */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+    border-radius: 8px; /* Rounded corners for modern look */
+}
+
+.u-values-table-container h2 {
+    color: #4a90e2; /* Blue color for the title */
+    margin-top: 20px; /* Space above the title */
+    margin-bottom: 20px; /* Space below the title */
+}
+
+.u-values-table-container p {
+    text-align: justify; /* Justify text for better readability */
+    font-size: medium; /* Medium font size for paragraphs */
+    margin-bottom: 20px; /* Space below the paragraph */
+}
+
+.u-values-table {
+    border: 1px solid #ddd; /* Light grey border */
+    width: 100%; /* Adjust width */
+    max-width: 80%; /* Adjust max-width for better alignment, match with your other form elements width */
+    align-content: center; /* Center the table */
+    margin: 30px auto; /* Center the table with margin */
+    margin-top: 20px; /* Space above the table */
+    border-collapse: collapse; /* Remove gaps between cells */
+    overflow: hidden; /* Ensures the border-radius affects the table too */
+}
+
+.u-values-table th, .u-values-table td {
+    text-align: left; /* Align text to the left */
+    padding: 12px; /* More padding for larger table */
+    vertical-align: top; /* Align to top for better readability */
+}
+
+.u-values-table th {
+    background-color: #4a90e2 !important; /* Blue background for headers */
+    color: white !important; /* White text for headers */
+    text-align: center; /* Center the text */
+    padding: 12px; /* Adjust padding to match the rest of your table styles */
+    font-size: 1rem; /* Standard font size for headers */
+}
+
+.u-values-table td {
+    border-bottom: 2px solid #e0e0e0; /* Slightly thicker bottom border for separation */
+    color: #333; /* Darker text color for contrast */
+}
+
+
+/* Update to existing U-values table styling */
+.u-values-table td.value-cell { /* Style for cells containing the UValue */
+    font-weight: 600; /* Make the UValue stand out */
+}
+
+/* Additional styles for U-values traffic light system */
+.u-value-high { /* For values higher than the threshold */
+    background-color: #cc0000 !important; /* Darker red for the background */
+    color: #ffffff !important; /* White for the text */
+}
+
+.u-value-medium { /* For values equal to the threshold */
+    background-color: #ffa255 !important; /* Darker orange for the background */
+    color: #ffffff !important; /* White amber for the text */
+}
+
+.u-value-low { /* For values lower than the threshold */
+    background-color: #008000 !important; /* Darker green for the background */
+    color: #ffffff !important; /* White for the text */
+}
+
+/* Style for the optional table */
+.optional-table-container {
+    background-color: #ffffff; /* White background for cleanliness */
+    border: 1px solid #ddd; /* Light gray border */
+    gap: 15px; /* Same gap as in login-form for consistency */
+    max-width: 80%; /* Max-width */
+    padding: 20px; /* Padding inside the container */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+    border-radius: 8px; /* Rounded corners for modern look */
+}
+
+.optional-table h2 {
+    color: #4a90e2; /* Blue color for the title */
+    margin-top: 20px; /* Space above the title */
+    margin-bottom: 20px; /* Space below the title */
+}
+
+.optional-table p {
+    text-align: justify; /* Justify text for better readability */
+    font-size: medium; /* Medium font size for paragraphs */
+    margin-bottom: 20px; /* Space below the paragraph */
+}
+
+.optional-table {
+    width: 100%; /* Adjust width */
+    max-width: 200px; /* Adjust max-width for better alignment, match with your other form elements width */
+    align-content: center; /* Center the table */
+    margin: 30px auto; /* Center the table with margin */
+    border-collapse: collapse; /* Remove gaps between cells */
+    overflow: hidden; /* Ensures the border-radius affects the table too */
+}
+
+.optional-table th, .optional-table td {
+    text-align: left; /* Align text to the left */
+    margin-top: -5px; /* Adjust margin for better alignment */
+    padding: 10px; /* Reduced padding for cells to match */
+    border: 1px solid #ddd; /* Light grey border */
+    vertical-align: middle; /* Center content vertically */
+}
+
+.optional-table th {
+    background-color: #4a90e2; /* Blue background for the header */
+    color: white; /* White text for readability */
+    font-size: 1rem; /* Appropriate font size for headers */
+}
+
+.optional-table td {
+    background-color: #ffffff; /* Cream color for table cells, can change if you want a different background */
+}
+
+.optional-table {
+    margin: auto; /* Ensures the table is centered */
+}
+
+
+/* Style for the Improvement Estimates */
+.improvement-estimates {
     background-color: #ffffff; /* White background for the card */
     border: 1px solid #e0e0e0; /* Light grey border */
     border-top: 4px solid #4a90e2; /* Blue top border */
@@ -13,48 +292,52 @@
     display: block; /* Ensure it's a block for centering */
 }
 
-.u-values-card p {
+.improvement-estimates h2 {
+    color: #4a90e2; /* Blue color for the title */
+    margin-bottom: 20px; /* Space below the title */
+}
+
+.improvement-estimates p {
     font-size: 1.2rem; /* Slightly larger font size */
     line-height: 1.6; /* Improved line height for readability */
     color: #333; /* Darker text for better readability */
 }
 
-.u-values-card p strong {
+.improvement-estimates p strong {
     font-weight: 600; /* Slightly less bold than full bold for subtlety */
 }
 
-/* Style for the U-values explanations text */
-.u-value-explanation {
-    font-size: 1rem; /* Standard text size */
-    color: #555; /* Softer dark color */
-    margin-top: 10px; /* More space above the text */
-    margin-bottom: 20px; /* More space below the text */
-}
-
-/* Style for the U-values table */
-.u-values-table {
-    width: calc(100% - 40px); /* Account for padding */
-    margin-top: 20px; /* Space above the table */
+.improvements-table {
+    border: 1px solid #ddd; /* Light grey border */
+    width: 100%; /* Full width for responsiveness */
+    max-width: 80%; /* Maximum width for better alignment */
+    align-content: center; /* Center the table */
+    margin: 20px; /* Space around the table */
     border-collapse: collapse; /* Remove gaps between cells */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+    margin-top: 20px; /* Space above the table */
+    overflow: hidden; /* Ensures the border-radius affects the table too */
 }
 
-.u-values-table th, .u-values-table td {
+.improvements-table th, .improvements-table td {
     text-align: left; /* Align text to the left */
     padding: 12px; /* More padding for larger table */
     vertical-align: top; /* Align to top for better readability */
 }
 
-.u-values-table th {
+.improvements-table th {
     background-color: #4a90e2; /* Blue background for headers */
     color: white; /* White text for headers */
+    text-align: center; /* Center the text */
+    padding: 12px; /* Adjust padding to match the rest of your table styles */
     font-size: 1rem; /* Standard font size for headers */
 }
 
-.u-values-table td {
+.improvements-table td {
     border-bottom: 2px solid #e0e0e0; /* Slightly thicker bottom border for separation */
     color: #333; /* Darker text color for contrast */
 }
+
+
 
 /* Styling for buttons */
 .button-blue {
@@ -76,30 +359,4 @@
     transform: scale(1.05); /* Slightly larger on hover for interaction feedback */
 }
 
-/* Additional styles for U-values traffic light system */
-.u-value-high { /* For values higher than the threshold */
-    background-color: #cc0000 !important; /* Darker red for the background */
-    color: #ffffff !important; /* White for the text */
 
-}
-
-.u-value-medium { /* For values equal to the threshold */
-    background-color: #ffa255 !important; /* Darker orange for the background */
-    color: #ffffff !important; /* White amber for the text */
-}
-
-.u-value-low { /* For values lower than the threshold */
-    background-color: #008000 !important; /* Darker green for the background */
-    color: #ffffff !important; /* White for the text */
-}
-
-/* Update to existing U-values table styling */
-.u-values-table td.value-cell { /* Style for cells containing the UValue */
-    font-weight: 600; /* Make the UValue stand out */
-}
-
-/* Update for better visibility of explanations */
-.u-value-explanation {
-    font-size: 0.9rem; /* Slightly smaller text size for explanations */
-    padding-left: 20px; /* Indent text for hierarchy */
-}

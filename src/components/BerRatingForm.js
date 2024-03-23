@@ -68,7 +68,7 @@ function BerRatingForm () {
   // Validation function for BER Rating
   const validateBerRating = () => {
     if (!berRating.match(/^\d+(\.\d+)?$/)) {
-      setBerRatingError('Invalid BER Rating. Please enter a number. If decimal, use a dot (e.g., 150.5)');
+      setBerRatingError('Invalid BER Rating. Please enter a number. If decimal, use a dot (e.g., 150.50)');
       return false;
     }
     setBerRatingError('');

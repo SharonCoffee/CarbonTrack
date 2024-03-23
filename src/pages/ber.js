@@ -20,7 +20,7 @@ const BerPage = () => {
         <div>
             <div>
                 {/* Add this where you want your logout button to appear */}
-                <button type="button" className="button-blue" onClick={handleLogout}>Logout</button>
+                <button type="button" className="logout-button" onClick={handleLogout}>Logout</button>
             </div>
             <div>
                 <h1>Building Energy Rating (BER)</h1>

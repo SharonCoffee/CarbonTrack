@@ -112,90 +112,111 @@ function BerRatingForm () {
   };
 
   return (
-      <form onSubmit={handleSubmit}>
-        <div className="form-elements">
-          <p>Please fill out this form with details from your latest Building Energy Rating (BER) certificate.</p>
-          <select value={selectedCounty} onChange={(e) => setSelectedCounty(e.target.value)}>
-            <option value="">Select a County</option>
-            {counties.map((county, index) => (
-                <option key={index} value={county}>{county}</option>
-            ))}
-          </select>
-          <select value={propertyType} onChange={(e) => setPropertyType(e.target.value)}>
-            <option value="">Select Property Type</option>
-            {propertyTypes.map((type, index) => (
-                <option key={index} value={type}>{type}</option>
-            ))}
-          </select>
-          <select value={constructionYear} onChange={(e) => setConstructionYear(e.target.value)}>
-            <option value="">Select Construction Year</option>
-            {constructionYears.map((year, index) => (
-                <option key={index} value={year}>{year}</option>
-            ))}
-          </select>
-          <select value={energyRating} onChange={(e) => setEnergyRating(e.target.value)}>
-            <option value="">Select Energy Rating</option>
-            {energyRatings.map((rating, index) => (
-                <option key={index} value={rating}>{rating}</option>
-            ))}
-          </select>
-          <input
-              type="text"
-              value={berRating}
-              onChange={handleBerRatingChange}
-              onBlur={validateBerRating} // Validate when user leaves the input field
-              placeholder="Enter BER Rating (e.g., 150.50)"
-          />
-          {berRatingError && <div className="error-message">{berRatingError}</div>}
-          <div className="search-button-container">
-            <button type="button" className="button-blue" onClick={handleSearch}>Search Properties</button>
+      <>
+        <form onSubmit={handleSubmit}>
+          <div className="form-elements">
+            <p>Please fill out this form with details from your latest Building Energy Rating (BER) certificate.</p>
+            <select value={selectedCounty} onChange={(e) => setSelectedCounty(e.target.value)}>
+              <option value="">Select a County</option>
+              {counties.map((county, index) => (
+                  <option key={index} value={county}>{county}</option>
+              ))}
+            </select>
+            <select value={propertyType} onChange={(e) => setPropertyType(e.target.value)}>
+              <option value="">Select Property Type</option>
+              {propertyTypes.map((type, index) => (
+                  <option key={index} value={type}>{type}</option>
+              ))}
+            </select>
+            <select value={constructionYear} onChange={(e) => setConstructionYear(e.target.value)}>
+              <option value="">Select Construction Year</option>
+              {constructionYears.map((year, index) => (
+                  <option key={index} value={year}>{year}</option>
+              ))}
+            </select>
+            <select value={energyRating} onChange={(e) => setEnergyRating(e.target.value)}>
+              <option value="">Select Energy Rating</option>
+              {energyRatings.map((rating, index) => (
+                  <option key={index} value={rating}>{rating}</option>
+              ))}
+            </select>
+            <input
+                type="text"
+                value={berRating}
+                onChange={handleBerRatingChange}
+                onBlur={validateBerRating} // Validate when user leaves the input field
+                placeholder="Enter BER Rating (e.g., 150.50)"
+            />
+            {berRatingError && <div className="error-message">{berRatingError}</div>}
+            <div className="search-button-container">
+              <button type="button" className="button-blue" onClick={handleSearch}>Search Properties</button>
+            </div>
           </div>
+        </form>
 
-          {/* Result properties list */}
-          {properties && properties.length > 0 && (
-              <div>
-                <ul className="property-list">
-                  {properties.map((property, index) => (
-                      <li key={index}>
-                        {property.PropertyID}: {property.DwellingTypeDescr} - {property.BerRating}
+        {/* Result properties list */}
+        {properties && properties.length > 0 && (
+            <div className="properties-container">
+              <h3>Properties Found</h3>
+              <table className="properties-table">
+                <thead>
+                <tr>
+                  <th>Property ID</th>
+                  <th>Dwelling Type</th>
+                  <th>Year of Construction</th>
+                  <th>Energy Rating</th>
+                  <th>BER Rating</th>
+                  <th>Select</th>
+                </tr>
+                </thead>
+                <tbody>
+                {properties.map((property, index) => (
+                    <tr key={index}>
+                      <td>{property.PropertyID}</td>
+                      <td>{property.DwellingTypeDescr}</td>
+                      <td>{property.Year_of_Construction}</td>
+                      <td>{property.EnergyRating}</td>
+                      <td>{property.BerRating}</td>
+                      <td>
                         <button type="button" className="button-blue" onClick={() => {
                           setSelectedProperty(property);
                           setIsPropertyConfirmed(false);
                         }}>Select
                         </button>
-                      </li>
-                  ))}
-                </ul>
-                <div>
-                  {selectedProperty && (
-                      <div className="property-card">
-                        <h3>Selected Property Details:</h3>
-                        <ul className="property-details">
-                          {Object.keys(selectedProperty)
-                            .filter(key => propertyLabels[key]) // Only include keys that are in the mapping
-                            .map((key, index) => (
-                                  <li key={index}>
-                                    <strong>{propertyLabels[key]}:</strong> {selectedProperty[key]}
-                                  </li>
-                            ))}
-                        </ul>
-                        <button type="submit" onClick={() => {
-                          const confirmSelection = window.confirm('Are you sure this is the correct property?');
-                          if (confirmSelection) {
-                            setIsPropertyConfirmed(true);
-                            navigate('/suggestions', { state: { selectedProperty } });
-                          }
-                        }} className="button-blue">Confirm Property
-                        </button>
-                      </div>
-                  )}
-                </div>
+                      </td>
+                    </tr>
+                ))}
+                </tbody>
+              </table>
+              <div>
+                {selectedProperty && (
+                    <div className="property-select-card">
+                      <h3>Selected Property Details</h3>
+                      <ul className="property-details">
+                        {Object.keys(selectedProperty)
+                          .filter(key => propertyLabels[key]) // Only include keys that are in the mapping
+                          .map((key, index) => (
+                                <li key={index}>
+                                  <strong>{propertyLabels[key]}:</strong> {selectedProperty[key]}
+                                </li>
+                          ))}
+                      </ul>
+                      <button type="submit" onClick={() => {
+                        const confirmSelection = window.confirm('Are you sure this is the correct property?');
+                        if (confirmSelection) {
+                          setIsPropertyConfirmed(true);
+                          navigate('/suggestions', { state: { selectedProperty } });
+                        }
+                      }} className="button-blue">Confirm Property
+                      </button>
+                    </div>
+                )}
               </div>
-          )}
 
-        </div>
-      </form>
+            </div>
 
+        )}
+      </>
   );
 }
 

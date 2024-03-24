@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Papa from 'papaparse';
 
 function SuggestionsPage () {
+  const navigate = useNavigate(); // Initialize the useNavigate hook
   const location = useLocation();
+
   const selectedProperty = location.state ? location.state.selectedProperty : null;
   const selectedDwellingType = useState('');
   const [newEnergyRating, setNewEnergyRating] = useState('');
@@ -17,6 +19,9 @@ function SuggestionsPage () {
   const [windowQuantity, setWindowQuantity] = useState(1);
   const [BackDoorQuantity, setBackDoorQuantity] = useState(1);
   const [FrontDoorQuantity, setFrontDoorQuantity] = useState(1);
+  const [totalEstimatedCost, setTotalEstimatedCost] = useState(0);
+  const [totalGrant, setTotalGrant] = useState(0);
+  const [totalCostToHomeowner, setTotalCostToHomeowner] = useState(0);
 
   const availableRatings = selectedProperty && ['A1', 'A2', 'A3', 'B1', 'B2'].filter(rating => rating !== selectedProperty.EnergyRating && rating < selectedProperty.EnergyRating);
 
@@ -68,6 +73,33 @@ function SuggestionsPage () {
     // Logic to calculate predicted results based on new U-values
     console.log('New U-Values submitted:', selectedUValues);
     // You might want to set some results state here based on the new U-values
+  };
+
+  const handleCheckboxChange = (e, improvement, cost, grant) => {
+    if (e.target.checked) {
+      setTotalEstimatedCost(prevTotal => prevTotal + cost);
+      setTotalGrant(prevTotal => {
+        // Calculate the new potential total grant
+        const newTotalGrant = prevTotal + grant;
+        // Ensure total grant does not exceed 50% of the updated total estimated cost
+        return Math.min(newTotalGrant, (prevTotal + cost) * 0.5);
+      });
+      setTotalCostToHomeowner(prevTotal => prevTotal + Math.max(0, cost - grant));
+    } else {
+      setTotalEstimatedCost(prevTotal => {
+        const newTotalEstimatedCost = prevTotal - cost;
+        return Math.max(0, newTotalEstimatedCost); // Prevent total estimated cost from going below 0
+      });
+      setTotalGrant(prevTotal => {
+        const newTotalGrant = prevTotal - grant;
+        // Prevent total grant from going below 0 and ensure it does not exceed 50% of the new total estimated cost
+        return Math.max(0, Math.min(newTotalGrant, (prevTotal - cost) * 0.5));
+      });
+      setTotalCostToHomeowner(prevTotal => {
+        const newTotalCost = Math.max(0, (prevTotal - cost) - Math.max(0, prevTotal - grant));
+        return Math.max(0, newTotalCost); // Prevent total cost to homeowner from going below 0
+      });
+    }
   };
 
   useEffect(() => {
@@ -210,6 +242,15 @@ function SuggestionsPage () {
                 </table>
               </div>
           )}
+        </div>
+        <div className="return-button-container">
+          <button
+              type="button"
+              className="button-blue return-to-form"
+              onClick={() => navigate('/BerRatingForm')} // Adjust the path as necessary
+          >
+            Start New Property Search
+          </button>
         </div>
         <div className="new-energy-rating-container">
           <h2>Select new energy rating category to compare your existing U-Values</h2>
@@ -410,24 +451,25 @@ function SuggestionsPage () {
         </div>
 
         <div className="improvements-table-container">
-          <h2>Improvement Estimates</h2>
-            <p>
-                Based on the selected improvements, the estimated costs and potential grants are displayed below.
-                The estimated costs are based on the average costs for each improvement, while the potential grants
-                are based on the SEAI grants available for each improvement.
-                The total estimated cost and potential grants are also displayed.
-                The estimated savings are based on the energy savings from the improvements and the potential grants
-                received.
-            </p>
+          <h2>Improvement Estimates for {selectedProperty.DwellingTypeDescr}</h2>
+          <p>
+            Based on the selected improvements, the estimated costs and potential grants are displayed below.
+            The estimated costs are based on the average costs for each improvement, while the potential grants
+            are based on the SEAI grants available for each improvement.
+            The total estimated cost and potential grants are also displayed.
+            The estimated savings are based on the energy savings from the improvements and the potential grants
+            received.
+          </p>
           <table className="improvements-table">
             <thead>
             <tr>
               <th>Improvement</th>
               <th>Quantity</th>
               <th>Estimated Works Cost</th>
-              <th>Available SEAI Grant</th>
+              <th>Maximum Available SEAI Grant*</th>
+              <th>Recalculated SEAI Grant</th>
               <th>Estimated Cost to Homeowner</th>
-              <th>Apply for Grant</th>
+              <th>Select items to apply for grants</th>
             </tr>
             </thead>
             <tbody>
@@ -437,28 +479,46 @@ function SuggestionsPage () {
                     <td>Cavity Wall Insulation</td>
                     <td>{wallInsulationQuantity} m²</td>
                     <td>€{(improvementCosts.WallCavityInsulation * wallInsulationQuantity).toFixed(2)}</td>
-                    <td>€{availableGrants.WallCavityGrant}</td>
-                    <td>€{Math.max(0, (improvementCosts.WallCavityInsulation * wallInsulationQuantity) - availableGrants.WallCavityGrant).toFixed(2)}</td>
-                    <td><a href="https://www.seai.ie/grants/home-energy-grants/insulation-grants/" target="_blank"
-                           rel="noopener noreferrer" className="button-blue">Apply</a></td>
+                    <td>€{availableGrants.WallCavityGrant}*</td>
+                    <td>€{Math.min(availableGrants.WallCavityGrant, (improvementCosts.WallCavityInsulation * wallInsulationQuantity) / 2).toFixed(2)}</td>
+                    <td>€{Math.max(0, (improvementCosts.WallCavityInsulation * wallInsulationQuantity) - Math.min(availableGrants.WallCavityGrant, (improvementCosts.WallCavityInsulation * wallInsulationQuantity) / 2)).toFixed(2)}</td>
+                    <td>
+                      <div className="checkbox-container">
+                        <input type="checkbox" id="applyCavityWallInsulation" name="applyCavityWallInsulationGrant"
+                               onChange={(e) => handleCheckboxChange(e, 'WallCavityInsulation', improvementCosts.WallCavityInsulation * wallInsulationQuantity, availableGrants.WallCavityGrant)}/>
+                        <label htmlFor="applyCavityWallInsulation">Select</label>
+                      </div>
+                    </td>
                   </tr>
                   <tr>
                     <td>Internal Wall Insulation</td>
                     <td>{wallInsulationQuantity} m²</td>
                     <td>€{(improvementCosts.WallInternalInsulation * wallInsulationQuantity).toFixed(2)}</td>
-                    <td>€{availableGrants.WallInternalGrant}</td>
-                    <td>€{Math.max(0, (improvementCosts.WallInternalInsulation * wallInsulationQuantity) - availableGrants.WallInternalGrant).toFixed(2)}</td>
-                    <td><a href="https://www.seai.ie/grants/home-energy-grants/insulation-grants/" target="_blank"
-                           rel="noopener noreferrer" className="button-blue">Apply</a></td>
+                    <td>€{availableGrants.WallInternalGrant}*</td>
+                    <td>€{Math.min(availableGrants.WallInternalGrant, (improvementCosts.WallInternalInsulation * wallInsulationQuantity) / 2).toFixed(2)}</td>
+                    <td>€{Math.max(0, (improvementCosts.WallInternalInsulation * wallInsulationQuantity) - Math.min(availableGrants.WallInternalGrant, (improvementCosts.WallInternalInsulation * wallInsulationQuantity) / 2)).toFixed(2)}</td>
+                    <td>
+                      <div className="checkbox-container">
+                        <input type="checkbox" id="applyInternalWallInsulation" name="applyInternalWallInsulationGrant"
+                               onChange={(e) => handleCheckboxChange(e, 'WallInternalInsulation', improvementCosts.WallInternalInsulation * wallInsulationQuantity, availableGrants.WallInternalGrant)}/>
+                        <label htmlFor="applyInternalWallInsulation">Select</label>
+                      </div>
+                    </td>
                   </tr>
                   <tr>
                     <td>External Wall Insulation</td>
                     <td>{wallInsulationQuantity} m²</td>
                     <td>€{(improvementCosts.WallExternalInsulation * wallInsulationQuantity).toFixed(2)}</td>
-                    <td>€{availableGrants.WallExternalGrant}</td>
-                    <td>€{Math.max(0, (improvementCosts.WallExternalInsulation * wallInsulationQuantity) - availableGrants.WallExternalGrant).toFixed(2)}</td>
-                    <td><a href="https://www.seai.ie/grants/home-energy-grants/insulation-grants/" target="_blank"
-                           rel="noopener noreferrer" className="button-blue">Apply</a></td>
+                    <td>€{availableGrants.WallExternalGrant}*</td>
+                    <td>€{Math.min(availableGrants.WallExternalGrant, (improvementCosts.WallExternalInsulation * wallInsulationQuantity) / 2).toFixed(2)}</td>
+                    <td>€{Math.max(0, (improvementCosts.WallExternalInsulation * wallInsulationQuantity) - Math.min(availableGrants.WallExternalGrant, (improvementCosts.WallExternalInsulation * wallInsulationQuantity) / 2)).toFixed(2)}</td>
+                    <td>
+                      <div className="checkbox-container">
+                        <input type="checkbox" id="applyExternalWallInsulation" name="applyExternalWallInsulationGrant"
+                               onChange={(e) => handleCheckboxChange(e, 'WallExternalInsulation', improvementCosts.WallExternalInsulation * wallInsulationQuantity, availableGrants.WallExternalGrant)}/>
+                        <label htmlFor="applyExternalWallInsulation">Select</label>
+                      </div>
+                    </td>
                   </tr>
                 </>
             )}
@@ -468,19 +528,31 @@ function SuggestionsPage () {
                     <td>Attic Insulation</td>
                     <td>{roofInsulationQuantity} m²</td>
                     <td>€{(improvementCosts.AtticInsulation * roofInsulationQuantity).toFixed(2)}</td>
-                    <td>€{availableGrants.AtticGrant}</td>
-                    <td>€{Math.max(0, (improvementCosts.AtticInsulation * roofInsulationQuantity) - availableGrants.AtticGrant).toFixed(2)}</td>
-                    <td><a href="https://www.seai.ie/grants/home-energy-grants/insulation-grants/" target="_blank"
-                           rel="noopener noreferrer" className="button-blue">Apply</a></td>
+                    <td>€{availableGrants.AtticGrant}*</td>
+                    <td>€{Math.min(availableGrants.AtticGrant, (improvementCosts.AtticInsulation * roofInsulationQuantity) / 2).toFixed(2)}</td>
+                    <td>€{Math.max(0, (improvementCosts.AtticInsulation * roofInsulationQuantity) - Math.min(availableGrants.AtticGrant, (improvementCosts.AtticInsulation * roofInsulationQuantity) / 2)).toFixed(2)}</td>
+                    <td>
+                      <div className="checkbox-container">
+                        <input type="checkbox" id="applyAtticInsulation" name="applyAtticInsulationGrant"
+                               onChange={(e) => handleCheckboxChange(e, 'AtticInsulation', improvementCosts.AtticInsulation * roofInsulationQuantity, availableGrants.AtticGrant)}/>
+                        <label htmlFor="applyAtticInsulation">Select</label>
+                      </div>
+                    </td>
                   </tr>
                   <tr>
                     <td>Rafter Insulation</td>
                     <td>{roofInsulationQuantity} m²</td>
                     <td>€{(improvementCosts.RafterInsulation * roofInsulationQuantity).toFixed(2)}</td>
-                    <td>€{availableGrants.RafterGrant}</td>
-                    <td>€{Math.max(0, (improvementCosts.RafterInsulation * roofInsulationQuantity) - availableGrants.RafterGrant).toFixed(2)}</td>
-                    <td><a href="https://www.seai.ie/grants/home-energy-grants/insulation-grants/" target="_blank"
-                           rel="noopener noreferrer" className="button-blue">Apply</a></td>
+                    <td>€{availableGrants.RafterGrant}*</td>
+                    <td>€{Math.min(availableGrants.RafterGrant, (improvementCosts.RafterInsulation * roofInsulationQuantity) / 2).toFixed(2)}</td>
+                    <td>€{Math.max(0, (improvementCosts.RafterInsulation * roofInsulationQuantity) - Math.min(availableGrants.RafterGrant, (improvementCosts.RafterInsulation * roofInsulationQuantity) / 2)).toFixed(2)}</td>
+                    <td>
+                      <div className="checkbox-container">
+                        <input type="checkbox" id="applyRafterInsulation" name="applyRafterInsulationGrant"
+                               onChange={(e) => handleCheckboxChange(e, 'RafterInsulation', improvementCosts.RafterInsulation * roofInsulationQuantity, availableGrants.RafterGrant)}/>
+                        <label htmlFor="applyRafterInsulation">Select</label>
+                      </div>
+                    </td>
                   </tr>
                 </>
             )}
@@ -490,10 +562,16 @@ function SuggestionsPage () {
                     <td>Floor Insulation</td>
                     <td>{floorInsulationQuantity} m²</td>
                     <td>€{(improvementCosts.FloorInsulation * floorInsulationQuantity).toFixed(2)}</td>
-                    <td>€{availableGrants.FloorGrant}</td>
-                    <td>€{Math.max(0, (improvementCosts.FloorInsulation * floorInsulationQuantity) - availableGrants.FloorGrant).toFixed(2)}</td>
-                    <td><a href="https://www.seai.ie/grants/home-energy-grants/insulation-grants/" target="_blank"
-                           rel="noopener noreferrer" className="button-blue">Apply</a></td>
+                    <td>€{availableGrants.FloorGrant}*</td>
+                    <td>€{Math.min(availableGrants.FloorGrant, (improvementCosts.FloorInsulation * floorInsulationQuantity) / 2).toFixed(2)}</td>
+                    <td>€{Math.max(0, (improvementCosts.FloorInsulation * floorInsulationQuantity) - Math.min(availableGrants.FloorGrant, (improvementCosts.FloorInsulation * floorInsulationQuantity) / 2)).toFixed(2)}</td>
+                    <td>
+                      <div className="checkbox-container">
+                        <input type="checkbox" id="applyFloorInsulation" name="applyFloorInsulationGrant"
+                               onChange={(e) => handleCheckboxChange(e, 'FloorInsulation', improvementCosts.FloorInsulation * floorInsulationQuantity, availableGrants.FloorGrant)}/>
+                        <label htmlFor="applyFloorInsulation">Select</label>
+                      </div>
+                    </td>
                   </tr>
                 </>
             )}
@@ -514,10 +592,16 @@ function SuggestionsPage () {
                       </select>
                     </td>
                     <td>€{(improvementCosts.WindowReplacement * windowQuantity).toFixed(2)}</td>
-                    <td>€{availableGrants.WindowGrant}</td>
-                    <td>€{Math.max(0, (improvementCosts.WindowReplacement * windowQuantity) - availableGrants.WindowGrant).toFixed(2)}</td>
-                    <td><a href="https://www.seai.ie/grants/home-energy-grants/insulation-grants/" target="_blank"
-                           rel="noopener noreferrer" className="button-blue">Apply</a></td>
+                    <td>€{availableGrants.WindowGrant}*</td>
+                    <td>€{Math.min(availableGrants.WindowGrant, (improvementCosts.WindowReplacement * windowQuantity) / 2).toFixed(2)}</td>
+                    <td>€{Math.max(0, (improvementCosts.WindowReplacement * windowQuantity) - Math.min(availableGrants.WindowGrant, (improvementCosts.WindowReplacement * windowQuantity) / 2)).toFixed(2)}</td>
+                    <td>
+                      <div className="checkbox-container">
+                        <input type="checkbox" id="applyWindowReplacement" name="applyWindowReplacementGrant"
+                               onChange={(e) => handleCheckboxChange(e, 'WindowReplacement', improvementCosts.WindowReplacement * windowQuantity, availableGrants.WindowGrant)}/>
+                        <label htmlFor="applyWindowReplacement">Select</label>
+                      </div>
+                    </td>
                   </tr>
                 </>
             )}
@@ -538,10 +622,16 @@ function SuggestionsPage () {
                       </select>
                     </td>
                     <td>€{(improvementCosts.BackDoorReplacement * BackDoorQuantity).toFixed(2)}</td>
-                    <td>€{availableGrants.BackDoorGrant}</td>
-                    <td>€{Math.max(0, (improvementCosts.BackDoorReplacement * BackDoorQuantity) - availableGrants.BackDoorGrant).toFixed(2)}</td>
-                    <td><a href="https://www.seai.ie/grants/home-energy-grants/insulation-grants/" target="_blank"
-                           rel="noopener noreferrer" className="button-blue">Apply</a></td>
+                    <td>€{availableGrants.BackDoorGrant}*</td>
+                    <td>€{Math.min(availableGrants.BackDoorGrant, (improvementCosts.BackDoorReplacement * BackDoorQuantity) / 2).toFixed(2)}</td>
+                    <td>€{Math.max(0, (improvementCosts.BackDoorReplacement * BackDoorQuantity) - Math.min(availableGrants.BackDoorGrant, (improvementCosts.BackDoorReplacement * BackDoorQuantity) / 2)).toFixed(2)}</td>
+                    <td>
+                      <div className="checkbox-container">
+                        <input type="checkbox" id="applyBackDoorReplacement" name="applyBackDoorReplacementGrant"
+                               onChange={(e) => handleCheckboxChange(e, 'BackDoorReplacement', improvementCosts.BackDoorReplacement * BackDoorQuantity, availableGrants.BackDoorGrant)}/>
+                        <label htmlFor="applyBackDoorReplacement">Select</label>
+                      </div>
+                    </td>
                   </tr>
                   <tr>
                     <td>External Front Door Upgrade</td>
@@ -558,15 +648,35 @@ function SuggestionsPage () {
                       </select>
                     </td>
                     <td>€{(improvementCosts.FrontDoorReplacement * FrontDoorQuantity).toFixed(2)}</td>
-                    <td>€{availableGrants.FrontDoorGrant}</td>
-                    <td>€{Math.max(0, (improvementCosts.FrontDoorReplacement * FrontDoorQuantity) - availableGrants.FrontDoorGrant).toFixed(2)}</td>
-                    <td><a href="https://www.seai.ie/grants/home-energy-grants/insulation-grants/" target="_blank"
-                           rel="noopener noreferrer" className="button-blue">Apply</a></td>
+                    <td>€{availableGrants.FrontDoorGrant}*</td>
+                    <td>€{Math.min(availableGrants.FrontDoorGrant, (improvementCosts.FrontDoorReplacement * FrontDoorQuantity) / 2).toFixed(2)}</td>
+                    <td>€{Math.max(0, (improvementCosts.FrontDoorReplacement * FrontDoorQuantity) - Math.min(availableGrants.FrontDoorGrant, (improvementCosts.FrontDoorReplacement * FrontDoorQuantity) / 2)).toFixed(2)}</td>
+                    <td>
+                      <div className="checkbox-container">
+                        <input type="checkbox" id="applyFrontDoorReplacement" name="applyFrontDoorReplacementGrant"
+                               onChange={(e) => handleCheckboxChange(e, 'FrontDoorReplacement', improvementCosts.FrontDoorReplacement * FrontDoorQuantity, availableGrants.FrontDoorGrant)}/>
+                        <label htmlFor="applyFrontDoorReplacement">Select</label>
+                      </div>
+                    </td>
                   </tr>
                 </>
             )}
+            <tr className="total-row">
+              <td colSpan="2">Total</td>
+              <td>€{totalEstimatedCost.toFixed(2)}</td>
+              <td></td>
+              <td>€{totalGrant.toFixed(2)}*</td>
+              <td>€{totalCostToHomeowner.toFixed(2)}**</td>
+              <td><a href="https://www.seai.ie/grants/home-energy-grants/insulation-grants/" target="_blank"
+                     rel="noopener noreferrer" className="button-blue">Apply</a></td>
+            </tr>
             </tbody>
           </table>
+          <h3>Disclaimer</h3>
+          <p>*Grants may be limited to only 50% of the total estimated cost for each improvement. <br/><br/>
+            **Total estimated cost to homeowner is based on the estimated works cost minus the total SEAI grants limited to 50% of the estimated works cost.
+            However, this amount may be change, depending on the SEAI grants approved.
+          </p>
         </div>
 
       </>

@@ -115,7 +115,8 @@
 /* Global styling for buttons */
 .new-energy-rating-container .button-blue,
 .improvements-table button,
-.button-blue {
+.button-blue,
+.button-blue.return-to-form {
     background-color: #4a90e2; /* Blue background */
     color: white; /* White text */
     border: none; /* Remove border */
@@ -126,7 +127,8 @@
 }
 
 .new-energy-rating-container .button-blue:hover,
-.button-blue:hover {
+.button-blue:hover,
+.button-blue.return-to-form:hover {
     background-color: #357abd; /* Slightly darker blue on hover */
     transform: scale(1.05); /* Slightly larger on hover for interaction feedback */
 }
@@ -214,6 +216,13 @@
 
 
 /* Improvements Table Container Styling*/
+.improvements-table-container h3 {
+    text-align: center; /* Center the text within the h3 */
+    color: #4a90e2; /* Blue color for heading */
+    margin-top: 20px; /* Space above the heading */
+    margin-bottom: 20px; /* Space below the heading */
+}
+
 .improvements-table-container p strong {
     font-weight: 600; /* Slightly less bold than full bold for subtlety */
 }
@@ -242,6 +251,52 @@
     letter-spacing: 0.05em; /* Slight spacing between letters */
     margin-top: 20px; /* Space above button */
 }
+
+.return-button-container {
+    text-align: center; /* Center the button container */
+    margin-top: 20px; /* Add some space above the button */
+    margin-bottom: 20px; /* Add some space below the button */
+}
+
+.button-blue.return-to-form {
+    padding: 10px 20px;
+    display: inline-block; /* Align button properly without full width */
+    text-align: center;
+}
+
+
+/* Checkbox and label within the table styling */
+.improvements-table .checkbox-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.improvements-table .checkbox-container input[type="checkbox"] {
+    /* Make checkbox bigger */
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    margin-right: 5px; /* Space between checkbox and label */
+}
+
+.improvements-table .checkbox-container label {
+    margin: 0; /* Adjust as needed */
+    cursor: pointer;
+}
+
+
+/* Total row styling */
+.improvements-table .total-row {
+    background-color: #4a90e2; /* Blue background */
+}
+
+.improvements-table .total-row td {
+    border-top: 2px solid #ddd; /* Adds a top border to separate from other rows */
+    font-weight: 600; /* Bold font for total row */
+    color: white !important; /* White text */
+}
+
 
 
 

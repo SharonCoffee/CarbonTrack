@@ -409,7 +409,7 @@ function SuggestionsPage () {
           </table>
         </div>
 
-        <div className="improvement-estimates">
+        <div className="improvements-table-container">
           <h2>Improvement Estimates</h2>
             <p>
                 Based on the selected improvements, the estimated costs and potential grants are displayed below.

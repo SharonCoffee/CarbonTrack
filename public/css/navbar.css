@@ -1,5 +1,5 @@
 .navbar {
-    background-color: #333; /* Dark background for the navbar */
+    background-color: #212221; /* Dark background for the navbar */
     color: white;
     padding: 10px;
     display: flex; /* Ensures items are laid out in a row */
@@ -9,12 +9,12 @@
 
 .navbar-brand {
     font-size: 1.5em; /* Larger text for the brand */
-    background-color: #0000FF; /* Blue background for brand */
+    background-color: #4a90e2; /* Blue background for brand */
     padding: 10px; /* Padding for spacing inside the box */
 }
 
 .navbar-header {
-    background-color: #0000FF; /* Blue background */
+    background-color: #4a90e2; /* Blue background */
     color: white; /* White text color */
     padding: 10px 20px; /* Padding around the text */
     font-size: 36px; /* Larger font size */
@@ -29,7 +29,7 @@
 
 .navbar-nav li {
     margin: 0 10px; /* Space between each navbar item */
-    background-color: #0000FF; /* Blue background for list items */
+    background-color: #4a90e2; /* Blue background for list items */
     padding: 10px; /* Padding for spacing inside the box */
 }
 

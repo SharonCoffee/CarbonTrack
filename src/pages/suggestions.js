@@ -75,30 +75,20 @@ function SuggestionsPage () {
     // You might want to set some results state here based on the new U-values
   };
 
-  const handleCheckboxChange = (e, improvement, cost, grant) => {
+  const handleCheckboxChange = (e, improvementType, cost, recalculatedGrantValue) => {
+    // Convert recalculatedGrantValue to a number, in case it's provided as a string
+    const recalculatedGrant = parseFloat(recalculatedGrantValue);
+
     if (e.target.checked) {
+      // When checking the checkbox
       setTotalEstimatedCost(prevTotal => prevTotal + cost);
-      setTotalGrant(prevTotal => {
-        // Calculate the new potential total grant
-        const newTotalGrant = prevTotal + grant;
-        // Ensure total grant does not exceed 50% of the updated total estimated cost
-        return Math.min(newTotalGrant, (prevTotal + cost) * 0.5);
-      });
-      setTotalCostToHomeowner(prevTotal => prevTotal + Math.max(0, cost - grant));
+      setTotalGrant(prevTotal => Math.min(prevTotal + recalculatedGrant, totalEstimatedCost * 0.5)); // Adjusted for 50% cap if needed
+      setTotalCostToHomeowner(prevTotal => prevTotal + Math.max(0, cost - recalculatedGrant));
     } else {
-      setTotalEstimatedCost(prevTotal => {
-        const newTotalEstimatedCost = prevTotal - cost;
-        return Math.max(0, newTotalEstimatedCost); // Prevent total estimated cost from going below 0
-      });
-      setTotalGrant(prevTotal => {
-        const newTotalGrant = prevTotal - grant;
-        // Prevent total grant from going below 0 and ensure it does not exceed 50% of the new total estimated cost
-        return Math.max(0, Math.min(newTotalGrant, (prevTotal - cost) * 0.5));
-      });
-      setTotalCostToHomeowner(prevTotal => {
-        const newTotalCost = Math.max(0, (prevTotal - cost) - Math.max(0, prevTotal - grant));
-        return Math.max(0, newTotalCost); // Prevent total cost to homeowner from going below 0
-      });
+      // When unchecking the checkbox
+      setTotalEstimatedCost(prevTotal => Math.max(0, prevTotal - cost));
+      setTotalGrant(prevTotal => Math.max(0, prevTotal - recalculatedGrant));
+      setTotalCostToHomeowner(prevTotal => Math.max(0, prevTotal - Math.max(0, cost - recalculatedGrant)));
     }
   };
 
@@ -480,12 +470,16 @@ function SuggestionsPage () {
                     <td>{wallInsulationQuantity} m²</td>
                     <td>€{(improvementCosts.WallCavityInsulation * wallInsulationQuantity).toFixed(2)}</td>
                     <td>€{availableGrants.WallCavityGrant}*</td>
-                    <td>€{Math.min(availableGrants.WallCavityGrant, (improvementCosts.WallCavityInsulation * wallInsulationQuantity) / 2).toFixed(2)}</td>
-                    <td>€{Math.max(0, (improvementCosts.WallCavityInsulation * wallInsulationQuantity) - Math.min(availableGrants.WallCavityGrant, (improvementCosts.WallCavityInsulation * wallInsulationQuantity) / 2)).toFixed(2)}</td>
+                    <td>€{Math.min(availableGrants.WallCavityGrant, (improvementCosts.WallCavityInsulation * wallInsulationQuantity) / 2 || 0).toFixed(2)}</td>
+                    <td>€{Math.max(0, (improvementCosts.WallCavityInsulation * wallInsulationQuantity) - Math.min(availableGrants.WallCavityGrant, (improvementCosts.WallCavityInsulation * wallInsulationQuantity) / 2) || 0).toFixed(2)}</td>
                     <td>
                       <div className="checkbox-container">
                         <input type="checkbox" id="applyCavityWallInsulation" name="applyCavityWallInsulationGrant"
-                               onChange={(e) => handleCheckboxChange(e, 'WallCavityInsulation', improvementCosts.WallCavityInsulation * wallInsulationQuantity, availableGrants.WallCavityGrant)}/>
+                               onChange={(e) => handleCheckboxChange(e,
+                                 'WallCavityInsulation',
+                                 improvementCosts.WallCavityInsulation * wallInsulationQuantity,
+                                 Math.min(availableGrants.WallCavityGrant, (improvementCosts.WallCavityInsulation * wallInsulationQuantity) / 2 || 0)
+                               )}/>
                         <label htmlFor="applyCavityWallInsulation">Select</label>
                       </div>
                     </td>
@@ -495,12 +489,16 @@ function SuggestionsPage () {
                     <td>{wallInsulationQuantity} m²</td>
                     <td>€{(improvementCosts.WallInternalInsulation * wallInsulationQuantity).toFixed(2)}</td>
                     <td>€{availableGrants.WallInternalGrant}*</td>
-                    <td>€{Math.min(availableGrants.WallInternalGrant, (improvementCosts.WallInternalInsulation * wallInsulationQuantity) / 2).toFixed(2)}</td>
-                    <td>€{Math.max(0, (improvementCosts.WallInternalInsulation * wallInsulationQuantity) - Math.min(availableGrants.WallInternalGrant, (improvementCosts.WallInternalInsulation * wallInsulationQuantity) / 2)).toFixed(2)}</td>
+                    <td>€{Math.min(availableGrants.WallInternalGrant, (improvementCosts.WallInternalInsulation * wallInsulationQuantity) / 2 || 0).toFixed(2)}</td>
+                    <td>€{Math.max(0, (improvementCosts.WallInternalInsulation * wallInsulationQuantity) - Math.min(availableGrants.WallInternalGrant, (improvementCosts.WallInternalInsulation * wallInsulationQuantity) / 2) || 0).toFixed(2)}</td>
                     <td>
                       <div className="checkbox-container">
                         <input type="checkbox" id="applyInternalWallInsulation" name="applyInternalWallInsulationGrant"
-                               onChange={(e) => handleCheckboxChange(e, 'WallInternalInsulation', improvementCosts.WallInternalInsulation * wallInsulationQuantity, availableGrants.WallInternalGrant)}/>
+                                 onChange={(e) => handleCheckboxChange(e,
+                                   'WallInternalInsulation',
+                                   improvementCosts.WallInternalInsulation * wallInsulationQuantity,
+                                   Math.min(availableGrants.WallInternalGrant, (improvementCosts.WallInternalInsulation * wallInsulationQuantity) / 2 || 0)
+                                 )}/>
                         <label htmlFor="applyInternalWallInsulation">Select</label>
                       </div>
                     </td>
@@ -510,15 +508,20 @@ function SuggestionsPage () {
                     <td>{wallInsulationQuantity} m²</td>
                     <td>€{(improvementCosts.WallExternalInsulation * wallInsulationQuantity).toFixed(2)}</td>
                     <td>€{availableGrants.WallExternalGrant}*</td>
-                    <td>€{Math.min(availableGrants.WallExternalGrant, (improvementCosts.WallExternalInsulation * wallInsulationQuantity) / 2).toFixed(2)}</td>
-                    <td>€{Math.max(0, (improvementCosts.WallExternalInsulation * wallInsulationQuantity) - Math.min(availableGrants.WallExternalGrant, (improvementCosts.WallExternalInsulation * wallInsulationQuantity) / 2)).toFixed(2)}</td>
+                    <td>€{Math.min(availableGrants.WallExternalGrant, (improvementCosts.WallExternalInsulation * wallInsulationQuantity) / 2 || 0).toFixed(2)}</td>
+                    <td>€{Math.max(0, (improvementCosts.WallExternalInsulation * wallInsulationQuantity) - Math.min(availableGrants.WallExternalGrant, (improvementCosts.WallExternalInsulation * wallInsulationQuantity) / 2) || 0).toFixed(2)}</td>
                     <td>
                       <div className="checkbox-container">
                         <input type="checkbox" id="applyExternalWallInsulation" name="applyExternalWallInsulationGrant"
-                               onChange={(e) => handleCheckboxChange(e, 'WallExternalInsulation', improvementCosts.WallExternalInsulation * wallInsulationQuantity, availableGrants.WallExternalGrant)}/>
+                               onChange={(e) => handleCheckboxChange(e,
+                                 'WallExternalInsulation',
+                                 improvementCosts.WallExternalInsulation * wallInsulationQuantity,
+                                 Math.min(availableGrants.WallExternalGrant, (improvementCosts.WallExternalInsulation * wallInsulationQuantity) / 2 || 0)
+                               )}/>
                         <label htmlFor="applyExternalWallInsulation">Select</label>
                       </div>
                     </td>
+
                   </tr>
                 </>
             )}
@@ -529,12 +532,16 @@ function SuggestionsPage () {
                     <td>{roofInsulationQuantity} m²</td>
                     <td>€{(improvementCosts.AtticInsulation * roofInsulationQuantity).toFixed(2)}</td>
                     <td>€{availableGrants.AtticGrant}*</td>
-                    <td>€{Math.min(availableGrants.AtticGrant, (improvementCosts.AtticInsulation * roofInsulationQuantity) / 2).toFixed(2)}</td>
-                    <td>€{Math.max(0, (improvementCosts.AtticInsulation * roofInsulationQuantity) - Math.min(availableGrants.AtticGrant, (improvementCosts.AtticInsulation * roofInsulationQuantity) / 2)).toFixed(2)}</td>
+                    <td>€{Math.min(availableGrants.AtticGrant, (improvementCosts.AtticInsulation * roofInsulationQuantity) / 2 || 0).toFixed(2)}</td>
+                    <td>€{Math.max(0, (improvementCosts.AtticInsulation * roofInsulationQuantity) - Math.min(availableGrants.AtticGrant, (improvementCosts.AtticInsulation * roofInsulationQuantity) / 2) || 0).toFixed(2)}</td>
                     <td>
                       <div className="checkbox-container">
                         <input type="checkbox" id="applyAtticInsulation" name="applyAtticInsulationGrant"
-                               onChange={(e) => handleCheckboxChange(e, 'AtticInsulation', improvementCosts.AtticInsulation * roofInsulationQuantity, availableGrants.AtticGrant)}/>
+                               onChange={(e) => handleCheckboxChange(e,
+                                 'AtticInsulation',
+                                 improvementCosts.AtticInsulation * roofInsulationQuantity,
+                                 Math.min(availableGrants.AtticGrant, (improvementCosts.AtticInsulation * roofInsulationQuantity) / 2 || 0)
+                               )}/>
                         <label htmlFor="applyAtticInsulation">Select</label>
                       </div>
                     </td>
@@ -544,12 +551,16 @@ function SuggestionsPage () {
                     <td>{roofInsulationQuantity} m²</td>
                     <td>€{(improvementCosts.RafterInsulation * roofInsulationQuantity).toFixed(2)}</td>
                     <td>€{availableGrants.RafterGrant}*</td>
-                    <td>€{Math.min(availableGrants.RafterGrant, (improvementCosts.RafterInsulation * roofInsulationQuantity) / 2).toFixed(2)}</td>
-                    <td>€{Math.max(0, (improvementCosts.RafterInsulation * roofInsulationQuantity) - Math.min(availableGrants.RafterGrant, (improvementCosts.RafterInsulation * roofInsulationQuantity) / 2)).toFixed(2)}</td>
+                    <td>€{Math.min(availableGrants.RafterGrant, (improvementCosts.RafterInsulation * roofInsulationQuantity) / 2 || 0).toFixed(2)}</td>
+                    <td>€{Math.max(0, (improvementCosts.RafterInsulation * roofInsulationQuantity) - Math.min(availableGrants.RafterGrant, (improvementCosts.RafterInsulation * roofInsulationQuantity) / 2) || 0).toFixed(2)}</td>
                     <td>
                       <div className="checkbox-container">
                         <input type="checkbox" id="applyRafterInsulation" name="applyRafterInsulationGrant"
-                               onChange={(e) => handleCheckboxChange(e, 'RafterInsulation', improvementCosts.RafterInsulation * roofInsulationQuantity, availableGrants.RafterGrant)}/>
+                               onChange={(e) => handleCheckboxChange(e,
+                                 'RafterInsulation',
+                                 improvementCosts.RafterInsulation * roofInsulationQuantity,
+                                 Math.min(availableGrants.RafterGrant, (improvementCosts.RafterInsulation * roofInsulationQuantity) / 2 || 0)
+                               )}/>
                         <label htmlFor="applyRafterInsulation">Select</label>
                       </div>
                     </td>
@@ -563,12 +574,16 @@ function SuggestionsPage () {
                     <td>{floorInsulationQuantity} m²</td>
                     <td>€{(improvementCosts.FloorInsulation * floorInsulationQuantity).toFixed(2)}</td>
                     <td>€{availableGrants.FloorGrant}*</td>
-                    <td>€{Math.min(availableGrants.FloorGrant, (improvementCosts.FloorInsulation * floorInsulationQuantity) / 2).toFixed(2)}</td>
-                    <td>€{Math.max(0, (improvementCosts.FloorInsulation * floorInsulationQuantity) - Math.min(availableGrants.FloorGrant, (improvementCosts.FloorInsulation * floorInsulationQuantity) / 2)).toFixed(2)}</td>
+                    <td>€{Math.min(availableGrants.FloorGrant, (improvementCosts.FloorInsulation * floorInsulationQuantity) / 2 || 0).toFixed(2)}</td>
+                    <td>€{Math.max(0, (improvementCosts.FloorInsulation * floorInsulationQuantity) - Math.min(availableGrants.FloorGrant, (improvementCosts.FloorInsulation * floorInsulationQuantity) / 2) || 0).toFixed(2)}</td>
                     <td>
                       <div className="checkbox-container">
                         <input type="checkbox" id="applyFloorInsulation" name="applyFloorInsulationGrant"
-                               onChange={(e) => handleCheckboxChange(e, 'FloorInsulation', improvementCosts.FloorInsulation * floorInsulationQuantity, availableGrants.FloorGrant)}/>
+                               onChange={(e) => handleCheckboxChange(e,
+                                 'FloorInsulation',
+                                 improvementCosts.FloorInsulation * floorInsulationQuantity,
+                                 Math.min(availableGrants.FloorGrant, (improvementCosts.FloorInsulation * floorInsulationQuantity) / 2 || 0)
+                               )}/>
                         <label htmlFor="applyFloorInsulation">Select</label>
                       </div>
                     </td>
@@ -593,12 +608,16 @@ function SuggestionsPage () {
                     </td>
                     <td>€{(improvementCosts.WindowReplacement * windowQuantity).toFixed(2)}</td>
                     <td>€{availableGrants.WindowGrant}*</td>
-                    <td>€{Math.min(availableGrants.WindowGrant, (improvementCosts.WindowReplacement * windowQuantity) / 2).toFixed(2)}</td>
-                    <td>€{Math.max(0, (improvementCosts.WindowReplacement * windowQuantity) - Math.min(availableGrants.WindowGrant, (improvementCosts.WindowReplacement * windowQuantity) / 2)).toFixed(2)}</td>
+                    <td>€{Math.min(availableGrants.WindowGrant, (improvementCosts.WindowReplacement * windowQuantity) / 2 || 0).toFixed(2)}</td>
+                    <td>€{Math.max(0, (improvementCosts.WindowReplacement * windowQuantity) - Math.min(availableGrants.WindowGrant, (improvementCosts.WindowReplacement * windowQuantity) / 2) || 0).toFixed(2)}</td>
                     <td>
                       <div className="checkbox-container">
                         <input type="checkbox" id="applyWindowReplacement" name="applyWindowReplacementGrant"
-                               onChange={(e) => handleCheckboxChange(e, 'WindowReplacement', improvementCosts.WindowReplacement * windowQuantity, availableGrants.WindowGrant)}/>
+                               onChange={(e) => handleCheckboxChange(e,
+                                 'WindowReplacement',
+                                 improvementCosts.WindowReplacement * windowQuantity,
+                                 Math.min(availableGrants.WindowGrant, (improvementCosts.WindowReplacement * windowQuantity) / 2 || 0)
+                               )}/>
                         <label htmlFor="applyWindowReplacement">Select</label>
                       </div>
                     </td>
@@ -623,12 +642,16 @@ function SuggestionsPage () {
                     </td>
                     <td>€{(improvementCosts.BackDoorReplacement * BackDoorQuantity).toFixed(2)}</td>
                     <td>€{availableGrants.BackDoorGrant}*</td>
-                    <td>€{Math.min(availableGrants.BackDoorGrant, (improvementCosts.BackDoorReplacement * BackDoorQuantity) / 2).toFixed(2)}</td>
-                    <td>€{Math.max(0, (improvementCosts.BackDoorReplacement * BackDoorQuantity) - Math.min(availableGrants.BackDoorGrant, (improvementCosts.BackDoorReplacement * BackDoorQuantity) / 2)).toFixed(2)}</td>
+                    <td>€{Math.min(availableGrants.BackDoorGrant, (improvementCosts.BackDoorReplacement * BackDoorQuantity) / 2 || 0).toFixed(2)}</td>
+                    <td>€{Math.max(0, (improvementCosts.BackDoorReplacement * BackDoorQuantity) - Math.min(availableGrants.BackDoorGrant, (improvementCosts.BackDoorReplacement * BackDoorQuantity) / 2) || 0).toFixed(2)}</td>
                     <td>
                       <div className="checkbox-container">
                         <input type="checkbox" id="applyBackDoorReplacement" name="applyBackDoorReplacementGrant"
-                               onChange={(e) => handleCheckboxChange(e, 'BackDoorReplacement', improvementCosts.BackDoorReplacement * BackDoorQuantity, availableGrants.BackDoorGrant)}/>
+                               onChange={(e) => handleCheckboxChange(e,
+                                 'BackDoorReplacement',
+                                 improvementCosts.BackDoorReplacement * BackDoorQuantity,
+                                 Math.min(availableGrants.BackDoorGrant, (improvementCosts.BackDoorReplacement * BackDoorQuantity) / 2 || 0)
+                               )}/>
                         <label htmlFor="applyBackDoorReplacement">Select</label>
                       </div>
                     </td>
@@ -649,12 +672,16 @@ function SuggestionsPage () {
                     </td>
                     <td>€{(improvementCosts.FrontDoorReplacement * FrontDoorQuantity).toFixed(2)}</td>
                     <td>€{availableGrants.FrontDoorGrant}*</td>
-                    <td>€{Math.min(availableGrants.FrontDoorGrant, (improvementCosts.FrontDoorReplacement * FrontDoorQuantity) / 2).toFixed(2)}</td>
-                    <td>€{Math.max(0, (improvementCosts.FrontDoorReplacement * FrontDoorQuantity) - Math.min(availableGrants.FrontDoorGrant, (improvementCosts.FrontDoorReplacement * FrontDoorQuantity) / 2)).toFixed(2)}</td>
+                    <td>€{Math.min(availableGrants.FrontDoorGrant, (improvementCosts.FrontDoorReplacement * FrontDoorQuantity) / 2 || 0).toFixed(2)}</td>
+                    <td>€{Math.max(0, (improvementCosts.FrontDoorReplacement * FrontDoorQuantity) - Math.min(availableGrants.FrontDoorGrant, (improvementCosts.FrontDoorReplacement * FrontDoorQuantity) / 2) || 0).toFixed(2)}</td>
                     <td>
                       <div className="checkbox-container">
                         <input type="checkbox" id="applyFrontDoorReplacement" name="applyFrontDoorReplacementGrant"
-                               onChange={(e) => handleCheckboxChange(e, 'FrontDoorReplacement', improvementCosts.FrontDoorReplacement * FrontDoorQuantity, availableGrants.FrontDoorGrant)}/>
+                               onChange={(e) => handleCheckboxChange(e,
+                                 'FrontDoorReplacement',
+                                 improvementCosts.FrontDoorReplacement * FrontDoorQuantity,
+                                 Math.min(availableGrants.FrontDoorGrant, (improvementCosts.FrontDoorReplacement * FrontDoorQuantity) / 2 || 0)
+                               )}/>
                         <label htmlFor="applyFrontDoorReplacement">Select</label>
                       </div>
                     </td>
@@ -674,7 +701,8 @@ function SuggestionsPage () {
           </table>
           <h3>Disclaimer</h3>
           <p>*Grants may be limited to only 50% of the total estimated cost for each improvement. <br/><br/>
-            **Total estimated cost to homeowner is based on the estimated works cost minus the total SEAI grants limited to 50% of the estimated works cost.
+            **Total estimated cost to homeowner is based on the estimated works cost minus the total SEAI grants limited
+            to 50% of the estimated works cost.
             However, this amount may be change, depending on the SEAI grants approved.
           </p>
         </div>

@@ -1,3 +1,8 @@
+// TODO:
+// 1. Add the heat pump assessment to the heat pump costs and the bonus heat pump too.
+// 2. Inform user of additional grants for other things that can be obtained.  Or maybe just show 1 in here too in a table for the homeowner.
+// 3. Use archetypeData and seaiGrants to remove the Eslint error message.
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Papa from 'papaparse';

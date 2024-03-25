@@ -7,7 +7,6 @@ function SuggestionsPage () {
   const location = useLocation();
 
   const selectedProperty = location.state ? location.state.selectedProperty : null;
-  const selectedDwellingType = useState('');
   const [newEnergyRating, setNewEnergyRating] = useState('');
   const [selectClass, setSelectClass] = useState('');
   const [archetypeData, setArchetypeData] = useState([]);
@@ -20,8 +19,11 @@ function SuggestionsPage () {
   const [BackDoorQuantity, setBackDoorQuantity] = useState(1);
   const [FrontDoorQuantity, setFrontDoorQuantity] = useState(1);
   const [totalEstimatedCost, setTotalEstimatedCost] = useState(0);
-  const [totalGrant, setTotalGrant] = useState(0);
+  const [totalAvailableGrant, setTotalAvailableGrant] = useState(0);
+  const [totalRecalculatedGrant, setTotalRecalculatedGrant] = useState(0);
   const [totalCostToHomeowner, setTotalCostToHomeowner] = useState(0);
+  const [selectedItemsCosts, setSelectedItemsCosts] = useState([]);
+  const [selectedItemsGrants, setSelectedItemsGrants] = useState([]);
 
   const availableRatings = selectedProperty && ['A1', 'A2', 'A3', 'B1', 'B2'].filter(rating => rating !== selectedProperty.EnergyRating && rating < selectedProperty.EnergyRating);
 
@@ -75,27 +77,27 @@ function SuggestionsPage () {
     // You might want to set some results state here based on the new U-values
   };
 
-  const handleCheckboxChange = (e, improvementType, cost, recalculatedGrantValue) => {
-    // Convert recalculatedGrantValue to a number, in case it's provided as a string
-    const recalculatedGrant = parseFloat(recalculatedGrantValue);
+  const handleCheckboxChange = (e, improvementType, cost, grant) => {
+    // Prevent scrolling when refocusing
+    const x = window.scrollX; const y = window.scrollY;
+    e.target.focus();
+    window.scrollTo(x, y);
+
+    const numericCost = parseFloat(cost);
+    const numericGrant = parseFloat(grant);
 
     if (e.target.checked) {
-      // When checking the checkbox
-      setTotalEstimatedCost(prevTotal => prevTotal + cost);
-      setTotalGrant(prevTotal => Math.min(prevTotal + recalculatedGrant, totalEstimatedCost * 0.5)); // Adjusted for 50% cap if needed
-      setTotalCostToHomeowner(prevTotal => prevTotal + Math.max(0, cost - recalculatedGrant));
+      // Add the cost and grant of the selected item
+      setSelectedItemsCosts(oldCosts => [...oldCosts, numericCost]);
+      setSelectedItemsGrants(oldGrants => [...oldGrants, numericGrant]);
     } else {
-      // When unchecking the checkbox
-      setTotalEstimatedCost(prevTotal => Math.max(0, prevTotal - cost));
-      setTotalGrant(prevTotal => Math.max(0, prevTotal - recalculatedGrant));
-      setTotalCostToHomeowner(prevTotal => Math.max(0, prevTotal - Math.max(0, cost - recalculatedGrant)));
+      // Remove the cost and grant of the deselected item
+      setSelectedItemsCosts(oldCosts => oldCosts.filter(itemCost => itemCost !== numericCost));
+      setSelectedItemsGrants(oldGrants => oldGrants.filter(itemGrant => itemGrant !== numericGrant));
     }
   };
 
   useEffect(() => {
-    // Scrolls the window to the top of the new page
-    window.scrollTo(0, 0);
-
     // Set the initial wall insulation quantity based on the selected property
     if (selectedProperty && selectedProperty.WallArea) {
       setWallInsulationQuantity(selectedProperty.WallArea);
@@ -201,7 +203,17 @@ function SuggestionsPage () {
       setImprovementCosts(updatedImprovementCosts);
       setAvailableGrants(updatedAvailableGrants);
     });
-  }, [selectedProperty, newEnergyRating]); // Ensure useEffect is triggered when these values change
+
+    const totalCost = selectedItemsCosts.reduce((acc, cur) => acc + cur, 0);
+    const totalGrant = selectedItemsGrants.reduce((acc, cur) => acc + cur, 0);
+    const recalculatedGrant = Math.min(totalGrant, totalCost * 0.5); // Ensure grant doesn't exceed 50% of the total cost
+    const homeownerCost = Math.max(0, totalCost - recalculatedGrant); // Ensure homeowner cost doesn't go below 0
+
+    setTotalEstimatedCost(totalCost);
+    setTotalAvailableGrant(totalGrant);
+    setTotalRecalculatedGrant(recalculatedGrant);
+    setTotalCostToHomeowner(homeownerCost);
+  }, [selectedProperty, newEnergyRating, selectedItemsCosts, selectedItemsGrants]); // Ensure useEffect is triggered when these values change
 
   // Display the selected property and inputs for modifying U-values
   return (
@@ -478,8 +490,8 @@ function SuggestionsPage () {
                                onChange={(e) => handleCheckboxChange(e,
                                  'WallCavityInsulation',
                                  improvementCosts.WallCavityInsulation * wallInsulationQuantity,
-                                 Math.min(availableGrants.WallCavityGrant, (improvementCosts.WallCavityInsulation * wallInsulationQuantity) / 2 || 0)
-                               )}/>
+                                 availableGrants.WallCavityGrant)}
+                        />
                         <label htmlFor="applyCavityWallInsulation">Select</label>
                       </div>
                     </td>
@@ -497,8 +509,8 @@ function SuggestionsPage () {
                                  onChange={(e) => handleCheckboxChange(e,
                                    'WallInternalInsulation',
                                    improvementCosts.WallInternalInsulation * wallInsulationQuantity,
-                                   Math.min(availableGrants.WallInternalGrant, (improvementCosts.WallInternalInsulation * wallInsulationQuantity) / 2 || 0)
-                                 )}/>
+                                   availableGrants.WallInternalGrant)}
+                        />
                         <label htmlFor="applyInternalWallInsulation">Select</label>
                       </div>
                     </td>
@@ -516,8 +528,8 @@ function SuggestionsPage () {
                                onChange={(e) => handleCheckboxChange(e,
                                  'WallExternalInsulation',
                                  improvementCosts.WallExternalInsulation * wallInsulationQuantity,
-                                 Math.min(availableGrants.WallExternalGrant, (improvementCosts.WallExternalInsulation * wallInsulationQuantity) / 2 || 0)
-                               )}/>
+                                 availableGrants.WallExternalGrant)}
+                        />
                         <label htmlFor="applyExternalWallInsulation">Select</label>
                       </div>
                     </td>
@@ -540,8 +552,8 @@ function SuggestionsPage () {
                                onChange={(e) => handleCheckboxChange(e,
                                  'AtticInsulation',
                                  improvementCosts.AtticInsulation * roofInsulationQuantity,
-                                 Math.min(availableGrants.AtticGrant, (improvementCosts.AtticInsulation * roofInsulationQuantity) / 2 || 0)
-                               )}/>
+                                 availableGrants.AtticGrant)}
+                        />
                         <label htmlFor="applyAtticInsulation">Select</label>
                       </div>
                     </td>
@@ -559,8 +571,8 @@ function SuggestionsPage () {
                                onChange={(e) => handleCheckboxChange(e,
                                  'RafterInsulation',
                                  improvementCosts.RafterInsulation * roofInsulationQuantity,
-                                 Math.min(availableGrants.RafterGrant, (improvementCosts.RafterInsulation * roofInsulationQuantity) / 2 || 0)
-                               )}/>
+                                 availableGrants.RafterGrant)}
+                        />
                         <label htmlFor="applyRafterInsulation">Select</label>
                       </div>
                     </td>
@@ -582,8 +594,8 @@ function SuggestionsPage () {
                                onChange={(e) => handleCheckboxChange(e,
                                  'FloorInsulation',
                                  improvementCosts.FloorInsulation * floorInsulationQuantity,
-                                 Math.min(availableGrants.FloorGrant, (improvementCosts.FloorInsulation * floorInsulationQuantity) / 2 || 0)
-                               )}/>
+                                 availableGrants.FloorGrant)}
+                        />
                         <label htmlFor="applyFloorInsulation">Select</label>
                       </div>
                     </td>
@@ -616,8 +628,8 @@ function SuggestionsPage () {
                                onChange={(e) => handleCheckboxChange(e,
                                  'WindowReplacement',
                                  improvementCosts.WindowReplacement * windowQuantity,
-                                 Math.min(availableGrants.WindowGrant, (improvementCosts.WindowReplacement * windowQuantity) / 2 || 0)
-                               )}/>
+                                 availableGrants.WindowGrant)}
+                        />
                         <label htmlFor="applyWindowReplacement">Select</label>
                       </div>
                     </td>
@@ -642,7 +654,7 @@ function SuggestionsPage () {
                     </td>
                     <td>€{(improvementCosts.BackDoorReplacement * BackDoorQuantity).toFixed(2)}</td>
                     <td>€{availableGrants.BackDoorGrant}*</td>
-                    <td>€{Math.min(availableGrants.BackDoorGrant, (improvementCosts.BackDoorReplacement * BackDoorQuantity) / 2 || 0).toFixed(2)}</td>
+                    <td>€{availableGrants.BackDoorGrant.toFixed(2)}</td>
                     <td>€{Math.max(0, (improvementCosts.BackDoorReplacement * BackDoorQuantity) - Math.min(availableGrants.BackDoorGrant, (improvementCosts.BackDoorReplacement * BackDoorQuantity) / 2) || 0).toFixed(2)}</td>
                     <td>
                       <div className="checkbox-container">
@@ -650,8 +662,8 @@ function SuggestionsPage () {
                                onChange={(e) => handleCheckboxChange(e,
                                  'BackDoorReplacement',
                                  improvementCosts.BackDoorReplacement * BackDoorQuantity,
-                                 Math.min(availableGrants.BackDoorGrant, (improvementCosts.BackDoorReplacement * BackDoorQuantity) / 2 || 0)
-                               )}/>
+                                 availableGrants.BackDoorGrant)}
+                        />
                         <label htmlFor="applyBackDoorReplacement">Select</label>
                       </div>
                     </td>
@@ -672,7 +684,7 @@ function SuggestionsPage () {
                     </td>
                     <td>€{(improvementCosts.FrontDoorReplacement * FrontDoorQuantity).toFixed(2)}</td>
                     <td>€{availableGrants.FrontDoorGrant}*</td>
-                    <td>€{Math.min(availableGrants.FrontDoorGrant, (improvementCosts.FrontDoorReplacement * FrontDoorQuantity) / 2 || 0).toFixed(2)}</td>
+                    <td>€{availableGrants.FrontDoorGrant.toFixed(2)}</td>
                     <td>€{Math.max(0, (improvementCosts.FrontDoorReplacement * FrontDoorQuantity) - Math.min(availableGrants.FrontDoorGrant, (improvementCosts.FrontDoorReplacement * FrontDoorQuantity) / 2) || 0).toFixed(2)}</td>
                     <td>
                       <div className="checkbox-container">
@@ -680,8 +692,8 @@ function SuggestionsPage () {
                                onChange={(e) => handleCheckboxChange(e,
                                  'FrontDoorReplacement',
                                  improvementCosts.FrontDoorReplacement * FrontDoorQuantity,
-                                 Math.min(availableGrants.FrontDoorGrant, (improvementCosts.FrontDoorReplacement * FrontDoorQuantity) / 2 || 0)
-                               )}/>
+                                 availableGrants.FrontDoorGrant)}
+                        />
                         <label htmlFor="applyFrontDoorReplacement">Select</label>
                       </div>
                     </td>
@@ -691,8 +703,8 @@ function SuggestionsPage () {
             <tr className="total-row">
               <td colSpan="2">Total</td>
               <td>€{totalEstimatedCost.toFixed(2)}</td>
-              <td></td>
-              <td>€{totalGrant.toFixed(2)}*</td>
+              <td>€{totalAvailableGrant}</td>
+              <td>€{totalRecalculatedGrant.toFixed(2)}*</td>
               <td>€{totalCostToHomeowner.toFixed(2)}**</td>
               <td><a href="https://www.seai.ie/grants/home-energy-grants/insulation-grants/" target="_blank"
                      rel="noopener noreferrer" className="button-blue">Apply</a></td>

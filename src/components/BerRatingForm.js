@@ -102,6 +102,16 @@ function BerRatingForm () {
     });
   };
 
+  const confirmPropertyAndNavigate = () => {
+    const confirmSelection = window.confirm('Are you sure this is the correct property?');
+    if (confirmSelection) {
+      setIsPropertyConfirmed(true);
+      navigate('/suggestions', { state: { selectedProperty } });
+      // Optionally, you could place window.scrollTo(0, 0); here if you had a specific need,
+      // but typically you'd manage this in the navigated-to page, based on passed state if necessary.
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!selectedProperty || !isPropertyConfirmed) {
@@ -201,14 +211,7 @@ function BerRatingForm () {
                                 </li>
                           ))}
                       </ul>
-                      <button type="submit" onClick={() => {
-                        const confirmSelection = window.confirm('Are you sure this is the correct property?');
-                        if (confirmSelection) {
-                          setIsPropertyConfirmed(true);
-                          navigate('/suggestions', { state: { selectedProperty } });
-                        }
-                      }} className="button-blue">Confirm Property
-                      </button>
+                      <button type="submit" onClick={confirmPropertyAndNavigate} className="button-blue">Confirm Property</button>
                     </div>
                 )}
               </div>

@@ -107,8 +107,9 @@ function BerRatingForm () {
     if (confirmSelection) {
       setIsPropertyConfirmed(true);
       navigate('/suggestions', { state: { selectedProperty } });
-      // Optionally, you could place window.scrollTo(0, 0); here if you had a specific need,
-      // but typically you'd manage this in the navigated-to page, based on passed state if necessary.
+      // Optionally, place window.scrollTo(0, 0); because the page may not scroll to the top automatically,
+      window.scrollTo(0, 0);
+      // tried to manage this in the navigated-to page, but it continued to scroll to the top when states where changed in the navigated-to page.
     }
   };
 

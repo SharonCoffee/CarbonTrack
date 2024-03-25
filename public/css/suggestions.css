@@ -208,6 +208,22 @@
     color: #ffffff !important; /* White for the text */
 }
 
+.color-block {
+    display: inline-block;
+    width: 15px;  /* Adjust size as needed */
+    height: 15px;  /* Adjust size as needed */
+    margin-right: 5px;  /* Space between block and text */
+    vertical-align: middle;
+}
+
+.red { background-color: #cc0000; } /* Red colour */
+.green { background-color: #008000; } /* Green colour */
+.amber { background-color: #ffa255; } /* Amber colour */
+
+.color-word {
+    /* Additional styling for text if needed */
+}
+
 
 /* Optional table styling */
 .optional-table {

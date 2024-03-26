@@ -1,33 +1,80 @@
 // TODO
 // 3. Add a button that returns the policy maker to the home page/ Log them out.
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import mapData from '../assets/irelandLow.js';
-import { ReactComponent as IrelandMap } from '../assets/irelandLow.svg';
-
-// Example positions, replace with actual positions for each county
-const counties = [
-  { name: 'Dublin', top: '50px', left: '100px', width: '20px', height: '20px' },
-  { name: 'Cork', top: '150px', left: '80px', width: '20px', height: '20px' }
-  // Add other counties
-];
+import { getAuth, signOut } from 'firebase/auth';
+import * as am5 from '@amcharts/amcharts5';
+import * as am5map from '@amcharts/amcharts5/map';
+import irelandGeodata from '@amcharts/amcharts5-geodata/irelandLow';
 
 const Countymap = () => {
   const navigate = useNavigate();
+  const chartRef = useRef(null);
 
-  const handleNavigate = (county) => {
-    navigate(`/dashboard_${county.name.toLowerCase()}`);
+  const handleLogout = () => {
+    const auth = getAuth();
+    signOut(auth).then(() => {
+      // Sign-out successful.
+      navigate('/login'); // Redirect to login page after logout
+    }).catch((error) => {
+      // An error happened.
+      console.error('Logout Error:', error);
+    });
   };
+
+  useEffect(() => {
+    const root = am5.Root.new('chartdiv');
+
+    // Create a map chart
+    const chart = root.container.children.push(am5map.MapChart.new(root, {
+      panX: 'translateX',
+      panY: 'translateY',
+      projection: am5map.geoMercator()
+    }));
+
+    // Create polygon series for map polygons
+    const polygonSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {
+      geoJSON: irelandGeodata,
+      valueField: 'value',
+      calculateAggregates: true
+    }));
+
+    // Set the initial fill color for the polygons
+    const template = polygonSeries.mapPolygons.template;
+    template.setAll({
+      tooltipText: '{name}',
+      interactive: true,
+      fill: am5.color(0xCCCCCC) // Grey color
+    });
+
+    // Define hover state and its properties directly for changing color on hover
+    template.states.create('hover', { properties: { fill: am5.color(0x1E90FF) } }); // Blue color on hover
+
+    // Add click event for navigation
+    polygonSeries.mapPolygons.template.events.on('click', function (ev) {
+      const countyName = ev.target.dataItem.dataContext.name;
+      navigate(`/dashboard_${countyName.toLowerCase()}`);
+    });
+
+    chartRef.current = root;
+
+    return () => {
+      root.dispose();
+    };
+  }, [navigate]);
 
   return (
       <>
           <div>
-              <h1>County Map</h1>
+              {/* Logout Button */}
+              <button type="button" className="logout-button" onClick={handleLogout}>Logout</button>
+          </div>
+          <div>
+              <h1>Overview</h1>
               <p></p>
           </div>
           <div className="policy-container">
-              <h2>Overview</h2>
               <p>
                   Our interactive map provides a detailed view of the energy efficiency landscape across various
                   counties.
@@ -39,17 +86,11 @@ const Countymap = () => {
                   practices within your jurisdiction.
               </p>
               {/* Similar changes for other sections */}
-              <div className="ireland-map-container">
-                  <IrelandMap/>
-                  {counties.map((county) => (
-                      <button
-                          key={county.name}
-                          style={{ top: county.top, left: county.left, width: county.width, height: county.height }}
-                          className="county-overlay"
-                          onClick={() => handleNavigate(county)}
-                      />
-                  ))}
+              <div>
+                  <h2>County Map</h2>
+                  <p>Click on a county to view the dashboard.</p>
               </div>
+              <div id="chartdiv" style={{ width: '100%', height: '500px' }}></div>
           </div>
 
       </>

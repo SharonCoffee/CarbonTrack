@@ -1,23 +1,6 @@
-.ireland-map-container {
-    width: 100%; /* or any desired width */
-    height: auto; /* maintains aspect ratio */
-    max-width: 600px; /* or the actual max-width of your SVG */
-    display: block; /* or flex, depending on your layout */
-    position: relative;
-    overflow: visible; /* so you can see the SVG if it's larger than the container */
-}
-
-.ireland-map-container svg {
-    width: 100%;
-    height: auto; /* Adjust height automatically based on the width while maintaining aspect ratio */
-    display: block;
-}
-
-.county-overlay {
-    position: absolute;
-    background: transparent;
-    border: none; /* Or set to 'none' if you don't want them visible */
-    cursor: pointer;
+.amcharts-map-area:hover {
+    fill: #4a90e2; /* Change fill to blue on hover */
+    cursor: pointer; /* Change cursor to indicate clickable area */
 }
 
 h1 h2 {
@@ -49,3 +32,4 @@ p {
     margin-bottom: 20px; /* Space below the paragraph */
     color: #333; /* Darker text for better readability */
 }
+

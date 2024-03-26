@@ -13,7 +13,7 @@ import SignupPage from './pages/signup';
 import BerPage from './pages/ber';
 import Suggestions from './pages/suggestions';
 import Dashboard from './pages/dashboard'; // Your generic dashboard component
-import PolicyInsightsDashboard from './pages/policyinsights';
+import Countymap from './pages/countymap';
 import ProtectedRoute from './components/protectedRoute';
 import './App.css';
 import './firebase/firebaseConfig';
@@ -43,10 +43,10 @@ function App () {
                                 <Suggestions />
                             </ProtectedRoute>
                         } />
-                        {/* Protected Route for PolicyInsights */}
-                        <Route path="/policyinsights" element={
+                        {/* Protected Route for Countymap */}
+                        <Route path="/countymap" element={
                             <ProtectedRoute>
-                                <PolicyInsightsDashboard />
+                                <Countymap />
                             </ProtectedRoute>
                         } />
                         {/* Protected Route for Dashboards - dynamic route for every county */}

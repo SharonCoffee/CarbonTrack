@@ -17,7 +17,7 @@ const Home = () => {
 
   const handlePolicyInsightsClick = () => {
     if (currentUser) {
-      navigate('/policyinsights'); // Navigate to PolicyInsights page
+      navigate('/policyinsights'); // Navigate to Countymap page
     } else {
       navigate('/login'); // Navigate to login page if not logged in
     }

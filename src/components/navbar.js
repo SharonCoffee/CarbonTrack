@@ -27,11 +27,11 @@ const Navbar = () => {
                             <li><NavLink to="/suggestions"
                                          className={({ isActive }) => getNavLinkClass(isActive)}>Suggestions</NavLink>
                             </li>
-                            <li><NavLink to="/policyinsights"
-                                         className={({ isActive }) => getNavLinkClass(isActive)}>PolicyInsights</NavLink>
+                            <li><NavLink to="/countymap"
+                                         className={({ isActive }) => getNavLinkClass(isActive)}>County Map</NavLink>
                             </li>
-                            <li><NavLink to="/policydashboard"
-                                            className={({ isActive }) => getNavLinkClass(isActive)}>PolicyDashboard</NavLink>
+                            <li><NavLink to="/dashboard"
+                                            className={({ isActive }) => getNavLinkClass(isActive)}>Residential Retrofitting Dashboard</NavLink>
                             </li>
                         </>
                     )}

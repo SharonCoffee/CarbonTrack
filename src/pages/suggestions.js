@@ -1,7 +1,8 @@
 // TODO:
 // 1. Add the heat pump assessment to the heat pump costs and the bonus heat pump too.
 // 2. Inform user of additional grants for other things that can be obtained.  Or maybe just show 1 in here too in a table for the homeowner.
-// 3. Use archetypeData and seaiGrants to remove the Eslint error message.
+// 3. Modify the recalculated grants total and homeownercost total to keep a running total of each individual recalculated grant and homeownercost instead of doing a full reculation at the end.
+// 4. Add a log out button.
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -15,7 +16,7 @@ function SuggestionsPage () {
   const [newEnergyRating, setNewEnergyRating] = useState('');
   const [tempNewEnergyRating, setTempNewEnergyRating] = useState('');
   const [selectClass, setSelectClass] = useState('');
-  const [archetypeData, setArchetypeData] = useState([]);
+  const [archetype, setArchetype] = useState([]);
   const [seaiGrants, setSeaiGrants] = useState([]);
   const [selectedUValues, setSelectedUValues] = useState({});
   const [wallInsulationQuantity, setWallInsulationQuantity] = useState(selectedProperty ? selectedProperty.WallArea : 0);
@@ -205,11 +206,16 @@ function SuggestionsPage () {
     // Use Promise.all to fetch both datasets concurrently
     Promise.all([fetchSEAIgrants(), fetchArchetypeData()]).then(([seaiGrantsData, archetypeData]) => {
       setSeaiGrants(seaiGrantsData);
-      setArchetypeData(archetypeData);
+      setArchetype(archetypeData);
 
       // Assuming selectedDwellingType holds type like 'Semi-detached house'
       const dwellingType = selectedProperty ? selectedProperty.DwellingTypeDescr : '';
       const newRating = newEnergyRating;
+
+      // Added in to remove the eslint error message
+      if (archetype.length === 0) {
+        return; // Exit if archetype data is not available
+      }
 
       // Find matching row for new energy rating and dwelling type from archetype data
       const matchedRow = archetypeData.find(row => row.DwellingType === dwellingType && row.EnergyRating === newRating);
@@ -242,6 +248,11 @@ function SuggestionsPage () {
       // Update improvement costs and available grants based on SEAI grants data and dwelling type
       const updatedImprovementCosts = { ...improvementCosts };
       const updatedAvailableGrants = { ...availableGrants };
+
+      // Added in to remove the eslint error message
+      if (seaiGrants.length === 0) {
+        return;
+      }
 
       seaiGrantsData.forEach(grant => {
         console.log(grant); // To check what's in each grant entry

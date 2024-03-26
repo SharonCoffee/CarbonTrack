@@ -36,5 +36,6 @@ h2 {
 
 .about-segment p {
     margin-bottom: 20px; /* Paragraph spacing */
+    align-items: justify;
 }
 

@@ -12,7 +12,8 @@ import ResetPassword from './pages/resetpassword';
 import SignupPage from './pages/signup';
 import BerPage from './pages/ber';
 import Suggestions from './pages/suggestions';
-import GraphQuery from './pages/graphquery';
+import Policydashboard from './pages/policydashboard';
+import PolicyInsightsDashboard from './pages/policyinsights';
 import ProtectedRoute from './components/protectedRoute';
 import './App.css';
 import './firebase/firebaseConfig';
@@ -42,14 +43,20 @@ function App () {
                                 <Suggestions />
                             </ProtectedRoute>
                         } />
-                        {/* Protected Route for GraphQuery */}
-                        <Route path="/graphquery" element={
+                        {/* Protected Route for Policydashboard */}
+                        <Route path="/policydashboard" element={
                                 <ProtectedRoute>
-                                    <GraphQuery />
+                                    <Policydashboard />
                                 </ProtectedRoute>
                             }
                         />
-                        {/* Add any other routes here */}
+                        {/* Protected Route for PolicyInsights */}
+                        <Route path="/policyinsights" element={
+                            <ProtectedRoute>
+                                <PolicyInsightsDashboard />
+                            </ProtectedRoute>
+                        } />
+                        {/* Add additional routes here */}
                     </Routes>
                 </div>
             </Router>

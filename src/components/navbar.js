@@ -21,9 +21,18 @@ const Navbar = () => {
                     <li><NavLink to="/faq" className={({ isActive }) => getNavLinkClass(isActive)}>FAQ</NavLink></li>
                     {currentUser && (
                         <>
-                            <li><NavLink to="/graphquery" className={({ isActive }) => getNavLinkClass(isActive)}>GraphQuery</NavLink></li>
-                            <li><NavLink to="/suggestions" className={({ isActive }) => getNavLinkClass(isActive)}>Suggestions</NavLink></li>
-                            <li><NavLink to="/BerRatingForm" className={({ isActive }) => getNavLinkClass(isActive)}>BerRating</NavLink></li>
+                            <li><NavLink to="/BerRatingForm"
+                                         className={({ isActive }) => getNavLinkClass(isActive)}>BerRating</NavLink>
+                            </li>
+                            <li><NavLink to="/suggestions"
+                                         className={({ isActive }) => getNavLinkClass(isActive)}>Suggestions</NavLink>
+                            </li>
+                            <li><NavLink to="/policyinsights"
+                                         className={({ isActive }) => getNavLinkClass(isActive)}>PolicyInsights</NavLink>
+                            </li>
+                            <li><NavLink to="/policydashboard"
+                                            className={({ isActive }) => getNavLinkClass(isActive)}>PolicyDashboard</NavLink>
+                            </li>
                         </>
                     )}
                 </ul>

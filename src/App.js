@@ -12,7 +12,7 @@ import ResetPassword from './pages/resetpassword';
 import SignupPage from './pages/signup';
 import BerPage from './pages/ber';
 import Suggestions from './pages/suggestions';
-import Policydashboard from './pages/policydashboard';
+import Dashboard from './pages/dashboard'; // Your generic dashboard component
 import PolicyInsightsDashboard from './pages/policyinsights';
 import ProtectedRoute from './components/protectedRoute';
 import './App.css';
@@ -43,19 +43,20 @@ function App () {
                                 <Suggestions />
                             </ProtectedRoute>
                         } />
-                        {/* Protected Route for Policydashboard */}
-                        <Route path="/policydashboard" element={
-                                <ProtectedRoute>
-                                    <Policydashboard />
-                                </ProtectedRoute>
-                            }
-                        />
                         {/* Protected Route for PolicyInsights */}
                         <Route path="/policyinsights" element={
                             <ProtectedRoute>
                                 <PolicyInsightsDashboard />
                             </ProtectedRoute>
                         } />
+                        {/* Protected Route for Dashboards - dynamic route for every county */}
+                        <Route path="/dashboard_:county" element={
+                                <ProtectedRoute>
+                                    <Dashboard />
+                                </ProtectedRoute>
+                            }
+                        />
+
                         {/* Add additional routes here */}
                     </Routes>
                 </div>

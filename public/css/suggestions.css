@@ -1,3 +1,19 @@
+/* Logout button styling */
+.logout-button {
+    background-color: #4a90e2; /* Blue background */
+    color: white; /* White text */
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center; width: auto; /* Only as wide as necessary */
+    margin-top: 10px; /* Space above the button */
+    align-self: flex-start; /* Align to the left side of the flex container */
+    margin-bottom: 20px;
+}
+
+
 /* Global styling for containers and tables to center them */
 .properties-container,
 .new-energy-rating-container,
@@ -75,7 +91,7 @@
     margin: 20px auto; /* Center the table */
     border: 1px solid #ddd; /* Grey border */
     border-collapse: collapse; /* Ensures no gaps between cells */
-    overflow: hidden; /* Ensures the border-radius affects the table too */
+    /* overflow: hidden; Removed to allow sticky header functionality */
 }
 
 .improvements-table,
@@ -241,6 +257,14 @@
 
 .improvements-table-container p strong {
     font-weight: 600; /* Slightly less bold than full bold for subtlety */
+}
+
+
+/* Individual Table Styling */
+.improvements-table th {
+    position: sticky; /* Keep the header fixed */
+    top: 0; /* Stick to the top */
+    z-index: 2; /* Ensure it's above other elements */
 }
 
 

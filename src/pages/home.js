@@ -15,6 +15,14 @@ const Home = () => {
     }
   };
 
+  const handlePolicyInsightsClick = () => {
+    if (currentUser) {
+      navigate('/policyinsights'); // Navigate to PolicyInsights page
+    } else {
+      navigate('/login'); // Navigate to login page if not logged in
+    }
+  };
+
   return (
       <Container>
         <Header as='h1' textAlign='center' style={{ margin: '20px 0' }}>
@@ -41,7 +49,9 @@ const Home = () => {
             <Button primary size='large' onClick={handleBerRatingClick}>
               Learn How to Improve Your BerRating
             </Button>
-            <Button secondary size='large'>For Policymakers: Start Here</Button>
+            <Button secondary size='large' onClick={handlePolicyInsightsClick}>
+              For Policymakers: Start Here
+            </Button>
           </div>
         </Segment>
       </Container>

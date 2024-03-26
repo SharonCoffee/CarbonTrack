@@ -19,7 +19,7 @@ const BerPage = () => {
   return (
         <div>
             <div>
-                {/* Add this where you want your logout button to appear */}
+                {/* Logout Button */}
                 <button type="button" className="logout-button" onClick={handleLogout}>Logout</button>
             </div>
             <div>

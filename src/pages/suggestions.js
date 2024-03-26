@@ -2,11 +2,12 @@
 // 1. Add the heat pump assessment to the heat pump costs and the bonus heat pump too.
 // 2. Inform user of additional grants for other things that can be obtained.  Or maybe just show 1 in here too in a table for the homeowner.
 // 3. Modify the recalculated grants total and homeownercost total to keep a running total of each individual recalculated grant and homeownercost instead of doing a full reculation at the end.
-// 4. Add a log out button.
+// 4. Show homeowner the improvement valuation of their home after the improvements are made.
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Papa from 'papaparse';
+import { getAuth, signOut } from 'firebase/auth';
 
 function SuggestionsPage () {
   const navigate = useNavigate(); // Initialize the useNavigate hook
@@ -108,6 +109,17 @@ function SuggestionsPage () {
     AirTightnessGrant: 0
     // other initial values
   });
+
+  const handleLogout = () => {
+    const auth = getAuth();
+    signOut(auth).then(() => {
+      // Sign-out successful.
+      navigate('/login'); // Redirect to login page after logout
+    }).catch((error) => {
+      // An error happened.
+      console.error('Logout Error:', error);
+    });
+  };
 
   const handleUValueChange = (e, field) => {
     setSelectedUValues({ ...selectedUValues, [field]: e.target.checked });
@@ -397,6 +409,10 @@ function SuggestionsPage () {
   // Display the selected property and inputs for modifying U-values
   return (
       <>
+        <div>
+          {/* Logout Button */}
+          <button type="button" className="logout-button" onClick={handleLogout}>Logout</button>
+        </div>
         <div>
           <h1>Your Selected Property Details</h1>
           {selectedProperty && (
@@ -714,10 +730,10 @@ function SuggestionsPage () {
                     <td>
                       <div className="checkbox-container">
                         <input type="checkbox" id="applyInternalWallInsulation" name="applyInternalWallInsulationGrant"
-                                 onChange={(e) => handleCheckboxChange(e,
-                                   'WallInternalInsulation',
-                                   improvementCosts.WallInternalInsulation * wallInsulationQuantity,
-                                   availableGrants.WallInternalGrant)}
+                               onChange={(e) => handleCheckboxChange(e,
+                                 'WallInternalInsulation',
+                                 improvementCosts.WallInternalInsulation * wallInsulationQuantity,
+                                 availableGrants.WallInternalGrant)}
                         />
                         <label htmlFor="applyInternalWallInsulation">Select</label>
                       </div>

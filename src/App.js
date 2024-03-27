@@ -12,7 +12,7 @@ import ResetPassword from './pages/resetpassword';
 import SignupPage from './pages/signup';
 import BerPage from './pages/ber';
 import Suggestions from './pages/suggestions';
-import Dashboard from './pages/dashboard'; // Your generic dashboard component
+import Dashboard from './pages/dashboard';
 import Countymap from './pages/countymap';
 import ProtectedRoute from './components/protectedRoute';
 import './App.css';
@@ -50,12 +50,12 @@ function App () {
                             </ProtectedRoute>
                         } />
                         {/* Protected Route for Dashboards - dynamic route for every county */}
-                        <Route path="/dashboard_:county" element={
-                                <ProtectedRoute>
-                                    <Dashboard />
-                                </ProtectedRoute>
-                            }
-                        />
+
+                        <Route path="/dashboard/:countyName" element={
+                            <ProtectedRoute>
+                                <Dashboard />
+                            </ProtectedRoute>
+                        } />
 
                         {/* Add additional routes here */}
                     </Routes>

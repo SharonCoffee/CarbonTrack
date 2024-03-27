@@ -1,6 +1,3 @@
-// TODO
-// 3. Add a button that returns the policy maker to the home page/ Log them out.
-
 import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAuth, signOut } from 'firebase/auth';
@@ -54,7 +51,7 @@ const Countymap = () => {
     // Add click event for navigation
     polygonSeries.mapPolygons.template.events.on('click', function (ev) {
       const countyName = ev.target.dataItem.dataContext.name;
-      navigate(`/dashboard_${countyName.toLowerCase()}`);
+      navigate(`/dashboard/${countyName.toLowerCase()}`);
     });
 
     chartRef.current = root;

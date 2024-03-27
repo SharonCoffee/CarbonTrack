@@ -6,16 +6,25 @@
 // 5. Add any additional features or functionality required for your policy insights dashboard
 
 import React, { useState, useEffect } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell } from 'recharts';
 import { useParams } from 'react-router-dom';
 import Papa from 'papaparse';
 
 const Dashboard = () => {
-  const { county } = useParams();
-  const [data, setData] = useState({}); // State to hold your dashboard data
+  const { countyName } = useParams(); // This captures the dynamic part of your URL
+  console.log('County Name:', countyName);
+  const [data, setData] = useState({});
+  const [propertyData, setPropertyData] = useState([]);
+  const [grantSupportDataByYear, setGrantSupportDataByYear] = useState([]);
+  const [grantSupportEnergyRatingsData, setGrantSupportEnergyRatingsData] = useState([]);
+  const [totalProperties, setTotalProperties] = useState(0);
+  const [totalEFGProperties, setTotalEFGProperties] = useState(0);
+  const [efgPercentage, setEFGPercentage] = useState(0);
+  const [totalGrantSupportProperties, setTotalGrantSupportProperties] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const [retrofitData, setRetrofitData] = useState([]);
-
+  // Define your energy rating colors here
   const energyRatingColors = {
     A1: '#008000',
     A2: '#008000',
@@ -26,82 +35,233 @@ const Dashboard = () => {
     C1: '#eeec20',
     C2: '#eeec20',
     C3: '#eeec20',
-    D1: '#FFC300', // Amber, using hex color code
-    D2: '#FFC300', // Amber, using hex color code
+    D1: '#FFC300',
+    D2: '#FFC300',
     E1: '#e7ac4a',
     E2: '#e7ac4a',
     F: '#ee8908',
     G: '#cc0000'
   };
 
-  useEffect(() => {
-    if (data === 0) {
-      return;
-    }
-    // Function to fetch data based on the county
-    const fetchDataForCounty = async () => {
-      // Replace with your actual data fetching logic
-      const response = await fetch(`/api/data/${county}`);
-      const data = await response.json();
-      setData(data);
-    };
+  function capitalizeFirstLetter (string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
 
-    fetchDataForCounty(); // Call the function without .then()
+  function sortEnergyRatings (a, b) {
+    return a.ratingType.localeCompare(b.ratingType);
+  }
 
-    const fetchLeitrimData = async () => {
-      const response = await fetch('/data/data_leitrim.csv');
-      const reader = response.body.getReader();
-      const result = await reader.read(); // raw array
-      const decoder = new TextDecoder('utf-8');
-      const csv = decoder.decode(result.value); // the csv text
-      const parsedData = Papa.parse(csv, { header: true });
+  // Function to fetch county-specific data
+  const fetchDataForCounty = async () => {
+    setIsLoading(true);
+    try {
+      // Fetching CSV data from the server
+      const response = await fetch(`/data/data_${countyName}.csv`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-      const energyRatingsCount = {};
-      parsedData.data.forEach(item => {
-        const rating = item.EnergyRating;
-        if (rating) {
-          energyRatingsCount[rating] = (energyRatingsCount[rating] || 0) + 1;
-        }
-      });
+      // Check if the response is in CSV format
+      if (!response.headers.get('Content-Type')?.includes('text/csv')) {
+        throw new Error('Did not receive CSV');
+      }
 
-      const chartData = Object.keys(energyRatingsCount).map(rating => ({
-        name: rating,
-        count: energyRatingsCount[rating]
+      // Reading CSV text
+      const csvText = await response.text();
+      // Parsing CSV text into JSON using PapaParse
+      const parsedData = Papa.parse(csvText, { header: true });
+
+      // Assuming you want to convert parsed CSV data into a specific format for your application
+      const formattedData = parsedData.data.map(item => ({
+        // Define data structure from CSV fields
+        id: item.PropertyID,
+        dwellingType: item.DwellingTypeDescr
+        // Add more fields as needed
       }));
 
-      setRetrofitData(chartData);
-    };
+      setData(formattedData);
+    } catch (error) {
+      console.error('Fetching county data failed:', error);
+      setError(`There was a problem retrieving the data: ${error.message}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    fetchLeitrimData(); // Call the function without .then()
-  }, [county]);
+  // Function to fetch Leitrim data
+  const fetchLeitrimData = async () => {
+    if (countyName.toLowerCase() === 'leitrim') {
+      try {
+        const response = await fetch('/data/data_leitrim.csv');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const csvText = await response.text(); // Get CSV text from response
+        const parsedData = Papa.parse(csvText, { header: true, dynamicTyping: true, skipEmptyLines: true });
+
+        let totalProperties = 0;
+        let totalEFGProperties = 0;
+        let totalGrantSupportProperties = 0;
+
+        // Initialize an object to count energy ratings & grant support by year
+        const energyRatingsCount = {};
+        const grantSupportByYear = {};
+        const grantSupportEnergyRatings = {};
+
+        // Iterate over each item in parsed CSV data
+        parsedData.data.forEach(item => {
+          const rating = item.EnergyRating;
+          if (rating) {
+            totalProperties++;
+            if (['E1', 'E2', 'F', 'G'].includes(rating)) {
+              totalEFGProperties++;
+            }
+            energyRatingsCount[rating] = (energyRatingsCount[rating] || 0) + 1;
+          }
+          if (item.PurposeOfRating === 'Grant Support') {
+            totalGrantSupportProperties += 1;
+
+            const year = item.DateOfAssessment.slice(-4); // Get the year from the date
+            grantSupportByYear[year] = (grantSupportByYear[year] || 0) + 1;
+          }
+          if (item.PurposeOfRating === 'Grant Support') {
+            const newRating = item.EnergyRating;
+            grantSupportEnergyRatings[newRating] = (grantSupportEnergyRatings[newRating] || 0) + 1;
+          }
+        });
+
+        const efgPercentage = totalProperties > 0 ? ((totalEFGProperties / totalProperties) * 100).toFixed(2) : 0;
+        const grantSupportDataByYear = Object.keys(grantSupportByYear).map(year => ({
+          year,
+          count: grantSupportByYear[year]
+        }));
+        // Convert retrofitEnergyRatings object to array suitable for BarChart
+        const grantSupportEnergyRatingsData = Object.keys(grantSupportEnergyRatings).map(rating => ({
+          ratingType: rating,
+          count: grantSupportEnergyRatings[rating]
+        })).sort(sortEnergyRatings);
+
+        // Update state with the new data
+        setTotalProperties(totalProperties);
+        setTotalEFGProperties(totalEFGProperties);
+        setEFGPercentage(efgPercentage);
+        setTotalGrantSupportProperties(totalGrantSupportProperties);
+        setPropertyData(Object.keys(energyRatingsCount).map(rating => ({
+          ratingType: rating,
+          ratingCount: energyRatingsCount[rating]
+        })).sort(sortEnergyRatings));
+        setGrantSupportDataByYear(grantSupportDataByYear);
+        setGrantSupportEnergyRatingsData(grantSupportEnergyRatingsData);
+      } catch (error) {
+        console.error('Error fetching or parsing Leitrim data:', error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchDataForCounty();
+    fetchLeitrimData();
+  }, [countyName]);
+
+  if (data.length === 0) {
+    return;
+  }
 
   const renderRetrofitProgress = () => {
     return (
-            <BarChart width={600} height={300} data={retrofitData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                {Object.keys(energyRatingColors).map(key => (
-                    <Bar key={key} dataKey="count" fill={energyRatingColors[key]} name={`Energy Rating ${key}`} />
-                ))}
-            </BarChart>
+        <BarChart width={600} height={400} data={propertyData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="ratingType" label={{ value: 'Energy Rating Category', position: 'insideBottomRight', offset: -10 }} />
+          <YAxis label={{ value: 'Number of Properties', angle: -90, position: 'insideLeft' }} />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="ratingCount" name="Energy Rating">
+            {
+              propertyData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={energyRatingColors[entry.ratingType] || '#8884d8'} />
+              ))
+            }
+          </Bar>
+        </BarChart>
     );
   };
 
+  const renderGrantSupportYearlyProgress = (data) => {
+    return (
+        <BarChart width={600} height={400} data={data}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="year" label={{ value: 'Year', position: 'insideBottomRight', offset: -10 }} />
+          <YAxis label={{ value: 'Number of Properties', angle: -90, position: 'insideLeft' }} />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="count" name="Grant support provided" fill="#4a90e2" />
+        </BarChart>
+    );
+  };
+
+  const renderGrantSupportEnergyRatings = () => {
+    return (
+        <BarChart width={600} height={400} data={grantSupportEnergyRatingsData} className="barChart">
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="ratingType" label={{ value: 'Energy Rating Category', position: 'insideBottomRight', offset: -10 }} />
+          <YAxis label={{ value: 'Number of Properties', angle: -90, position: 'insideLeft' }} />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="count" name="Grant Support by Energy Rating Category" >
+            {grantSupportEnergyRatingsData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={energyRatingColors[entry.ratingType] || '#8884d8'} />
+            ))}
+          </Bar>
+        </BarChart>
+    );
+  };
+
+  // Render dashboard UI
   return (
       <>
-        <div>
-          <h1>{county} Dashboard</h1>
-          {/* Render your dashboard UI here using the fetched data */}
+        <div className="energy-rating-container">
+          <h1>{capitalizeFirstLetter(countyName)} Dashboard</h1>
+          <br></br>
+          {isLoading && <p>Loading...</p>}
+          {error && <div className="error-message">{error}</div>} {/* Display error message */}
         </div>
-        <div>
-            <h2>Retrofitting Overview</h2>
-            {renderRetrofitProgress()}
+        <div className="properties-summary-container">
+          <div className="properties-container">
+            <h2>Total Properties in {capitalizeFirstLetter(countyName)}</h2>
+            <p className="big-number">{totalProperties}</p>
+          </div>
+          <div className="efg-properties-container">
+            <h2>Total Properties with E1, E2, F, or G Ratings</h2>
+            <p className="big-number">{totalEFGProperties}</p>
+          </div>
+          <div className="efg-percentage-container">
+            <h2>Percentage of E1, E2, F, or G Rated Properties</h2>
+            <p className="big-number">{efgPercentage}%</p>
+          </div>
+        </div>
+        <div className="energy-rating-chart-container">
+          <h2>Property Energy Ratings Distribution</h2>
+          {propertyData.length > 0 ? renderRetrofitProgress() : <p>No data available.</p>}
+        </div>
+        <div className="grant-supported-properties-container">
+          <h2>Total Grant supports allocated to properties since 2011</h2>
+          <p className="big-number">{totalGrantSupportProperties}</p>
+        </div>
+        <div className="grant-summary-container">
+          <div className="retrofit-yearly-chart-container">
+            <h2>Grant supports distribution by Year</h2>
+            {grantSupportDataByYear.length > 0
+              ? renderGrantSupportYearlyProgress(grantSupportDataByYear)
+              : <p>No property data available.</p>}
+          </div>
+          <div className="energy-rating-chart-container">
+            <h2>Energy Ratings for Grant Support Properties</h2>
+            {grantSupportEnergyRatingsData.length > 0
+              ? renderGrantSupportEnergyRatings()
+              : <p>No property data available.</p>}
+          </div>
         </div>
       </>
-
   );
 };
 

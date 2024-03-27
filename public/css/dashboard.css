@@ -53,7 +53,8 @@
 /* Global styling for containers and tables to center them */
 .energy-rating-container,
 .energy-rating-chart-container,
-.grant-supported-properties-container {
+.grant-supported-properties-container,
+.efg-differences-chart-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -64,7 +65,8 @@
 
 /* Container for the new energy rating section */
 .energy-rating-chart-container,
-.grant-supported-properties-container {
+.grant-supported-properties-container,
+.efg-differences-chart-container{
     background-color: #ffffff; /* White background for cleanliness */
     border: 1px solid #e0e0e0; /* Light gray border */
     gap: 15px; /* Same gap as in login-form for consistency */
@@ -106,7 +108,8 @@ p {
 
 /* Individual container styling */
 .retrofit-yearly-chart-container,
-.energy-rating-chart-container {
+.energy-rating-chart-container,
+.efg-differences-chart-container{
     flex: 1; /* Make containers take equal width */
     background-color: #ffffff; /* White background for cleanliness */
     border: 1px solid #e0e0e0; /* Light gray border */
@@ -123,4 +126,33 @@ p {
     color: red; /* Change as needed */
     font-size: 16px; /* Change as needed */
     margin: 20px 0; /* Change as needed */
+}
+
+/* Layout for the properties-needing-support-summary to appear next to each other */
+.properties-needing-support-summary {
+    display: flex;
+    justify-content: center; /* Center the containers horizontally */
+    align-items: stretch; /* Make containers of equal height */
+    width: 100%; /* Full width of the parent container */
+    max-width: 92%; /* Maximum width similar to other sections */
+    margin-top: 20px; /* Space above the containers */
+    margin-bottom: 20px; /* Space below the containers */
+    margin-left: auto; /* Centers the container horizontally */
+    margin-right: auto; /* Centers the container horizontally */
+    gap: 20px; /* Space between the containers */
+}
+
+/* Individual container styling within properties-needing-support-summary */
+.properties-received-support-container,
+.properties-needing-support-container {
+    flex: 1; /* Make containers take equal width */
+    background-color: #ffffff; /* White background for cleanliness */
+    border: 1px solid #e0e0e0; /* Light gray border */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+    border-radius: 8px; /* Rounded corners for modern look */
+    padding: 20px; /* Padding inside the containers */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Distribute space inside containers */
+    align-items: center; /* Center the content vertically */
 }

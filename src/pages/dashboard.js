@@ -1,9 +1,5 @@
 // TODO
-// 1. Replace the placeholder URLs with your actual backend endpoints
-// 2. Adjust the data structure and rendering logic to match your actual data
-// 3. Customize the appearance and layout of the dashboard components
 // 4. Import graphing libraries or components as needed
-// 5. Add any additional features or functionality required for your policy insights dashboard
 
 import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell } from 'recharts';
@@ -21,6 +17,9 @@ const Dashboard = () => {
   const [totalEFGProperties, setTotalEFGProperties] = useState(0);
   const [efgPercentage, setEFGPercentage] = useState(0);
   const [totalGrantSupportProperties, setTotalGrantSupportProperties] = useState(0);
+  const [totalGrantSupportedEFGProperties, setTotalGrantSupportedEFGProperties] = useState(0);
+  const [efgDifferences, setEFGDifferences] = useState([]);
+  const [propertiesStillNeedingSupport, setPropertiesStillNeedingSupport] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -102,6 +101,7 @@ const Dashboard = () => {
         let totalProperties = 0;
         let totalEFGProperties = 0;
         let totalGrantSupportProperties = 0;
+        let totalGrantSupportedEFGProperties = 0;
 
         // Initialize an object to count energy ratings & grant support by year
         const energyRatingsCount = {};
@@ -119,39 +119,47 @@ const Dashboard = () => {
             energyRatingsCount[rating] = (energyRatingsCount[rating] || 0) + 1;
           }
           if (item.PurposeOfRating === 'Grant Support') {
-            totalGrantSupportProperties += 1;
-
-            const year = item.DateOfAssessment.slice(-4); // Get the year from the date
+            totalGrantSupportProperties++;
+            const year = item.DateOfAssessment.slice(-4);
             grantSupportByYear[year] = (grantSupportByYear[year] || 0) + 1;
-          }
-          if (item.PurposeOfRating === 'Grant Support') {
             const newRating = item.EnergyRating;
             grantSupportEnergyRatings[newRating] = (grantSupportEnergyRatings[newRating] || 0) + 1;
+
+            if (['E1', 'E2', 'F', 'G'].includes(newRating)) {
+              totalGrantSupportedEFGProperties++;
+            }
+            // After fetching and processing data in fetchLeitrimData
+            const differences = ['E1', 'E2', 'F', 'G'].map(rating => ({
+              ratingType: rating,
+              difference: (energyRatingsCount[rating] || 0) - (grantSupportEnergyRatings[rating] || 0)
+            }));
+            setEFGDifferences(differences);
           }
         });
 
         const efgPercentage = totalProperties > 0 ? ((totalEFGProperties / totalProperties) * 100).toFixed(2) : 0;
-        const grantSupportDataByYear = Object.keys(grantSupportByYear).map(year => ({
-          year,
-          count: grantSupportByYear[year]
-        }));
-        // Convert retrofitEnergyRatings object to array suitable for BarChart
-        const grantSupportEnergyRatingsData = Object.keys(grantSupportEnergyRatings).map(rating => ({
-          ratingType: rating,
-          count: grantSupportEnergyRatings[rating]
-        })).sort(sortEnergyRatings);
+        // Properties still needing retrofitting
+        const propertiesStillNeedingSupport = totalEFGProperties - totalGrantSupportedEFGProperties;
 
         // Update state with the new data
         setTotalProperties(totalProperties);
         setTotalEFGProperties(totalEFGProperties);
         setEFGPercentage(efgPercentage);
         setTotalGrantSupportProperties(totalGrantSupportProperties);
+        setTotalGrantSupportedEFGProperties(totalGrantSupportedEFGProperties);
+        setPropertiesStillNeedingSupport(propertiesStillNeedingSupport);
         setPropertyData(Object.keys(energyRatingsCount).map(rating => ({
           ratingType: rating,
           ratingCount: energyRatingsCount[rating]
         })).sort(sortEnergyRatings));
-        setGrantSupportDataByYear(grantSupportDataByYear);
-        setGrantSupportEnergyRatingsData(grantSupportEnergyRatingsData);
+        setGrantSupportDataByYear(Object.keys(grantSupportByYear).map(year => ({
+          year,
+          count: grantSupportByYear[year]
+        })));
+        setGrantSupportEnergyRatingsData(Object.keys(grantSupportEnergyRatings).map(rating => ({
+          ratingType: rating,
+          count: grantSupportEnergyRatings[rating]
+        })).sort(sortEnergyRatings));
       } catch (error) {
         console.error('Error fetching or parsing Leitrim data:', error);
       }
@@ -169,10 +177,15 @@ const Dashboard = () => {
 
   const renderRetrofitProgress = () => {
     return (
-        <BarChart width={600} height={400} data={propertyData}>
+        <BarChart
+            width={1000}
+            height={400}
+            data={propertyData}
+            margin={{ top: 20, right: 30, bottom: 30, left: 20 }}
+            className="barChart">
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="ratingType" label={{ value: 'Energy Rating Category', position: 'insideBottomRight', offset: -10 }} />
-          <YAxis label={{ value: 'Number of Properties', angle: -90, position: 'insideLeft' }} />
+          <XAxis dataKey="ratingType" label={{ value: 'Energy Rating Category', position: 'insideBottom', offset: -5 }} />
+          <YAxis label={{ value: 'Number of Properties', angle: -90, position: 'insideLeft', offset: 10 }} />
           <Tooltip />
           <Legend />
           <Bar dataKey="ratingCount" name="Energy Rating">
@@ -188,10 +201,15 @@ const Dashboard = () => {
 
   const renderGrantSupportYearlyProgress = (data) => {
     return (
-        <BarChart width={600} height={400} data={data}>
+        <BarChart
+            width={750}
+            height={400}
+            data={data}
+            margin={{ top: 20, right: 30, bottom: 30, left: 20 }}
+            className="barChart">
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="year" label={{ value: 'Year', position: 'insideBottomRight', offset: -10 }} />
-          <YAxis label={{ value: 'Number of Properties', angle: -90, position: 'insideLeft' }} />
+          <XAxis dataKey="year" label={{ value: 'Year', position: 'insideBottom', offset: -5 }} />
+          <YAxis label={{ value: 'Number of Properties', angle: -90, position: 'insideLeft', offset: 10 }} />
           <Tooltip />
           <Legend />
           <Bar dataKey="count" name="Grant support provided" fill="#4a90e2" />
@@ -201,10 +219,15 @@ const Dashboard = () => {
 
   const renderGrantSupportEnergyRatings = () => {
     return (
-        <BarChart width={600} height={400} data={grantSupportEnergyRatingsData} className="barChart">
+        <BarChart
+            width={750}
+            height={400}
+            data={grantSupportEnergyRatingsData}
+            margin={{ top: 20, right: 30, bottom: 30, left: 20 }}
+            className="barChart">
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="ratingType" label={{ value: 'Energy Rating Category', position: 'insideBottomRight', offset: -10 }} />
-          <YAxis label={{ value: 'Number of Properties', angle: -90, position: 'insideLeft' }} />
+          <XAxis dataKey="ratingType" label={{ value: 'Energy Rating Category', position: 'insideBottom', offset: -5 }} />
+          <YAxis label={{ value: 'Number of Properties', angle: -90, position: 'insideLeft', offset: 10 }} />
           <Tooltip />
           <Legend />
           <Bar dataKey="count" name="Grant Support by Energy Rating Category" >
@@ -216,10 +239,33 @@ const Dashboard = () => {
     );
   };
 
+  const renderEFGDifferencesChart = () => {
+    return (
+        <BarChart
+            width={600}
+            height={400}
+            data={efgDifferences}
+            margin={{ top: 20, right: 30, bottom: 30, left: 20 }}
+            className="barChart">
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="ratingType" label={{ value: 'Energy Rating Category', position: 'insideBottom', offset: -5 }} />
+          <YAxis label={{ value: 'Number of Properties', angle: -90, position: 'insideLeft', offset: 10 }} />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="difference" name="Difference in Number of Properties" fill="#82ca9d">
+            {efgDifferences.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={energyRatingColors[entry.ratingType] || '#8884d8'} />
+            ))}
+          </Bar>
+        </BarChart>
+    );
+  };
+
   // Render dashboard UI
   return (
       <>
         <div className="energy-rating-container">
+          <br></br>
           <h1>{capitalizeFirstLetter(countyName)} Dashboard</h1>
           <br></br>
           {isLoading && <p>Loading...</p>}
@@ -250,16 +296,34 @@ const Dashboard = () => {
         <div className="grant-summary-container">
           <div className="retrofit-yearly-chart-container">
             <h2>Grant supports distribution by Year</h2>
+            <p>Properties that needed to submit a pre-works BER Certificate with grant application.</p>
             {grantSupportDataByYear.length > 0
               ? renderGrantSupportYearlyProgress(grantSupportDataByYear)
               : <p>No property data available.</p>}
           </div>
           <div className="energy-rating-chart-container">
             <h2>Energy Ratings for Grant Support Properties</h2>
+            <p>Properties with an E1, E2, F or G Energy Rating category that needed to submit a pre-works BER Certificate with grant application.</p>
             {grantSupportEnergyRatingsData.length > 0
               ? renderGrantSupportEnergyRatings()
               : <p>No property data available.</p>}
           </div>
+        </div>
+        <div className="properties-needing-support-summary">
+          <div className="properties-received-support-container">
+            <h2>Properties in E1, E2, F and G Energy Rating Category that have received grant support</h2>
+            <p className="big-number">{totalGrantSupportedEFGProperties}</p>
+          </div>
+          <div className="properties-needing-support-container">
+            <h2>Properties in E1, E2, F and G Energy Rating Category that still need support</h2>
+            <p className="big-number">{propertiesStillNeedingSupport}</p>
+          </div>
+        </div>
+        <div className="efg-differences-chart-container">
+          <h2>Distribution of Properties in E1, E2, F and G Energy Rating Category that still need support</h2>
+          {efgDifferences && efgDifferences.length > 0
+            ? renderEFGDifferencesChart()
+            : <p>No data available.</p>}
         </div>
       </>
   );

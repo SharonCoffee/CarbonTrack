@@ -269,7 +269,7 @@ const Dashboard = () => {
       <>
         <div className="energy-rating-container">
           <br></br>
-          <h1>{capitalizeFirstLetter(countyName)} Dashboard</h1>
+          <h1>County {capitalizeFirstLetter(countyName)} Dashboard</h1>
           <br></br>
           {isLoading && <p>Loading...</p>}
           {error && <div className="error-message">{error}</div>} {/* Display error message */}

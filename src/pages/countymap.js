@@ -73,12 +73,10 @@ const Countymap = () => {
           </div>
           <div className="policy-container">
               <p>
-                  Our interactive map provides a detailed view of the energy efficiency landscape across various
-                  counties.
-                  Designed specifically for policymakers and environmental strategists, this feature allows you to click
+                  Our interactive map is designed specifically for policymakers and environmental strategists, this feature allows you to click
                   on any county to access a specialized dashboard.
-                  Each county&apos;s dashboard offers a comprehensive analysis of retrofitting activities,
-                  grant distribution, and overall energy performance improvements specific to that area.
+                  Each county&apos;s dashboard offers a comprehensive analysis of properties within the county that have an energy rating of E1, E2, F and G,
+                  grant supports provided, and data on properties in need of support specific to that area.
                   Explore the map to gain insights and inform your strategic decisions in promoting sustainable energy
                   practices within your jurisdiction.
               </p>

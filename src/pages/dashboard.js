@@ -88,87 +88,90 @@ const Dashboard = () => {
   };
 
   // Function to fetch Leitrim data
-  const fetchLeitrimData = async () => {
-    if (countyName.toLowerCase() === 'leitrim') {
-      try {
-        const response = await fetch('/data/data_leitrim.csv');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const csvText = await response.text(); // Get CSV text from response
-        const parsedData = Papa.parse(csvText, { header: true, dynamicTyping: true, skipEmptyLines: true });
-
-        let totalProperties = 0;
-        let totalEFGProperties = 0;
-        let totalGrantSupportProperties = 0;
-        let totalGrantSupportedEFGProperties = 0;
-
-        // Initialize an object to count energy ratings & grant support by year
-        const energyRatingsCount = {};
-        const grantSupportByYear = {};
-        const grantSupportEnergyRatings = {};
-
-        // Iterate over each item in parsed CSV data
-        parsedData.data.forEach(item => {
-          const rating = item.EnergyRating;
-          if (rating) {
-            totalProperties++;
-            if (['E1', 'E2', 'F', 'G'].includes(rating)) {
-              totalEFGProperties++;
-            }
-            energyRatingsCount[rating] = (energyRatingsCount[rating] || 0) + 1;
-          }
-          if (item.PurposeOfRating === 'Grant Support') {
-            totalGrantSupportProperties++;
-            const year = item.DateOfAssessment.slice(-4);
-            grantSupportByYear[year] = (grantSupportByYear[year] || 0) + 1;
-            const newRating = item.EnergyRating;
-            grantSupportEnergyRatings[newRating] = (grantSupportEnergyRatings[newRating] || 0) + 1;
-
-            if (['E1', 'E2', 'F', 'G'].includes(newRating)) {
-              totalGrantSupportedEFGProperties++;
-            }
-            // After fetching and processing data in fetchLeitrimData
-            const differences = ['E1', 'E2', 'F', 'G'].map(rating => ({
-              ratingType: rating,
-              difference: (energyRatingsCount[rating] || 0) - (grantSupportEnergyRatings[rating] || 0)
-            }));
-            setEFGDifferences(differences);
-          }
-        });
-
-        const efgPercentage = totalProperties > 0 ? ((totalEFGProperties / totalProperties) * 100).toFixed(2) : 0;
-        // Properties still needing retrofitting
-        const propertiesStillNeedingSupport = totalEFGProperties - totalGrantSupportedEFGProperties;
-
-        // Update state with the new data
-        setTotalProperties(totalProperties);
-        setTotalEFGProperties(totalEFGProperties);
-        setEFGPercentage(efgPercentage);
-        setTotalGrantSupportProperties(totalGrantSupportProperties);
-        setTotalGrantSupportedEFGProperties(totalGrantSupportedEFGProperties);
-        setPropertiesStillNeedingSupport(propertiesStillNeedingSupport);
-        setPropertyData(Object.keys(energyRatingsCount).map(rating => ({
-          ratingType: rating,
-          ratingCount: energyRatingsCount[rating]
-        })).sort(sortEnergyRatings));
-        setGrantSupportDataByYear(Object.keys(grantSupportByYear).map(year => ({
-          year,
-          count: grantSupportByYear[year]
-        })));
-        setGrantSupportEnergyRatingsData(Object.keys(grantSupportEnergyRatings).map(rating => ({
-          ratingType: rating,
-          count: grantSupportEnergyRatings[rating]
-        })).sort(sortEnergyRatings));
-      } catch (error) {
-        console.error('Error fetching or parsing Leitrim data:', error);
+  const fetchCountyData = async () => {
+    const selectedCounty = countyName.toLowerCase();
+    try {
+      const response = await fetch(`/data/data_${selectedCounty}.csv`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+      const csvText = await response.text(); // Get CSV text from response
+      const parsedData = Papa.parse(csvText, {
+        header: true,
+        dynamicTyping: true,
+        skipEmptyLines: true
+      });
+
+      let totalProperties = 0;
+      let totalEFGProperties = 0;
+      let totalGrantSupportProperties = 0;
+      let totalGrantSupportedEFGProperties = 0;
+
+      // Initialize an object to count energy ratings & grant support by year
+      const energyRatingsCount = {};
+      const grantSupportByYear = {};
+      const grantSupportEnergyRatings = {};
+
+      // Iterate over each item in parsed CSV data
+      parsedData.data.forEach(item => {
+        const rating = item.EnergyRating;
+        if (rating) {
+          totalProperties++;
+          if (['E1', 'E2', 'F', 'G'].includes(rating)) {
+            totalEFGProperties++;
+          }
+          energyRatingsCount[rating] = (energyRatingsCount[rating] || 0) + 1;
+        }
+        if (item.PurposeOfRating === 'Grant Support') {
+          totalGrantSupportProperties++;
+          const year = item.DateOfAssessment.slice(-4);
+          grantSupportByYear[year] = (grantSupportByYear[year] || 0) + 1;
+          const newRating = item.EnergyRating;
+          grantSupportEnergyRatings[newRating] = (grantSupportEnergyRatings[newRating] || 0) + 1;
+
+          if (['E1', 'E2', 'F', 'G'].includes(newRating)) {
+            totalGrantSupportedEFGProperties++;
+          }
+          // After fetching and processing data in fetchCountyData
+          const differences = ['E1', 'E2', 'F', 'G'].map(rating => ({
+            ratingType: rating,
+            difference: (energyRatingsCount[rating] || 0) - (grantSupportEnergyRatings[rating] || 0)
+          }));
+          setEFGDifferences(differences);
+        }
+      });
+
+      const efgPercentage = totalProperties > 0 ? ((totalEFGProperties / totalProperties) * 100).toFixed(2) : 0;
+      // Properties still needing retrofitting
+      const propertiesStillNeedingSupport = totalEFGProperties - totalGrantSupportedEFGProperties;
+
+      // Update state with the new data
+      setTotalProperties(totalProperties);
+      setTotalEFGProperties(totalEFGProperties);
+      setEFGPercentage(efgPercentage);
+      setTotalGrantSupportProperties(totalGrantSupportProperties);
+      setTotalGrantSupportedEFGProperties(totalGrantSupportedEFGProperties);
+      setPropertiesStillNeedingSupport(propertiesStillNeedingSupport);
+      setPropertyData(Object.keys(energyRatingsCount).map(rating => ({
+        ratingType: rating,
+        ratingCount: energyRatingsCount[rating]
+      })).sort(sortEnergyRatings));
+      setGrantSupportDataByYear(Object.keys(grantSupportByYear).map(year => ({
+        year,
+        count: grantSupportByYear[year]
+      })));
+      setGrantSupportEnergyRatingsData(Object.keys(grantSupportEnergyRatings).map(rating => ({
+        ratingType: rating,
+        count: grantSupportEnergyRatings[rating]
+      })).sort(sortEnergyRatings));
+    } catch (error) {
+      console.error('Error fetching or parsing Leitrim data:', error);
     }
   };
 
   useEffect(() => {
     fetchDataForCounty();
-    fetchLeitrimData();
+    fetchCountyData();
   }, [countyName]);
 
   if (data.length === 0) {

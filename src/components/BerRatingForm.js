@@ -4,6 +4,7 @@ import Papa from 'papaparse';
 
 function BerRatingForm () {
   const [selectedCounty, setSelectedCounty] = useState('');
+  const csvFilePath = `/data/data_${selectedCounty.toLowerCase()}.csv`;
   const counties = [
     'Carlow', 'Cavan', 'Clare', 'Cork', 'Donegal', 'Dublin', 'Galway', 'Kerry',
     'Kildare', 'Kilkenny', 'Laois', 'Leitrim', 'Limerick', 'Louth', 'Longford',
@@ -83,8 +84,8 @@ function BerRatingForm () {
     // Ensure BER Rating is valid before searching
     if (!validateBerRating()) return;
 
-    // CSV is stored in public/data/data_leitrim.csv
-    Papa.parse('/data/data_leitrim.csv', {
+    // CSV is stored in public/data/data_countyname.csv
+    Papa.parse(csvFilePath, {
       download: true,
       header: true,
       complete: (result) => {

@@ -11,7 +11,7 @@ const Navbar = () => {
   return (
         <>
             <header className="navbar-header">
-                CarbonTrack
+                <span className="carbon">Carbon</span><span className="track">Track</span>
             </header>
             <nav className="navbar">
                 <ul className="navbar-nav">

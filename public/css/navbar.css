@@ -14,7 +14,7 @@
 }
 
 .navbar-header {
-    background-color: #4a90e2; /* Blue background */
+    background-color: white; /* Blue background */
     color: white; /* White text color */
     padding: 10px 20px; /* Padding around the text */
     font-size: 36px; /* Larger font size */
@@ -22,9 +22,20 @@
     font-weight: bold; /* Make the text bold */
 }
 
+.carbon {
+    color: #212221; /* Color for 'Carbon' */
+}
+
+.track {
+    color: #4a90e2; /* Color for 'Track' */
+}
+
 .navbar-nav {
     list-style-type: none; /* Removes bullet points */
     display: flex; /* Display list items in a row */
+    justify-content: center; /* Center the list items */
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .navbar-nav li {

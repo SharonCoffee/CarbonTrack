@@ -1,0 +1,96 @@
+body {
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+}
+.home-header {
+    color: #4a90e2; /* A shade of blue for the header */
+    text-align: center;
+    margin: 20px 0;
+}
+
+h2 {
+    color: #4a90e2; /* Blue text for the header */
+}
+
+h3 {
+    color: #212221;
+}
+
+p {
+    text-align: justify; /* Justify text for better readability */
+}
+
+/* Global styling for containers in home page to center them */
+.home-challenge-container,
+.solution-container {
+    background-color: #ffffff; /* White background for cleanliness */
+    border: 1px solid #e0e0e0; /* Light gray border */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+    border-radius: 8px; /* Rounded corners for modern look */
+}
+
+.home-challenge-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%; /* Adjust based on your layout */
+    margin: 20px auto; /* Adjust margin as needed */
+    padding: 20px; /* Adjust padding as needed */
+    max-width: 90%; /* Max-width can also be 80% */
+}
+
+/* Layout for the solution-summary to appear next to each other */
+.solution-container {
+    display: flex;
+    justify-content: space-between; /* This ensures space between the two child containers */
+    flex-wrap: nowrap; /* Prevents wrapping, forcing items to stay on the same line */
+    align-items: stretch;
+    width: 100%;
+    max-width: 90%; /* Adjust as needed to your page layout */
+    margin-top: 20px; /* Space above the containers */
+    margin-bottom: 20px; /* Space below the containers */
+    margin-left: auto; /* Centers the container horizontally */
+    margin-right: auto; /* Centers the container horizontally */
+    gap: 20px; /* Space between the containers */
+}
+
+/* Individual container styling */
+.homeowner-container,
+.policy-container {
+    flex: 1; /* Make containers take equal width */
+    padding: 20px; /* Padding inside the containers */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Distribute space inside containers */
+    align-items: center;
+}
+/* Add media query for responsive adjustment */
+@media (max-width: 768px) {
+    .solution-container {
+        flex-direction: column; /* Stack containers on smaller screens */
+    }
+
+    .homeowner-container,
+    .policy-container {
+        flex-basis: 100%; /* Each container takes full width on smaller screens */
+        margin: 10px 0; /* Add vertical spacing */
+    }
+}
+
+
+.homeowner-button,
+.policy-button {
+    background-color: #4a90e2;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 1em; /* Added font-size to ensure readability */
+}
+
+.homeowner-button:hover,
+.policy-button:hover {
+    background-color: #357abd; /* Darker blue on hover */
+}
+

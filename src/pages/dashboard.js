@@ -1,5 +1,6 @@
 // TODO
 // 4. Import graphing libraries or components as needed
+// 5.  Show a button to navigate back to the countymap
 
 import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell } from 'recharts';
@@ -7,7 +8,7 @@ import { useParams } from 'react-router-dom';
 import Papa from 'papaparse';
 
 const Dashboard = () => {
-  const { countyName } = useParams(); // This captures the dynamic part of your URL
+  const { countyName } = useParams(); // This captures the dynamic part of the URL
   console.log('County Name:', countyName);
   const [data, setData] = useState({});
   const [propertyData, setPropertyData] = useState([]);

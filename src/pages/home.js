@@ -1,5 +1,4 @@
 import React from 'react';
-import { Container, Header, Segment, Button } from 'semantic-ui-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/authContext';
 
@@ -24,37 +23,69 @@ const Home = () => {
   };
 
   return (
-      <Container>
-        <Header as='h1' textAlign='center' style={{ margin: '20px 0' }}>
-          Welcome to CarbonTrack
-        </Header>
-        <Segment>
-          <Header as='h2'>Empowering Sustainable Living</Header>
-          <p>
-            At CarbonTrack, our mission is to empower households and policymakers with the knowledge and tools needed to make informed decisions about energy efficiency and sustainability. We understand the importance of reducing carbon footprints and improving the energy performance of our homes and communities.
+      <>
+        <div className="home-header">
+          <br></br>
+          <h1><span className="carbon">Welcome to Carbon</span><span className="track">Track</span></h1>
+          <br></br>
+        </div>
+        <div className="home-challenge-container">
+          <h2>Steering Energy Efficiency for Homeowners and Policymakers</h2>
+          <h3>The Challenge</h3>
+          <br></br>
+          <p>Amid rising energy demands, residential buildings significantly contribute to CO2 emissions. Many homes,
+            especially older constructions, are not energy efficient.
+            <br></br>
+            <br></br>
+            Homeowners face the challenge of understanding and
+            undertaking the retrofitting process to improve their homes&apos; energy performance. The lack of clear,
+            accessible information on where to begin, what improvements will have the most impact, and how to balance
+            the investment against the expected benefits adds layers of complexity. Moreover, deciphering the
+            technical aspects of Building Energy Ratings (BER) and understanding which retrofits will offer
+            significant improvements can be daunting. This lack of clarity can lead to indecision, delayed action, and
+            missed opportunities for both cost savings and environmental impact.
+            <br></br>
+            <br></br>
+            For policymakers, the challenge lies in effectively scaling retrofitting efforts to meet climate action
+            targets. They must prioritize initiatives across diverse residential landscapes, allocate grants and
+            subsidies judiciously, and measure the impact of these policies. Policymakers are often tasked with the
+            herculean job of streamlining processes to support homeowners&apos; retrofitting projects while ensuring
+            transparency and fairness. They must also bridge the gap between policy goals and tangible actions,
+            facilitating homeowners in navigating through available assistance and retrofitting pathways, all while
+            operating within budget constraints and tight timelines.
           </p>
-          <p>
-            Our platform provides detailed insights into the Building Energy Ratings (BerRatings) of properties, offering valuable information on how households can improve their energy efficiency. By focusing on BerRatings, we help you understand the current energy performance of your property and outline practical steps to enhance it, leading to reduced energy consumption, lower utility bills, and a smaller environmental impact.
-          </p>
-
-          <Header as='h2'>A Tool for Positive Change</Header>
-          <p>
-            For policymakers, CarbonTrack serves as a crucial tool in identifying properties that would benefit most from retrofitting efforts. By analyzing BerRatings across regions, we can target interventions more effectively, ensuring resources are directed where they can make the most significant difference in improving energy efficiency and sustainability.
-          </p>
-          <p>
-            Together, we can work towards a future where every home is energy-efficient, environmentally friendly, and a contributor to the fight against climate change. Join us in making a difference, one property at a time.
-          </p>
-
-          <div style={{ textAlign: 'center', marginTop: '20px' }}>
-            <Button primary size='large' onClick={handleBerRatingClick}>
-              Learn How to Improve Your BerRating
-            </Button>
-            <Button secondary size='large' onClick={handlePolicyInsightsClick}>
-              For Policymakers: Start Here
-            </Button>
+        </div>
+        <div className="solution-container">
+          <div className="homeowner-container">
+            <h3>For the homeowner: A practical guide to a Home Energy Upgrade</h3>
+            <p>Discover how you can improve your home&apos;s Building Energy Rating (BER) by analysing your home&apos;s
+              current energy usage and recommending targeted improvements. These targeted improvements range from
+              insulating walls
+              to upgrading windows, and also include installing solar PV panels or a heatpump. The platform outlines
+              estimated costs and
+              grant opportunities tailored to your home. It leverages machine learning to forecast potential energy
+              savings.</p>
+            <div>
+              <button type="button" className="homeowner-button" onClick={handleBerRatingClick}>Homeowners: Learn How to
+                Improve Your BER Rating
+              </button>
+            </div>
           </div>
-        </Segment>
-      </Container>
+          <div className="policy-container">
+            <h3>For local council officials: Strategic Insights for Decision-making</h3>
+            <p>The platform visualises the energy status of home per county, tracks the progress of retrofits and grant
+              allocations. It pinpoints the number of homes needing attention. It&apos;s a strategic asset in
+              accelerating
+              the retrofitting initiative, aiming to streamline decision-making and optimise resource allocation.</p>
+            <div>
+              <button type="button" className="policy-button" onClick={handlePolicyInsightsClick}>For Policymakers:
+                Start
+                Here
+              </button>
+            </div>
+          </div>
+        </div>
+      </>
   );
 };
 

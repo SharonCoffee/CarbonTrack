@@ -1,3 +1,8 @@
+// TODO:
+// 1. Add a line that says searching for properties
+// 2. Add a line that says no properties found
+// 3. Add a line that says select a property
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Papa from 'papaparse';

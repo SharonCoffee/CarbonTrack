@@ -300,14 +300,14 @@ const Dashboard = () => {
         <div className="grant-summary-container">
           <div className="retrofit-yearly-chart-container">
             <h2>Grant supports distribution by Year</h2>
-            <p>Properties that needed to submit a pre-works BER Certificate with grant application.</p>
+            <p>Number of properties per annum that received grant support, irrespective of Energy Rating category.</p>
             {grantSupportDataByYear.length > 0
               ? renderGrantSupportYearlyProgress(grantSupportDataByYear)
               : <p>No property data available.</p>}
           </div>
           <div className="energy-rating-chart-container">
             <h2>Energy Ratings for Grant Support Properties</h2>
-            <p>Properties with an E1, E2, F or G Energy Rating category that needed to submit a pre-works BER Certificate with grant application.</p>
+            <p>Properties with an E1, E2, F or G Energy Rating category that received grant support.</p>
             {grantSupportEnergyRatingsData.length > 0
               ? renderGrantSupportEnergyRatings()
               : <p>No property data available.</p>}
@@ -324,7 +324,7 @@ const Dashboard = () => {
           </div>
         </div>
         <div className="efg-differences-chart-container">
-          <h2>Distribution of Properties in E1, E2, F and G Energy Rating Category that still need support</h2>
+          <h2>Distribution of the {propertiesStillNeedingSupport} Properties in E1, E2, F and G Energy Rating Category that still need support</h2>
           {efgDifferences && efgDifferences.length > 0
             ? renderEFGDifferencesChart()
             : <p>No data available.</p>}

@@ -1,40 +1,49 @@
-import React from 'react';
-import { Container, Header, Segment, Form, Button, Input, TextArea } from 'semantic-ui-react';
+import React, { useState } from 'react';
 
 const Contact = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleSubmission = (event) => {
+    event.preventDefault();
+    // Handle the submission, e.g., sending the data somewhere
+    console.log(name, email, message);
+  };
+
   return (
-      <Container>
-        <Header as='h1' textAlign='center' style={{ margin: '20px 0' }}>
-          Contact Us
-        </Header>
-        <Segment>
-          <Header as='h2'>Get in Touch</Header>
-          <p>
-            Whether you&apos;re seeking more information about improving your BerRating, interested in partnership opportunities, or have any questions about our platform, we&apos;re here to help. Reach out to us, and let&apos;s drive positive change together.
-          </p>
-          <Form>
-            <Form.Field
-                control={Input}
-                label='Name'
-                placeholder='Your Name'
-            />
-            <Form.Field
-                control={Input}
-                label='Email'
-                placeholder='Your Email'
-                type='email'
-            />
-            <Form.Field
-                control={TextArea}
-                label='Message'
-                placeholder='Your Message'
-            />
-            <Button type='submit' primary>
-              Submit
-            </Button>
-          </Form>
-        </Segment>
-      </Container>
+        <div className="contact-container">
+            <h2>Contact Us</h2>
+            <p>
+                Whether you&apos;re seeking more information about improving your Building Energy Rating (BER),
+                interested in partnership opportunities, or have any questions about our
+                platform, we&apos;re here to help. Reach out to us, and let&apos;s drive positive
+                change together.
+            </p>
+            <form onSubmit={handleSubmission} className="contact-form">
+                <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Your Name"
+                    required
+                />
+                <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Your Email"
+                    required
+                />
+                <textarea
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Your Message"
+                    required
+                />
+                <button type="submit" className="submit-button">Submit</button>
+            </form>
+        </div>
   );
 };
 

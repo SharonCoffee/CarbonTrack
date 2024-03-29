@@ -3,6 +3,7 @@ import 'semantic-ui-css/semantic.min.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/authContext';
 import Navbar from './components/navbar';
+import Footer from './components/footer';
 import Home from './pages/home';
 import About from './pages/about';
 import Contact from './pages/contact';
@@ -59,6 +60,7 @@ function App () {
 
                         {/* Add additional routes here */}
                     </Routes>
+                    <Footer />
                 </div>
             </Router>
         </AuthProvider>

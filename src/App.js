@@ -15,6 +15,7 @@ import BerPage from './pages/ber';
 import Suggestions from './pages/suggestions';
 import Dashboard from './pages/dashboard';
 import Countymap from './pages/countymap';
+import EFGProperties from './pages/efgproperties';
 import ProtectedRoute from './components/protectedRoute';
 import './App.css';
 import './firebase/firebaseConfig';
@@ -51,10 +52,15 @@ function App () {
                             </ProtectedRoute>
                         } />
                         {/* Protected Route for Dashboards - dynamic route for every county */}
-
                         <Route path="/dashboard/:countyName" element={
                             <ProtectedRoute>
                                 <Dashboard />
+                            </ProtectedRoute>
+                        } />
+                        {/* Protected Route for EFG Properties - dynamic route for every county and ratingType */}
+                        <Route path="/efgproperties/:ratingType/:countyName" element={
+                            <ProtectedRoute>
+                            <EFGProperties />
                             </ProtectedRoute>
                         } />
 

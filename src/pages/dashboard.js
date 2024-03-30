@@ -3,11 +3,13 @@
 // 5.  Show a button to navigate back to the countymap
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell } from 'recharts';
-import { useParams } from 'react-router-dom';
 import Papa from 'papaparse';
 
 const Dashboard = () => {
+  const navigate = useNavigate(); // Hook to navigate
+
   const { countyName } = useParams(); // This captures the dynamic part of the URL
   console.log('County Name:', countyName);
   const [data, setData] = useState({});
@@ -50,6 +52,11 @@ const Dashboard = () => {
   function sortEnergyRatings (a, b) {
     return a.ratingType.localeCompare(b.ratingType);
   }
+
+  const handleBarClick = (entry) => {
+    // Navigate to the EFG properties page with the selected ratingType and countyName
+    navigate(`/efgproperties/${entry.ratingType}/${countyName}`);
+  };
 
   // Function to fetch county-specific data
   const fetchDataForCounty = async () => {
@@ -258,7 +265,9 @@ const Dashboard = () => {
           <Legend />
           <Bar dataKey="difference" name="Difference in Number of Properties" fill="#82ca9d">
             {efgDifferences.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={energyRatingColors[entry.ratingType] || '#8884d8'} />
+                <Cell key={`cell-${index}`} fill={energyRatingColors[entry.ratingType] || '#8884d8'}
+                      onClick={() => handleBarClick(entry)} // Add onClick event here
+                />
             ))}
           </Bar>
         </BarChart>
@@ -325,6 +334,7 @@ const Dashboard = () => {
         </div>
         <div className="efg-differences-chart-container">
           <h2>Distribution of the {propertiesStillNeedingSupport} Properties in E1, E2, F and G Energy Rating Category that still need support</h2>
+          <p>Click on each category in the table below to get more detailed information.</p>
           {efgDifferences && efgDifferences.length > 0
             ? renderEFGDifferencesChart()
             : <p>No data available.</p>}

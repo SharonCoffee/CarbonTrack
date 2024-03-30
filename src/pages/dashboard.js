@@ -58,6 +58,10 @@ const Dashboard = () => {
     navigate(`/efgproperties/${entry.ratingType}/${countyName}`);
   };
 
+  const handleBackToCountyMap = () => {
+    navigate('/countymap');
+  };
+
   // Function to fetch county-specific data
   const fetchDataForCounty = async () => {
     setIsLoading(true);
@@ -281,6 +285,7 @@ const Dashboard = () => {
           <br></br>
           <h1>County {capitalizeFirstLetter(countyName)} Dashboard</h1>
           <br></br>
+          <button className="button-blue" onClick={handleBackToCountyMap}>Select New County</button>
           {isLoading && <p>Loading...</p>}
           {error && <div className="error-message">{error}</div>} {/* Display error message */}
         </div>

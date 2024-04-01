@@ -1,0 +1,45 @@
+﻿CountyName,DwellingTypeDescr,EnergyRating,BerRatingMean,UValueWallMean,UValueRoofMean,UValueFloorMean,UValueWindowMean,UValueDoorMean
+Longford,Apartment,E1,329.35,0.46,0.17,0.1,2.51,3
+Longford,Basement Dwelling,E1,0,0,0,0,0,0
+Longford,Detached house,E1,319.95,0.84,0.42,0.64,2.92,2.83
+Longford,End of terrace house,E1,320.2,0.66,0.43,0.6,2.94,2.91
+Longford,Ground-floor apartment,E1,316.71,0.59,0.06,0.42,2.57,2.32
+Longford,House,E1,317.23,0.46,0.23,0.68,3.18,2.67
+Longford,Maisonette,E1,325.29,1.33,0.95,0.96,3.15,3
+Longford,Mid-floor apartment,E1,321.03,0.68,0.02,0.66,2.42,1.49
+Longford,Mid-terrace house,E1,320.73,0.66,0.39,0.52,2.8,2.76
+Longford,Semi-detached house,E1,320.25,0.59,0.28,0.54,3.04,2.76
+Longford,Top-floor apartment,E1,318.7,0.7,0.31,0.24,2.74,2.02
+Longford,Apartment,E2,383.66,0.6,0,0.55,3.7,3
+Longford,Basement Dwelling,E2,0,0,0,0,0,0
+Longford,Detached house,E2,414.91,1.02,0.58,0.67,3.07,2.83
+Longford,End of terrace house,E2,411.07,1,0.61,0.74,2.88,2.44
+Longford,Ground-floor apartment,E2,421.73,0.58,0.2,0.45,2.84,2.91
+Longford,House,E2,413.67,1.13,0.62,0.76,3.02,2.77
+Longford,Maisonette,E2,397.39,1.44,1.35,0.76,3.55,2.25
+Longford,Mid-floor apartment,E2,386.3,0.78,0,0.67,2.2,1.36
+Longford,Mid-terrace house,E2,413.85,1.19,0.84,0.58,3.27,2.89
+Longford,Semi-detached house,E2,415.67,0.84,0.49,0.64,3.03,2.78
+Longford,Top-floor apartment,E2,413.05,0.64,0.44,0.72,2.5,2.65
+Longford,Apartment,F,383.66,0.6,0,0.55,3.7,3
+Longford,Basement Dwelling,F,0,0,0,0,0,0
+Longford,Detached house,F,414.91,1.02,0.58,0.67,3.07,2.83
+Longford,End of terrace house,F,411.07,1,0.61,0.74,2.88,2.44
+Longford,Ground-floor apartment,F,421.73,0.58,0.2,0.45,2.84,2.91
+Longford,House,F,412.13,1.65,0.45,0.85,3.1,3
+Longford,Maisonette,F,397.39,1.44,1.35,0.76,3.55,2.25
+Longford,Mid-floor apartment,F,386.3,0.78,0,0.67,2.2,1.36
+Longford,Mid-terrace house,F,413.85,1.19,0.84,0.58,3.27,2.89
+Longford,Semi-detached house,F,415.67,0.84,0.49,0.64,3.03,2.78
+Longford,Top-floor apartment,F,413.05,0.64,0.44,0.72,2.5,2.65
+Longford,Apartment,G,0,0,0,0,0,0
+Longford,Basement Dwelling,G,0,0,0,0,0,0
+Longford,Detached house,G,693.71,1.57,1.31,0.82,3.61,2.87
+Longford,End of terrace house,G,672.54,1.73,1.19,0.83,3.65,2.83
+Longford,Ground-floor apartment,G,632.83,1.6,0.82,0.7,3.54,1.98
+Longford,House,G,654.49,1.62,1.34,0.85,4.08,2.93
+Longford,Maisonette,G,494.38,2.1,0.4,1,3.4,0
+Longford,Mid-floor apartment,G,574.76,1.38,0,0.75,2.58,2.59
+Longford,Mid-terrace house,G,579.91,1.82,1.56,0.71,3.58,2.93
+Longford,Semi-detached house,G,628.93,1.51,1.37,0.74,3.26,2.85
+Longford,Top-floor apartment,G,664.94,1.51,1.16,0.86,3.2,2.28

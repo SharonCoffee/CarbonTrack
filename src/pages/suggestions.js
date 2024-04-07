@@ -2,7 +2,6 @@
 // 1. Add the heat pump assessment to the heat pump costs and the bonus heat pump too.
 // 2. Inform user of additional grants for other things that can be obtained.  Or maybe just show 1 in here too in a table for the homeowner.
 // 3. Modify the recalculated grants total and homeownercost total to keep a running total of each individual recalculated grant and homeownercost instead of doing a full reculation at the end.
-// 4. Show homeowner the improvement valuation of their home after the improvements are made.
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -14,12 +13,21 @@ function SuggestionsPage () {
   const location = useLocation();
 
   const selectedProperty = location.state ? location.state.selectedProperty : null;
+  const initialBerRating = location.state ? Number(location.state.selectedProperty.BerRating) : 0;
+  const [adjustedBerRating, setAdjustedBerRating] = useState(initialBerRating);
   const [newEnergyRating, setNewEnergyRating] = useState('');
   const [tempNewEnergyRating, setTempNewEnergyRating] = useState('');
+  const [newBerRating, setNewBerRating] = useState(0);
   const [selectClass, setSelectClass] = useState('');
   const [archetype, setArchetype] = useState([]);
   const [seaiGrants, setSeaiGrants] = useState([]);
-  const [selectedUValues, setSelectedUValues] = useState({});
+  const [selectedUValues, setSelectedUValues] = useState({
+    UValueWall: false,
+    UValueRoof: false,
+    UValueFloor: false,
+    UValueWindow: false,
+    UvalueDoor: false
+  });
   const [wallInsulationQuantity, setWallInsulationQuantity] = useState(selectedProperty ? selectedProperty.WallArea : 0);
   const [roofInsulationQuantity, setRoofInsulationQuantity] = useState(selectedProperty ? selectedProperty.RoofArea : 0);
   const [floorInsulationQuantity, setFloorInsulationQuantity] = useState(selectedProperty ? selectedProperty.FloorArea : 0);
@@ -109,6 +117,52 @@ function SuggestionsPage () {
     AirTightnessGrant: 0
     // other initial values
   });
+
+  // Define the impact weights for each U-Value type
+  const impactWeights = {
+    UValueWall: 5,
+    UValueRoof: 4,
+    UValueWindow: 3,
+    UValueFloor: 2,
+    UvalueDoor: 1,
+    SolarPanels: 2.5,
+    HeatPump: 2.5
+  };
+
+  const totalImpactWeights = Object.values(impactWeights).reduce((acc, cur) => acc + cur, 0);
+  const mapBerToColour = (ber) => {
+    if (ber < 25) return 'dark green';
+    else if (ber >= 25 && ber < 50) return 'green';
+    else if (ber >= 50 && ber < 75) return 'light green';
+    else if (ber >= 75 && ber < 100) return 'lime green';
+    else if (ber >= 100 && ber < 125) return 'yellowgreen';
+    else if (ber >= 125 && ber < 150) return 'dark yellow';
+    else if (ber >= 150 && ber < 175) return 'orange';
+    else if (ber >= 175 && ber < 200) return 'coral';
+    else if (ber >= 200 && ber < 225) return 'tomato';
+    else if (ber >= 225 && ber < 260) return 'orangered';
+    else if (ber >= 260 && ber < 300) return 'red';
+    else if (ber >= 300 && ber < 340) return 'darkred';
+    else if (ber >= 340 && ber < 380) return 'maroon';
+    else if (ber >= 380 && ber < 450) return 'brown';
+    else return 'firebrick'; // For G and beyond
+  };
+
+  // Map initial and adjusted BER ratings to colours for display
+  const initialRatingColour = mapBerToColour(initialBerRating);
+  const adjustedBerRatingColour = mapBerToColour(adjustedBerRating);
+
+  const initialBerRatingStyle = {
+    color: initialRatingColour,
+    fontSize: '36px', // Large font size for visibility
+    fontWeight: 'bold'
+  };
+
+  const adjustedBerRatingStyle = {
+    color: adjustedBerRatingColour,
+    fontSize: '36px', // Large font size for visibility
+    fontWeight: 'bold'
+  };
 
   const handleLogout = () => {
     const auth = getAuth();
@@ -228,6 +282,9 @@ function SuggestionsPage () {
       if (archetype.length === 0) {
         return; // Exit if archetype data is not available
       }
+      if (newBerRating.length === 0) {
+        return;
+      }
 
       // Find matching row for new energy rating and dwelling type from archetype data
       const matchedRow = archetypeData.find(row => row.DwellingType === dwellingType && row.EnergyRating === newRating);
@@ -241,6 +298,7 @@ function SuggestionsPage () {
           window: matchedRow.UValueWindowMean,
           door: matchedRow.UValueDoorMean
         });
+        setNewBerRating(matchedRow.BerRatingMean);
       }
 
       // Find the Energy Rating A1 for dwelling type from archetype data
@@ -400,11 +458,32 @@ function SuggestionsPage () {
     const recalculatedGrant = Math.min(totalGrant, totalCost * 0.5); // Ensure grant doesn't exceed 50% of the total cost
     const homeownerCost = Math.max(0, totalCost - recalculatedGrant); // Ensure homeowner cost doesn't go below 0
 
+    let totalImpact = 0;
+    Object.keys(selectedUValues).forEach(uValue => {
+      if (selectedUValues[uValue]) {
+        totalImpact += impactWeights[uValue];
+      }
+    });
+
+    console.log(`Total Impact: ${totalImpact}`);
+
+    // Calculate the adjusted BER rating based on the selection of U-Values for retrofitting
+    if (newBerRating && initialBerRating) {
+      const berRatingDifference = Number(initialBerRating) - Number(newBerRating);
+
+      // Adjusted calculation with added logging
+      const adjustedBerRatingValue = Number(initialBerRating) - (berRatingDifference / totalImpactWeights * totalImpact);
+
+      console.log(`Adjusted BER Rating Value: ${adjustedBerRatingValue}`);
+
+      setAdjustedBerRating(adjustedBerRatingValue);
+    }
+
     setTotalEstimatedCost(totalCost);
     setTotalAvailableGrant(totalGrant);
     setTotalRecalculatedGrant(recalculatedGrant);
     setTotalCostToHomeowner(homeownerCost);
-  }, [selectedProperty, newEnergyRating, selectedItemsCosts, selectedItemsGrants]); // Ensure useEffect is triggered when these values change
+  }, [selectedProperty, newEnergyRating, selectedItemsCosts, selectedItemsGrants, selectedUValues, newBerRating, initialBerRating, totalImpactWeights]); // Ensure useEffect is triggered when these values change
 
   // Display the selected property and inputs for modifying U-values
   return (
@@ -643,6 +722,15 @@ function SuggestionsPage () {
             </tr>
             </tbody>
           </table>
+        </div>
+        <div className="ber-value-container">
+          <div className="ber-value initial-ber">
+            <p style={initialBerRatingStyle}>Initial BER Value: {initialBerRating}</p>
+          </div>
+          <div className="ber-value estimated-ber">
+            <p style={adjustedBerRatingStyle}>Estimated New BER
+              Value: {typeof adjustedBerRating === 'number' ? adjustedBerRating.toFixed(2) : 'N/A'}</p>
+          </div>
         </div>
         <div className="optional-table-container">
           <h2>Select optional items to install</h2>

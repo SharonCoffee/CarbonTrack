@@ -241,6 +241,46 @@
 }
 
 
+/* Styling for the container holding the BER values */
+.ber-value-container {
+    display: flex;
+    justify-content: center; /* Center the items horizontally in the container */
+    align-items: center; /* Align the items vertically */
+    gap: 20px; /* Adds space between the two BER value containers */
+    margin-top: 20px; /* Space above the container */
+    margin-bottom: 20px; /* Space below the container */
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%; /* Ensure the container takes the full width of its parent */
+    max-width: 80%;
+}
+
+/* Styling for individual BER value containers */
+.ber-value {
+    flex: 1; /* Each container takes up equal width */
+    display: flex; /* Use flexbox within each BER value container too */
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+    text-align: center; /* Ensures the text within the <p> is centered */
+    padding: 10px; /* Padding inside each container */
+    min-height: 100px; /* Optional: Set a minimum height for visual consistency */
+    border-radius: 5px; /* Optional: Adds rounded corners for aesthetics */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional: Adds a subtle shadow for depth */
+}
+
+/* You might want to adjust the <p> tag directly if it's not aligning as expected */
+.ber-value p {
+    margin: 0; /* Removes default margin from <p> to help with exact centering */
+    width: 100%; /* Ensures the <p> tag takes up the full width of its parent for centering */
+}
+
+.adjusted-ber-rating {
+    margin-left: 20px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+
 /* Optional table styling */
 .optional-table {
     max-width: 200px; /* Adjust max-width for better alignment, match with your other form elements width */
@@ -303,7 +343,6 @@
     display: inline-block; /* Align button properly without full width */
     text-align: center;
 }
-
 
 /* Checkbox and label within the table styling */
 .improvements-table .checkbox-container {

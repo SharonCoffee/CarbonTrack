@@ -1,14 +1,3 @@
-.amcharts-map-area:hover {
-    fill: #4a90e2; /* Change fill to blue on hover */
-    cursor: pointer; /* Change cursor to indicate clickable area */
-    transform: scale(1.1); /* Scale up on hover for visual feedback */
-    stroke-width: 2; /* Increase stroke width for better visibility */
-    fill-opacity: 0.8; /* Reduce fill opacity for better contrast */
-    stroke: #4a90e2;
-    stroke-capacity: 0.5;
-    class-role: hover;
-}
-
 h1 h2 {
     text-align: center; /* Center the text within the h3 */
     margin-top: 20px; /* Space above the heading */

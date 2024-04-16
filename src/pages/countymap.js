@@ -37,12 +37,18 @@ const Countymap = () => {
       calculateAggregates: true
     }));
 
+    polygonSeries.calculateVisualCenter = true; // Calculate visual center for tooltips
+    polygonSeries.mapPolygons.template.tooltipPosition = 'fixed'; // Tooltips appear at the visual center
+
     // Set the initial fill color for the polygons
     const template = polygonSeries.mapPolygons.template;
     template.setAll({
       tooltipText: '{name}',
       interactive: true,
-      fill: am5.color(0xCCCCCC) // Grey color
+      fill: am5.color(0xCCCCCC), // Grey color for all counties
+      stroke: am5.color(0x1E90FF), // Blue border color
+      strokeWidth: 2,
+      strokeOpacity: 0.5
     });
 
     // Define hover state and its properties directly for changing color on hover
@@ -62,33 +68,33 @@ const Countymap = () => {
   }, [navigate]);
 
   return (
-      <>
-          <div>
-              {/* Logout Button */}
-              <button type="button" className="logout-button" onClick={handleLogout}>Logout</button>
-          </div>
-          <div>
-              <h1>Overview</h1>
-              <p></p>
-          </div>
-          <div className="policy-container">
-              <p>
-                  Our interactive map is designed specifically for policymakers and environmental strategists, this feature allows you to click
-                  on any county to access a specialized dashboard.
-                  Each county&apos;s dashboard offers a comprehensive analysis of properties within the county that have an energy rating of E1, E2, F and G,
-                  grant supports provided, and data on properties in need of support specific to that area.
-                  Explore the map to gain insights and inform your strategic decisions in promoting sustainable energy
-                  practices within your jurisdiction.
-              </p>
-              {/* Similar changes for other sections */}
-              <div>
-                  <h2>County Map</h2>
-                  <p>Click on a county to view the dashboard.</p>
-              </div>
-              <div id="chartdiv" style={{ width: '100%', height: '500px' }}></div>
-          </div>
+        <>
+            <div>
+                {/* Logout Button */}
+                <button type="button" className="logout-button" onClick={handleLogout}>Logout</button>
+            </div>
+            <div>
+                <h1>Overview</h1>
+                <p></p>
+            </div>
+            <div className="policy-container">
+                <p>
+                    Our interactive map is designed specifically for policymakers and environmental strategists, this feature allows you to click
+                    on any county to access a specialized dashboard.
+                    Each county&apos;s dashboard offers a comprehensive analysis of properties within the county that have an energy rating of E1, E2, F and G,
+                    grant supports provided, and data on properties in need of support specific to that area.
+                    Explore the map to gain insights and inform your strategic decisions in promoting sustainable energy
+                    practices within your jurisdiction.
+                </p>
+                {/* Similar changes for other sections */}
+                <div>
+                    <h2>County Map</h2>
+                    <p>Click on a county to view the dashboard.</p>
+                </div>
+                <div id="chartdiv" style={{ width: '100%', height: '500px' }}></div>
+            </div>
 
-      </>
+        </>
   );
 };
 

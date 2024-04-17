@@ -1,0 +1,45 @@
+﻿CountyName,DwellingTypeDescr,EnergyRating,BerRatingMean,UValueWallMean,UValueRoofMean,UValueFloorMean,UValueWindowMean,UValueDoorMean
+Limerick,Apartment,E1,325.88,0.43,0.67,0.2,2.4,3
+Limerick,Basement Dwelling,E1,0,0,0,0,0,0
+Limerick,Detached house,E1,319.76,0.77,0.44,0.67,3.09,2.56
+Limerick,End of terrace house,E1,323.45,0.67,0.4,0.63,3.16,2.91
+Limerick,Ground-floor apartment,E1,316.52,0.47,0.23,0.42,2.77,2.32
+Limerick,House,E1,321.17,0.73,0.42,0.64,3.19,2.75
+Limerick,Maisonette,E1,319.57,0.7,0.4,0.47,2.92,3
+Limerick,Mid-floor apartment,E1,321.8,0.75,0.06,0.56,2.93,1.62
+Limerick,Mid-terrace house,E1,319.37,0.91,0.54,0.55,3.06,2.73
+Limerick,Semi-detached house,E1,320.39,0.71,0.41,0.58,3.03,2.76
+Limerick,Top-floor apartment,E1,321.42,0.56,0.3,0.2,2.89,1.76
+Limerick,Apartment,E2,362.64,0.97,0,0.21,3.9,3
+Limerick,Basement Dwelling,E2,0,0,0,0,0,0
+Limerick,Detached house,E2,360.17,0.99,0.59,0.7,3.14,2.69
+Limerick,End of terrace house,E2,360.58,0.71,0.4,0.61,3.15,2.95
+Limerick,Ground-floor apartment,E2,357.48,0.64,0.26,0.51,2.98,1.97
+Limerick,House,E2,358.76,0.88,0.54,0.71,3.48,2.61
+Limerick,Maisonette,E2,354.08,0.67,0.42,0.64,2.6,2.57
+Limerick,Mid-floor apartment,E2,356.28,0.92,0.08,0.59,3.03,1.63
+Limerick,Mid-terrace house,E2,359.87,1.1,0.79,0.61,3.3,2.87
+Limerick,Semi-detached house,E2,359.81,0.89,0.49,0.6,3.16,2.76
+Limerick,Top-floor apartment,E2,356.8,0.74,0.44,0.32,2.85,1.58
+Limerick,Apartment,F,434.66,0.92,0.2,0.5,2.8,1.25
+Limerick,Basement Dwelling,F,0,0,0,0,0,0
+Limerick,Detached house,F,414.83,1.25,0.79,0.74,3.3,2.64
+Limerick,End of terrace house,F,409.92,1.13,0.74,0.67,3.17,2.91
+Limerick,Ground-floor apartment,F,417.87,0.97,0.35,0.6,2.95,1.91
+Limerick,House,F,415.2,1.16,0.59,0.67,3.62,2.88
+Limerick,Maisonette,F,415.51,1.57,1.28,0.79,2.79,3.1
+Limerick,Mid-floor apartment,F,413.51,0.89,0.11,0.67,3.03,1.8
+Limerick,Mid-terrace house,F,412.09,1.42,1.2,0.63,3.31,2.81
+Limerick,Semi-detached house,F,411.96,1.03,0.61,0.62,3.13,2.8
+Limerick,Top-floor apartment,F,413.75,0.86,0.56,0.67,2.76,2.07
+Limerick,Apartment,G,631.66,1.67,0.45,0.56,4.19,2.79
+Limerick,Basement Dwelling,G,622.65,1.18,0.58,0.6,3.49,3
+Limerick,Detached house,G,673.68,1.71,1.54,0.85,3.64,2.73
+Limerick,End of terrace house,G,609.82,1.61,1.28,0.8,3.68,2.95
+Limerick,Ground-floor apartment,G,628.41,1.49,0.93,0.68,3.75,2.59
+Limerick,House,G,771.58,1.74,1.5,0.83,3.78,2.69
+Limerick,Maisonette,G,541.79,1.75,1.48,1,3.88,2.32
+Limerick,Mid-floor apartment,G,597.6,1.31,0.29,0.68,3.61,1.77
+Limerick,Mid-terrace house,G,622.19,1.82,1.8,0.69,3.83,2.95
+Limerick,Semi-detached house,G,638.89,1.53,1.29,0.75,3.63,2.74
+Limerick,Top-floor apartment,G,651.29,1.38,1.36,0.61,3.34,1.6

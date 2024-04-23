@@ -1,0 +1,158 @@
+/* Bar chart */
+.barChart {
+    margin-top: 50px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 5px;
+    padding: 20px;
+}
+
+.cartesianGrid {
+    stroke-dasharray: 3 3;
+}
+
+/* Layout for the property summary containers to appear next to each other */
+.properties-summary-container {
+    display: flex;
+    justify-content: center; /* Center the containers */
+    align-items: stretch; /* Make containers of equal height */
+    width: 100%; /* Make sure it matches the width of the energy-rating-container */
+    max-width: 92%; /* Max-width can also be 80% */
+    margin-top: 20px; /* Space above the containers */
+    margin-bottom: 20px; /* Space below the containers */
+    margin-left: auto; /* Centers the container */
+    margin-right: auto; /* Centers the container */
+    gap: 20px; /* Space between the containers */
+}
+
+/* Individual container styling */
+.properties-container,
+.efg-properties-container,
+.efg-percentage-container {
+    flex: 1; /* Make containers take equal width */
+    background-color: #ffffff; /* White background for cleanliness */
+    border: 1px solid #e0e0e0; /* Light gray border */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+    border-radius: 8px; /* Rounded corners for modern look */
+    padding: 20px; /* Padding inside the containers */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Distribute space inside containers */
+    align-items: center;
+}
+
+/* Styling for the large numbers */
+.big-number {
+    font-size: 32px; /* Large font size for the numbers */
+    font-weight: bold; /* Make the numbers bold */
+    color: #000000; /* Black color for the numbers */
+    margin: 15px 0; /* Space around the numbers */
+}
+
+
+/* Global styling for containers and tables to center them */
+.energy-rating-container,
+.energy-rating-chart-container,
+.grant-supported-properties-container,
+.efg-differences-chart-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%; /* Adjust based on your layout */
+    margin: auto;
+}
+
+
+/* Container for the new energy rating section */
+.energy-rating-chart-container,
+.grant-supported-properties-container,
+.efg-differences-chart-container{
+    background-color: #ffffff; /* White background for cleanliness */
+    border: 1px solid #e0e0e0; /* Light gray border */
+    gap: 15px; /* Same gap as in login-form for consistency */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+    border-radius: 8px; /* Rounded corners for modern look */
+    padding: 20px; /* Adjust padding as needed */
+    max-width: 92%; /* Max-width can also be 80% */
+}
+
+
+/* Global styling for titles and paragraphs inside the containers */
+h2 {
+    color: #4a90e2; /* Blue color for title */
+    margin-top: 20px; /* Space above the title */
+    margin-bottom: 20px; /* Space below the title */
+}
+
+p {
+    text-align: justify; /* Justify text for better readability */
+    font-size: medium; /* Medium font size for paragraphs */
+    margin-bottom: 20px; /* Space below the paragraph */
+    color: #333; /* Darker text for better readability */
+}
+
+
+/* Layout for the property summary containers to appear next to each other */
+.grant-summary-container {
+    display: flex;
+    justify-content: center; /* Center the containers */
+    align-items: stretch; /* Make containers of equal height */
+    width: 100%; /* Make sure it matches the width of the energy-rating-container */
+    max-width: 92%; /* Max-width can also be 80% */
+    margin-top: 20px; /* Space above the containers */
+    margin-bottom: 20px; /* Space below the containers */
+    margin-left: auto; /* Centers the container */
+    margin-right: auto; /* Centers the container */
+    gap: 20px; /* Space between the containers */
+}
+
+/* Individual container styling */
+.retrofit-yearly-chart-container,
+.energy-rating-chart-container,
+.efg-differences-chart-container{
+    flex: 1; /* Make containers take equal width */
+    background-color: #ffffff; /* White background for cleanliness */
+    border: 1px solid #e0e0e0; /* Light gray border */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+    border-radius: 8px; /* Rounded corners for modern look */
+    padding: 20px; /* Padding inside the containers */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Distribute space inside containers */
+    align-items: center;
+}
+
+.error-message {
+    color: red; /* Change as needed */
+    font-size: 16px; /* Change as needed */
+    margin: 20px 0; /* Change as needed */
+}
+
+/* Layout for the properties-needing-support-summary to appear next to each other */
+.properties-needing-support-summary {
+    display: flex;
+    justify-content: center; /* Center the containers horizontally */
+    align-items: stretch; /* Make containers of equal height */
+    width: 100%; /* Full width of the parent container */
+    max-width: 92%; /* Maximum width similar to other sections */
+    margin-top: 20px; /* Space above the containers */
+    margin-bottom: 20px; /* Space below the containers */
+    margin-left: auto; /* Centers the container horizontally */
+    margin-right: auto; /* Centers the container horizontally */
+    gap: 20px; /* Space between the containers */
+}
+
+/* Individual container styling within properties-needing-support-summary */
+.properties-received-support-container,
+.properties-needing-support-container {
+    flex: 1; /* Make containers take equal width */
+    background-color: #ffffff; /* White background for cleanliness */
+    border: 1px solid #e0e0e0; /* Light gray border */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+    border-radius: 8px; /* Rounded corners for modern look */
+    padding: 20px; /* Padding inside the containers */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Distribute space inside containers */
+    align-items: center; /* Center the content vertically */
+}

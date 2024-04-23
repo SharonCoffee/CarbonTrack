@@ -1,0 +1,382 @@
+/* Logout button styling */
+.logout-button {
+    background-color: #4a90e2; /* Blue background */
+    color: white; /* White text */
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center; width: auto; /* Only as wide as necessary */
+    margin-top: 10px; /* Space above the button */
+    align-self: flex-start; /* Align to the left side of the flex container */
+    margin-bottom: 20px;
+}
+
+
+/* Global styling for containers and tables to center them */
+.properties-container,
+.new-energy-rating-container,
+.optional-table-container,
+.u-values-table-container,
+.improvements-table-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%; /* Adjust based on your layout */
+    margin: auto;
+}
+
+.new-energy-rating-container,
+.optional-table-container,
+.u-values-table-container,
+.improvements-table-container {
+    padding: 20px; /* Adjust padding as needed */
+    max-width: 80%; /* Max-width can also be 80% */
+}
+
+
+/* Container for the new energy rating section */
+.new-energy-rating-container,
+.u-values-table-container,
+.optional-table-container,
+.improvements-table-container {
+    background-color: #ffffff; /* White background for cleanliness */
+    border: 1px solid #e0e0e0; /* Light gray border */
+    gap: 15px; /* Same gap as in login-form for consistency */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+    border-radius: 8px; /* Rounded corners for modern look */
+}
+
+
+/* Global styling for titles and paragraphs inside the containers */
+.new-energy-rating-container h2,
+.u-values-table-container h2,
+.optional-table h2,
+.improvements-table-container h2 {
+    color: #4a90e2; /* Blue color for title */
+    margin-top: 20px; /* Space above the title */
+    margin-bottom: 20px; /* Space below the title */
+}
+
+.new-energy-rating-container p,
+.u-values-table-container p,
+.optional-table p,
+.improvements-table-container p {
+    text-align: justify; /* Justify text for better readability */
+    font-size: medium; /* Medium font size for paragraphs */
+    margin-bottom: 20px; /* Space below the paragraph */
+    color: #333; /* Darker text for better readability */
+}
+
+
+/* Global styling for the select box in line with the ber.css styling */
+.energy-rating-select {
+    width: 100%; /* Width to take full container width */
+    max-width: 300px; /* Maximum width for better readability */
+    padding: 10px; /* Adequate padding for touch interaction */
+    border: 1px solid #ddd; /* Subtle border */
+    border-radius: 4px; /* Rounded corners */
+    margin-bottom: 20px; /* Space below the select box for clarity */
+}
+
+
+/* Global styling for tables */
+.properties-table,
+.optional-table,
+.u-values-table,
+.improvements-table {
+    width: 100%; /* Full width */
+    max-width: 600px; /* Max width to match other form elements */
+    margin: 20px auto; /* Center the table */
+    border: 1px solid #ddd; /* Grey border */
+    border-collapse: collapse; /* Ensures no gaps between cells */
+    /* overflow: hidden; Removed to allow sticky header functionality */
+}
+
+.improvements-table,
+.u-values-table {
+    align-content: center; /* Center the table */
+    margin-top: 20px; /* Space above the table */
+}
+
+.properties-table th, .properties-table td,
+.optional-table th, .optional-table td,
+.u-values-table th, .u-values-table td,
+.improvements-table th, .improvements-table td {
+    text-align: center; /* Center text for all */
+    vertical-align: middle; /* Centers the content vertically for all */
+    padding: 12px; /* Consistent padding */
+    border: 1px solid #ddd; /* Light grey border */
+}
+
+.properties-table th,
+.optional-table th,
+.u-values-table th,
+.improvements-table th {
+    background-color: #4a90e2;
+    color: white;
+    padding: 10px;
+    text-align: center; /* Center the text - can remove this if not needed*/
+    font-size: 1rem; /* Standard font size for headers - can remove this if not needed */
+}
+
+.u-values-table td,
+.improvements-table td{
+    border-bottom: 2px solid #e0e0e0; /* Slightly thicker bottom border for separation */
+    color: #333; /* Darker text color for contrast */
+}
+
+
+/* Global styling for buttons */
+.new-energy-rating-container .button-blue,
+.improvements-table button,
+.button-blue,
+.button-blue.return-to-form {
+    background-color: #4a90e2; /* Blue background */
+    color: white; /* White text */
+    border: none; /* Remove border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Hand cursor on hover */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth color and slight scale transition */
+    width: auto; /* Auto width based on content */
+}
+
+.new-energy-rating-container .button-blue:hover,
+.button-blue:hover,
+.button-blue.return-to-form:hover {
+    background-color: #357abd; /* Slightly darker blue on hover */
+    transform: scale(1.05); /* Slightly larger on hover for interaction feedback */
+}
+
+
+/* Individual styling */
+
+/* Selected Property Table styling */
+.properties-container h3 {
+    text-align: center; /* Center the text within the h3 */
+    margin-top: 20px; /* Space above the heading */
+    margin-bottom: 20px; /* Space below the heading */
+    color: #4a90e2; /* Blue color for heading */
+    width: 100%; /* Ensure full width to maintain center alignment */
+}
+
+.properties-table td {
+    background-color: #f5f5dc; /* Cream color for table cells */
+}
+
+.properties-table tr:hover {
+    background-color: #f0ead6; /* Slightly darker cream for row hover */
+}
+
+
+/* U-values color coding based on selected energy rating */
+.u-value-target-a { /* For A1, A2, A3 ratings */
+    background-color: #006400; /* Dark green */
+    color: white; /* White text */
+}
+
+.u-value-target-b { /* For B1, B2 ratings */
+    background-color: #008000; /* Green */
+    color: white; /* White text */
+}
+
+
+/* Styling for the energy rating selection block */
+.energy-rating-select {
+    display: block;
+}
+
+
+/* Dynamic background color for energy rating select based on value */
+.energy-rating-select.a-rating {
+    background-color: #006400; /* Dark green for A ratings */
+    color: white;
+}
+
+
+/* Dynamic background color for energy rating select based on value */
+.energy-rating-select.b-rating {
+    background-color: #008000; /* Green for B ratings */
+    color: white;
+}
+
+
+/* Update to existing U-values table styling */
+.u-values-table td.value-cell { /* Style for cells containing the UValue */
+    font-weight: 600; /* Make the UValue stand out */
+}
+
+
+/* Additional styles for U-values traffic light system */
+.u-value-high { /* For values higher than the threshold */
+    background-color: #FF4136 !important; /* Darker red for the background */
+    color: #ffffff !important; /* White for the text */
+}
+
+.u-value-medium { /* For values equal to the threshold */
+    background-color: #FFBF00 !important; /* Darker orange for the background */
+    color: #ffffff !important; /* White amber for the text */
+}
+
+.u-value-low { /* For values lower than the threshold */
+    background-color: #2ECC40 !important; /* Darker green for the background */
+    color: #ffffff !important; /* White for the text */
+}
+
+.color-block {
+    display: inline-block;
+    width: 15px;  /* Adjust size as needed */
+    height: 15px;  /* Adjust size as needed */
+    margin-right: 5px;  /* Space between block and text */
+    vertical-align: middle;
+}
+
+.red { background-color: #FF4136; } /* Red colour */
+.green { background-color: #2ECC40; } /* Green colour */
+.amber { background-color: #FFBF00; } /* Amber colour */
+
+.color-word {
+    /* Additional styling for text if needed */
+}
+
+
+/* Styling for the container holding the BER values */
+.ber-value-container {
+    display: flex;
+    justify-content: center; /* Center the items horizontally in the container */
+    align-items: center; /* Align the items vertically */
+    gap: 20px; /* Adds space between the two BER value containers */
+    margin-top: 20px; /* Space above the container */
+    margin-bottom: 20px; /* Space below the container */
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%; /* Ensure the container takes the full width of its parent */
+    max-width: 80%;
+}
+
+/* Styling for individual BER value containers */
+.ber-value {
+    flex: 1; /* Each container takes up equal width */
+    display: flex; /* Use flexbox within each BER value container too */
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+    text-align: center; /* Ensures the text within the <p> is centered */
+    padding: 10px; /* Padding inside each container */
+    min-height: 100px; /* Optional: Set a minimum height for visual consistency */
+    border-radius: 5px; /* Optional: Adds rounded corners for aesthetics */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional: Adds a subtle shadow for depth */
+}
+
+/* You might want to adjust the <p> tag directly if it's not aligning as expected */
+.ber-value p {
+    margin: 0; /* Removes default margin from <p> to help with exact centering */
+    width: 100%; /* Ensures the <p> tag takes up the full width of its parent for centering */
+}
+
+.adjusted-ber-rating {
+    margin-left: 20px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+
+/* Optional table styling */
+.optional-table {
+    max-width: 200px; /* Adjust max-width for better alignment, match with your other form elements width */
+}
+
+
+/* Improvements Table Container Styling*/
+.improvements-table-container h3 {
+    text-align: center; /* Center the text within the h3 */
+    color: #4a90e2; /* Blue color for heading */
+    margin-top: 20px; /* Space above the heading */
+    margin-bottom: 20px; /* Space below the heading */
+}
+
+.improvements-table-container p strong {
+    font-weight: 600; /* Slightly less bold than full bold for subtlety */
+}
+
+
+/* Individual Table Styling */
+.improvements-table th {
+    position: sticky; /* Keep the header fixed */
+    top: 0; /* Stick to the top */
+    z-index: 2; /* Ensure it's above other elements */
+}
+
+
+/* Individual Button Styling */
+.improvements-table button {
+    padding: 8px 16px; /* Padding inside the button */
+    text-align: center; /* Center text in button */
+    margin: auto; /* Center button in cell */
+    display: block; /* Ensure button takes full width */
+}
+
+.new-energy-rating-container .button-blue {
+    padding: 10px 20px;
+    display: block; /* Make the button block level for full width */
+    text-align: center;
+    margin: 0 auto; /* Center the button horizontally */
+    margin-top: 10px; /* Space above the button */
+}
+
+.button-blue {
+    padding: 12px 24px; /* More padding for bigger button */
+    font-size: 1rem; /* Standard button text size */
+    font-weight: 500; /* Medium font weight */
+    letter-spacing: 0.05em; /* Slight spacing between letters */
+    margin-top: 20px; /* Space above button */
+}
+
+.return-button-container {
+    text-align: center; /* Center the button container */
+    margin-top: 20px; /* Add some space above the button */
+    margin-bottom: 20px; /* Add some space below the button */
+}
+
+.button-blue.return-to-form {
+    padding: 10px 20px;
+    display: inline-block; /* Align button properly without full width */
+    text-align: center;
+}
+
+/* Checkbox and label within the table styling */
+.improvements-table .checkbox-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.improvements-table .checkbox-container input[type="checkbox"] {
+    /* Make checkbox bigger */
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    margin-right: 5px; /* Space between checkbox and label */
+}
+
+.improvements-table .checkbox-container label {
+    margin: 0; /* Adjust as needed */
+    cursor: pointer;
+}
+
+
+/* Total row styling */
+.improvements-table .total-row {
+    background-color: #4a90e2; /* Blue background */
+}
+
+.improvements-table .total-row td {
+    border-top: 2px solid #ddd; /* Adds a top border to separate from other rows */
+    font-weight: 600; /* Bold font for total row */
+    color: white !important; /* White text */
+}
+
+
+
+
+

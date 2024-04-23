@@ -1,0 +1,405 @@
+<html>
+<head>
+<title>suggestions.css</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #8c8c8c; font-style: italic;}
+.s1 { color: #080808;}
+.s2 { color: #0033b3;}
+.s3 { color: #174ad4;}
+.s4 { color: #080808;}
+.s5 { color: #067d17;}
+.s6 { color: #1750eb;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+suggestions.css</font>
+</center></td></tr></table>
+<pre><span class="s0">/* Logout button styling */</span>
+<span class="s1">.</span><span class="s2">logout-button </span><span class="s1">{</span>
+    <span class="s3">background-color</span><span class="s4">: </span><span class="s2">#4a90e2</span><span class="s1">; </span><span class="s0">/* Blue background */</span>
+    <span class="s3">color</span><span class="s4">: </span><span class="s5">white</span><span class="s1">; </span><span class="s0">/* White text */</span>
+    <span class="s3">border</span><span class="s4">: </span><span class="s5">none</span><span class="s1">;</span>
+    <span class="s3">border-radius</span><span class="s4">: </span><span class="s6">4</span><span class="s5">px</span><span class="s1">;</span>
+    <span class="s3">padding</span><span class="s4">: </span><span class="s6">10</span><span class="s5">px </span><span class="s6">20</span><span class="s5">px</span><span class="s1">;</span>
+    <span class="s3">cursor</span><span class="s4">: </span><span class="s5">pointer</span><span class="s1">;</span>
+    <span class="s3">transition</span><span class="s4">: </span><span class="s5">background-color </span><span class="s6">0.3</span><span class="s5">s</span><span class="s1">;</span>
+    <span class="s3">text-align</span><span class="s4">: </span><span class="s5">center</span><span class="s1">; </span><span class="s3">width</span><span class="s4">: </span><span class="s5">auto</span><span class="s1">; </span><span class="s0">/* Only as wide as necessary */</span>
+    <span class="s3">margin-top</span><span class="s4">: </span><span class="s6">10</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Space above the button */</span>
+    <span class="s3">align-self</span><span class="s4">: </span><span class="s5">flex-start</span><span class="s1">; </span><span class="s0">/* Align to the left side of the flex container */</span>
+    <span class="s3">margin-bottom</span><span class="s4">: </span><span class="s6">20</span><span class="s5">px</span><span class="s1">;</span>
+<span class="s1">}</span>
+
+
+<span class="s0">/* Global styling for containers and tables to center them */</span>
+<span class="s1">.</span><span class="s2">properties-container</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">new-energy-rating-container</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">optional-table-container</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">u-values-table-container</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">improvements-table-container </span><span class="s1">{</span>
+    <span class="s3">display</span><span class="s4">: </span><span class="s5">flex</span><span class="s1">;</span>
+    <span class="s3">flex-direction</span><span class="s4">: </span><span class="s5">column</span><span class="s1">;</span>
+    <span class="s3">align-items</span><span class="s4">: </span><span class="s5">center</span><span class="s1">;</span>
+    <span class="s3">width</span><span class="s4">: </span><span class="s6">100</span><span class="s1">%; </span><span class="s0">/* Adjust based on your layout */</span>
+    <span class="s3">margin</span><span class="s4">: </span><span class="s5">auto</span><span class="s1">;</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">new-energy-rating-container</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">optional-table-container</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">u-values-table-container</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">improvements-table-container </span><span class="s1">{</span>
+    <span class="s3">padding</span><span class="s4">: </span><span class="s6">20</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Adjust padding as needed */</span>
+    <span class="s3">max-width</span><span class="s4">: </span><span class="s6">80</span><span class="s1">%; </span><span class="s0">/* Max-width can also be 80% */</span>
+<span class="s1">}</span>
+
+
+<span class="s0">/* Container for the new energy rating section */</span>
+<span class="s1">.</span><span class="s2">new-energy-rating-container</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">u-values-table-container</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">optional-table-container</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">improvements-table-container </span><span class="s1">{</span>
+    <span class="s3">background-color</span><span class="s4">: </span><span class="s2">#ffffff</span><span class="s1">; </span><span class="s0">/* White background for cleanliness */</span>
+    <span class="s3">border</span><span class="s4">: </span><span class="s6">1</span><span class="s5">px solid </span><span class="s2">#e0e0e0</span><span class="s1">; </span><span class="s0">/* Light gray border */</span>
+    <span class="s3">gap</span><span class="s4">: </span><span class="s6">15</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Same gap as in login-form for consistency */</span>
+    <span class="s3">box-shadow</span><span class="s4">: </span><span class="s6">0 4</span><span class="s5">px </span><span class="s6">6</span><span class="s5">px </span><span class="s2">rgba</span><span class="s1">(</span><span class="s6">0</span><span class="s1">, </span><span class="s6">0</span><span class="s1">, </span><span class="s6">0</span><span class="s1">, </span><span class="s6">0.1</span><span class="s1">); </span><span class="s0">/* Add shadow for depth */</span>
+    <span class="s3">border-radius</span><span class="s4">: </span><span class="s6">8</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Rounded corners for modern look */</span>
+<span class="s1">}</span>
+
+
+<span class="s0">/* Global styling for titles and paragraphs inside the containers */</span>
+<span class="s1">.</span><span class="s2">new-energy-rating-container h2</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">u-values-table-container h2</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">optional-table h2</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">improvements-table-container h2 </span><span class="s1">{</span>
+    <span class="s3">color</span><span class="s4">: </span><span class="s2">#4a90e2</span><span class="s1">; </span><span class="s0">/* Blue color for title */</span>
+    <span class="s3">margin-top</span><span class="s4">: </span><span class="s6">20</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Space above the title */</span>
+    <span class="s3">margin-bottom</span><span class="s4">: </span><span class="s6">20</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Space below the title */</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">new-energy-rating-container p</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">u-values-table-container p</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">optional-table p</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">improvements-table-container p </span><span class="s1">{</span>
+    <span class="s3">text-align</span><span class="s4">: </span><span class="s5">justify</span><span class="s1">; </span><span class="s0">/* Justify text for better readability */</span>
+    <span class="s3">font-size</span><span class="s4">: </span><span class="s5">medium</span><span class="s1">; </span><span class="s0">/* Medium font size for paragraphs */</span>
+    <span class="s3">margin-bottom</span><span class="s4">: </span><span class="s6">20</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Space below the paragraph */</span>
+    <span class="s3">color</span><span class="s4">: </span><span class="s2">#333</span><span class="s1">; </span><span class="s0">/* Darker text for better readability */</span>
+<span class="s1">}</span>
+
+
+<span class="s0">/* Global styling for the select box in line with the ber.css styling */</span>
+<span class="s1">.</span><span class="s2">energy-rating-select </span><span class="s1">{</span>
+    <span class="s3">width</span><span class="s4">: </span><span class="s6">100</span><span class="s1">%; </span><span class="s0">/* Width to take full container width */</span>
+    <span class="s3">max-width</span><span class="s4">: </span><span class="s6">300</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Maximum width for better readability */</span>
+    <span class="s3">padding</span><span class="s4">: </span><span class="s6">10</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Adequate padding for touch interaction */</span>
+    <span class="s3">border</span><span class="s4">: </span><span class="s6">1</span><span class="s5">px solid </span><span class="s2">#ddd</span><span class="s1">; </span><span class="s0">/* Subtle border */</span>
+    <span class="s3">border-radius</span><span class="s4">: </span><span class="s6">4</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Rounded corners */</span>
+    <span class="s3">margin-bottom</span><span class="s4">: </span><span class="s6">20</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Space below the select box for clarity */</span>
+<span class="s1">}</span>
+
+
+<span class="s0">/* Global styling for tables */</span>
+<span class="s1">.</span><span class="s2">properties-table</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">optional-table</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">u-values-table</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">improvements-table </span><span class="s1">{</span>
+    <span class="s3">width</span><span class="s4">: </span><span class="s6">100</span><span class="s1">%; </span><span class="s0">/* Full width */</span>
+    <span class="s3">max-width</span><span class="s4">: </span><span class="s6">600</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Max width to match other form elements */</span>
+    <span class="s3">margin</span><span class="s4">: </span><span class="s6">20</span><span class="s5">px auto</span><span class="s1">; </span><span class="s0">/* Center the table */</span>
+    <span class="s3">border</span><span class="s4">: </span><span class="s6">1</span><span class="s5">px solid </span><span class="s2">#ddd</span><span class="s1">; </span><span class="s0">/* Grey border */</span>
+    <span class="s3">border-collapse</span><span class="s4">: </span><span class="s5">collapse</span><span class="s1">; </span><span class="s0">/* Ensures no gaps between cells */</span>
+    <span class="s0">/* overflow: hidden; Removed to allow sticky header functionality */</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">improvements-table</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">u-values-table </span><span class="s1">{</span>
+    <span class="s3">align-content</span><span class="s4">: </span><span class="s5">center</span><span class="s1">; </span><span class="s0">/* Center the table */</span>
+    <span class="s3">margin-top</span><span class="s4">: </span><span class="s6">20</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Space above the table */</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">properties-table th</span><span class="s1">, .</span><span class="s2">properties-table td</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">optional-table th</span><span class="s1">, .</span><span class="s2">optional-table td</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">u-values-table th</span><span class="s1">, .</span><span class="s2">u-values-table td</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">improvements-table th</span><span class="s1">, .</span><span class="s2">improvements-table td </span><span class="s1">{</span>
+    <span class="s3">text-align</span><span class="s4">: </span><span class="s5">center</span><span class="s1">; </span><span class="s0">/* Center text for all */</span>
+    <span class="s3">vertical-align</span><span class="s4">: </span><span class="s5">middle</span><span class="s1">; </span><span class="s0">/* Centers the content vertically for all */</span>
+    <span class="s3">padding</span><span class="s4">: </span><span class="s6">12</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Consistent padding */</span>
+    <span class="s3">border</span><span class="s4">: </span><span class="s6">1</span><span class="s5">px solid </span><span class="s2">#ddd</span><span class="s1">; </span><span class="s0">/* Light grey border */</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">properties-table th</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">optional-table th</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">u-values-table th</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">improvements-table th </span><span class="s1">{</span>
+    <span class="s3">background-color</span><span class="s4">: </span><span class="s2">#4a90e2</span><span class="s1">;</span>
+    <span class="s3">color</span><span class="s4">: </span><span class="s5">white</span><span class="s1">;</span>
+    <span class="s3">padding</span><span class="s4">: </span><span class="s6">10</span><span class="s5">px</span><span class="s1">;</span>
+    <span class="s3">text-align</span><span class="s4">: </span><span class="s5">center</span><span class="s1">; </span><span class="s0">/* Center the text - can remove this if not needed*/</span>
+    <span class="s3">font-size</span><span class="s4">: </span><span class="s6">1</span><span class="s5">rem</span><span class="s1">; </span><span class="s0">/* Standard font size for headers - can remove this if not needed */</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">u-values-table td</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">improvements-table td</span><span class="s1">{</span>
+    <span class="s3">border-bottom</span><span class="s4">: </span><span class="s6">2</span><span class="s5">px solid </span><span class="s2">#e0e0e0</span><span class="s1">; </span><span class="s0">/* Slightly thicker bottom border for separation */</span>
+    <span class="s3">color</span><span class="s4">: </span><span class="s2">#333</span><span class="s1">; </span><span class="s0">/* Darker text color for contrast */</span>
+<span class="s1">}</span>
+
+
+<span class="s0">/* Global styling for buttons */</span>
+<span class="s1">.</span><span class="s2">new-energy-rating-container </span><span class="s1">.</span><span class="s2">button-blue</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">improvements-table button</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">button-blue</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">button-blue</span><span class="s1">.</span><span class="s2">return-to-form </span><span class="s1">{</span>
+    <span class="s3">background-color</span><span class="s4">: </span><span class="s2">#4a90e2</span><span class="s1">; </span><span class="s0">/* Blue background */</span>
+    <span class="s3">color</span><span class="s4">: </span><span class="s5">white</span><span class="s1">; </span><span class="s0">/* White text */</span>
+    <span class="s3">border</span><span class="s4">: </span><span class="s5">none</span><span class="s1">; </span><span class="s0">/* Remove border */</span>
+    <span class="s3">border-radius</span><span class="s4">: </span><span class="s6">4</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Rounded corners */</span>
+    <span class="s3">cursor</span><span class="s4">: </span><span class="s5">pointer</span><span class="s1">; </span><span class="s0">/* Hand cursor on hover */</span>
+    <span class="s3">transition</span><span class="s4">: </span><span class="s5">background-color </span><span class="s6">0.3</span><span class="s5">s</span><span class="s1">, </span><span class="s2">transform </span><span class="s6">0.2</span><span class="s5">s</span><span class="s1">; </span><span class="s0">/* Smooth color and slight scale transition */</span>
+    <span class="s3">width</span><span class="s4">: </span><span class="s5">auto</span><span class="s1">; </span><span class="s0">/* Auto width based on content */</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">new-energy-rating-container </span><span class="s1">.</span><span class="s2">button-blue</span><span class="s4">:</span><span class="s2">hover</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">button-blue</span><span class="s4">:</span><span class="s2">hover</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">button-blue</span><span class="s1">.</span><span class="s2">return-to-form</span><span class="s4">:</span><span class="s2">hover </span><span class="s1">{</span>
+    <span class="s3">background-color</span><span class="s4">: </span><span class="s2">#357abd</span><span class="s1">; </span><span class="s0">/* Slightly darker blue on hover */</span>
+    <span class="s3">transform</span><span class="s4">: </span><span class="s2">scale</span><span class="s1">(</span><span class="s6">1.05</span><span class="s1">); </span><span class="s0">/* Slightly larger on hover for interaction feedback */</span>
+<span class="s1">}</span>
+
+
+<span class="s0">/* Individual styling */</span>
+
+<span class="s0">/* Selected Property Table styling */</span>
+<span class="s1">.</span><span class="s2">properties-container h3 </span><span class="s1">{</span>
+    <span class="s3">text-align</span><span class="s4">: </span><span class="s5">center</span><span class="s1">; </span><span class="s0">/* Center the text within the h3 */</span>
+    <span class="s3">margin-top</span><span class="s4">: </span><span class="s6">20</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Space above the heading */</span>
+    <span class="s3">margin-bottom</span><span class="s4">: </span><span class="s6">20</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Space below the heading */</span>
+    <span class="s3">color</span><span class="s4">: </span><span class="s2">#4a90e2</span><span class="s1">; </span><span class="s0">/* Blue color for heading */</span>
+    <span class="s3">width</span><span class="s4">: </span><span class="s6">100</span><span class="s1">%; </span><span class="s0">/* Ensure full width to maintain center alignment */</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">properties-table td </span><span class="s1">{</span>
+    <span class="s3">background-color</span><span class="s4">: </span><span class="s2">#f5f5dc</span><span class="s1">; </span><span class="s0">/* Cream color for table cells */</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">properties-table tr</span><span class="s4">:</span><span class="s2">hover </span><span class="s1">{</span>
+    <span class="s3">background-color</span><span class="s4">: </span><span class="s2">#f0ead6</span><span class="s1">; </span><span class="s0">/* Slightly darker cream for row hover */</span>
+<span class="s1">}</span>
+
+
+<span class="s0">/* U-values color coding based on selected energy rating */</span>
+<span class="s1">.</span><span class="s2">u-value-target-a </span><span class="s1">{ </span><span class="s0">/* For A1, A2, A3 ratings */</span>
+    <span class="s3">background-color</span><span class="s4">: </span><span class="s2">#006400</span><span class="s1">; </span><span class="s0">/* Dark green */</span>
+    <span class="s3">color</span><span class="s4">: </span><span class="s5">white</span><span class="s1">; </span><span class="s0">/* White text */</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">u-value-target-b </span><span class="s1">{ </span><span class="s0">/* For B1, B2 ratings */</span>
+    <span class="s3">background-color</span><span class="s4">: </span><span class="s2">#008000</span><span class="s1">; </span><span class="s0">/* Green */</span>
+    <span class="s3">color</span><span class="s4">: </span><span class="s5">white</span><span class="s1">; </span><span class="s0">/* White text */</span>
+<span class="s1">}</span>
+
+
+<span class="s0">/* Styling for the energy rating selection block */</span>
+<span class="s1">.</span><span class="s2">energy-rating-select </span><span class="s1">{</span>
+    <span class="s3">display</span><span class="s4">: </span><span class="s5">block</span><span class="s1">;</span>
+<span class="s1">}</span>
+
+
+<span class="s0">/* Dynamic background color for energy rating select based on value */</span>
+<span class="s1">.</span><span class="s2">energy-rating-select</span><span class="s1">.</span><span class="s2">a-rating </span><span class="s1">{</span>
+    <span class="s3">background-color</span><span class="s4">: </span><span class="s2">#006400</span><span class="s1">; </span><span class="s0">/* Dark green for A ratings */</span>
+    <span class="s3">color</span><span class="s4">: </span><span class="s5">white</span><span class="s1">;</span>
+<span class="s1">}</span>
+
+
+<span class="s0">/* Dynamic background color for energy rating select based on value */</span>
+<span class="s1">.</span><span class="s2">energy-rating-select</span><span class="s1">.</span><span class="s2">b-rating </span><span class="s1">{</span>
+    <span class="s3">background-color</span><span class="s4">: </span><span class="s2">#008000</span><span class="s1">; </span><span class="s0">/* Green for B ratings */</span>
+    <span class="s3">color</span><span class="s4">: </span><span class="s5">white</span><span class="s1">;</span>
+<span class="s1">}</span>
+
+
+<span class="s0">/* Update to existing U-values table styling */</span>
+<span class="s1">.</span><span class="s2">u-values-table td</span><span class="s1">.</span><span class="s2">value-cell </span><span class="s1">{ </span><span class="s0">/* Style for cells containing the UValue */</span>
+    <span class="s3">font-weight</span><span class="s4">: </span><span class="s6">600</span><span class="s1">; </span><span class="s0">/* Make the UValue stand out */</span>
+<span class="s1">}</span>
+
+
+<span class="s0">/* Additional styles for U-values traffic light system */</span>
+<span class="s1">.</span><span class="s2">u-value-high </span><span class="s1">{ </span><span class="s0">/* For values higher than the threshold */</span>
+    <span class="s3">background-color</span><span class="s4">: </span><span class="s2">#FF4136 !important</span><span class="s1">; </span><span class="s0">/* Darker red for the background */</span>
+    <span class="s3">color</span><span class="s4">: </span><span class="s2">#ffffff !important</span><span class="s1">; </span><span class="s0">/* White for the text */</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">u-value-medium </span><span class="s1">{ </span><span class="s0">/* For values equal to the threshold */</span>
+    <span class="s3">background-color</span><span class="s4">: </span><span class="s2">#FFBF00 !important</span><span class="s1">; </span><span class="s0">/* Darker orange for the background */</span>
+    <span class="s3">color</span><span class="s4">: </span><span class="s2">#ffffff !important</span><span class="s1">; </span><span class="s0">/* White amber for the text */</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">u-value-low </span><span class="s1">{ </span><span class="s0">/* For values lower than the threshold */</span>
+    <span class="s3">background-color</span><span class="s4">: </span><span class="s2">#2ECC40 !important</span><span class="s1">; </span><span class="s0">/* Darker green for the background */</span>
+    <span class="s3">color</span><span class="s4">: </span><span class="s2">#ffffff !important</span><span class="s1">; </span><span class="s0">/* White for the text */</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">color-block </span><span class="s1">{</span>
+    <span class="s3">display</span><span class="s4">: </span><span class="s5">inline-block</span><span class="s1">;</span>
+    <span class="s3">width</span><span class="s4">: </span><span class="s6">15</span><span class="s5">px</span><span class="s1">;  </span><span class="s0">/* Adjust size as needed */</span>
+    <span class="s3">height</span><span class="s4">: </span><span class="s6">15</span><span class="s5">px</span><span class="s1">;  </span><span class="s0">/* Adjust size as needed */</span>
+    <span class="s3">margin-right</span><span class="s4">: </span><span class="s6">5</span><span class="s5">px</span><span class="s1">;  </span><span class="s0">/* Space between block and text */</span>
+    <span class="s3">vertical-align</span><span class="s4">: </span><span class="s5">middle</span><span class="s1">;</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">red </span><span class="s1">{ </span><span class="s3">background-color</span><span class="s4">: </span><span class="s2">#FF4136</span><span class="s1">; } </span><span class="s0">/* Red colour */</span>
+<span class="s1">.</span><span class="s2">green </span><span class="s1">{ </span><span class="s3">background-color</span><span class="s4">: </span><span class="s2">#2ECC40</span><span class="s1">; } </span><span class="s0">/* Green colour */</span>
+<span class="s1">.</span><span class="s2">amber </span><span class="s1">{ </span><span class="s3">background-color</span><span class="s4">: </span><span class="s2">#FFBF00</span><span class="s1">; } </span><span class="s0">/* Amber colour */</span>
+
+<span class="s1">.</span><span class="s2">color-word </span><span class="s1">{</span>
+    <span class="s0">/* Additional styling for text if needed */</span>
+<span class="s1">}</span>
+
+
+<span class="s0">/* Styling for the container holding the BER values */</span>
+<span class="s1">.</span><span class="s2">ber-value-container </span><span class="s1">{</span>
+    <span class="s3">display</span><span class="s4">: </span><span class="s5">flex</span><span class="s1">;</span>
+    <span class="s3">justify-content</span><span class="s4">: </span><span class="s5">center</span><span class="s1">; </span><span class="s0">/* Center the items horizontally in the container */</span>
+    <span class="s3">align-items</span><span class="s4">: </span><span class="s5">center</span><span class="s1">; </span><span class="s0">/* Align the items vertically */</span>
+    <span class="s3">gap</span><span class="s4">: </span><span class="s6">20</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Adds space between the two BER value containers */</span>
+    <span class="s3">margin-top</span><span class="s4">: </span><span class="s6">20</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Space above the container */</span>
+    <span class="s3">margin-bottom</span><span class="s4">: </span><span class="s6">20</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Space below the container */</span>
+    <span class="s3">margin-left</span><span class="s4">: </span><span class="s5">auto</span><span class="s1">;</span>
+    <span class="s3">margin-right</span><span class="s4">: </span><span class="s5">auto</span><span class="s1">;</span>
+    <span class="s3">width</span><span class="s4">: </span><span class="s6">100</span><span class="s1">%; </span><span class="s0">/* Ensure the container takes the full width of its parent */</span>
+    <span class="s3">max-width</span><span class="s4">: </span><span class="s6">80</span><span class="s1">%;</span>
+<span class="s1">}</span>
+
+<span class="s0">/* Styling for individual BER value containers */</span>
+<span class="s1">.</span><span class="s2">ber-value </span><span class="s1">{</span>
+    <span class="s3">flex</span><span class="s4">: </span><span class="s6">1</span><span class="s1">; </span><span class="s0">/* Each container takes up equal width */</span>
+    <span class="s3">display</span><span class="s4">: </span><span class="s5">flex</span><span class="s1">; </span><span class="s0">/* Use flexbox within each BER value container too */</span>
+    <span class="s3">justify-content</span><span class="s4">: </span><span class="s5">center</span><span class="s1">; </span><span class="s0">/* Center content horizontally */</span>
+    <span class="s3">align-items</span><span class="s4">: </span><span class="s5">center</span><span class="s1">; </span><span class="s0">/* Center content vertically */</span>
+    <span class="s3">text-align</span><span class="s4">: </span><span class="s5">center</span><span class="s1">; </span><span class="s0">/* Ensures the text within the &lt;p&gt; is centered */</span>
+    <span class="s3">padding</span><span class="s4">: </span><span class="s6">10</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Padding inside each container */</span>
+    <span class="s3">min-height</span><span class="s4">: </span><span class="s6">100</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Optional: Set a minimum height for visual consistency */</span>
+    <span class="s3">border-radius</span><span class="s4">: </span><span class="s6">5</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Optional: Adds rounded corners for aesthetics */</span>
+    <span class="s3">box-shadow</span><span class="s4">: </span><span class="s6">0 2</span><span class="s5">px </span><span class="s6">4</span><span class="s5">px </span><span class="s2">rgba</span><span class="s1">(</span><span class="s6">0</span><span class="s1">,</span><span class="s6">0</span><span class="s1">,</span><span class="s6">0</span><span class="s1">,</span><span class="s6">0.1</span><span class="s1">); </span><span class="s0">/* Optional: Adds a subtle shadow for depth */</span>
+<span class="s1">}</span>
+
+<span class="s0">/* You might want to adjust the &lt;p&gt; tag directly if it's not aligning as expected */</span>
+<span class="s1">.</span><span class="s2">ber-value p </span><span class="s1">{</span>
+    <span class="s3">margin</span><span class="s4">: </span><span class="s6">0</span><span class="s1">; </span><span class="s0">/* Removes default margin from &lt;p&gt; to help with exact centering */</span>
+    <span class="s3">width</span><span class="s4">: </span><span class="s6">100</span><span class="s1">%; </span><span class="s0">/* Ensures the &lt;p&gt; tag takes up the full width of its parent for centering */</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">adjusted-ber-rating </span><span class="s1">{</span>
+    <span class="s3">margin-left</span><span class="s4">: </span><span class="s6">20</span><span class="s5">px</span><span class="s1">;</span>
+    <span class="s3">padding</span><span class="s4">: </span><span class="s6">10</span><span class="s5">px</span><span class="s1">;</span>
+    <span class="s3">border-radius</span><span class="s4">: </span><span class="s6">5</span><span class="s5">px</span><span class="s1">;</span>
+<span class="s1">}</span>
+
+
+<span class="s0">/* Optional table styling */</span>
+<span class="s1">.</span><span class="s2">optional-table </span><span class="s1">{</span>
+    <span class="s3">max-width</span><span class="s4">: </span><span class="s6">200</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Adjust max-width for better alignment, match with your other form elements width */</span>
+<span class="s1">}</span>
+
+
+<span class="s0">/* Improvements Table Container Styling*/</span>
+<span class="s1">.</span><span class="s2">improvements-table-container h3 </span><span class="s1">{</span>
+    <span class="s3">text-align</span><span class="s4">: </span><span class="s5">center</span><span class="s1">; </span><span class="s0">/* Center the text within the h3 */</span>
+    <span class="s3">color</span><span class="s4">: </span><span class="s2">#4a90e2</span><span class="s1">; </span><span class="s0">/* Blue color for heading */</span>
+    <span class="s3">margin-top</span><span class="s4">: </span><span class="s6">20</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Space above the heading */</span>
+    <span class="s3">margin-bottom</span><span class="s4">: </span><span class="s6">20</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Space below the heading */</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">improvements-table-container p strong </span><span class="s1">{</span>
+    <span class="s3">font-weight</span><span class="s4">: </span><span class="s6">600</span><span class="s1">; </span><span class="s0">/* Slightly less bold than full bold for subtlety */</span>
+<span class="s1">}</span>
+
+
+<span class="s0">/* Individual Table Styling */</span>
+<span class="s1">.</span><span class="s2">improvements-table th </span><span class="s1">{</span>
+    <span class="s3">position</span><span class="s4">: </span><span class="s5">sticky</span><span class="s1">; </span><span class="s0">/* Keep the header fixed */</span>
+    <span class="s3">top</span><span class="s4">: </span><span class="s6">0</span><span class="s1">; </span><span class="s0">/* Stick to the top */</span>
+    <span class="s3">z-index</span><span class="s4">: </span><span class="s6">2</span><span class="s1">; </span><span class="s0">/* Ensure it's above other elements */</span>
+<span class="s1">}</span>
+
+
+<span class="s0">/* Individual Button Styling */</span>
+<span class="s1">.</span><span class="s2">improvements-table button </span><span class="s1">{</span>
+    <span class="s3">padding</span><span class="s4">: </span><span class="s6">8</span><span class="s5">px </span><span class="s6">16</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Padding inside the button */</span>
+    <span class="s3">text-align</span><span class="s4">: </span><span class="s5">center</span><span class="s1">; </span><span class="s0">/* Center text in button */</span>
+    <span class="s3">margin</span><span class="s4">: </span><span class="s5">auto</span><span class="s1">; </span><span class="s0">/* Center button in cell */</span>
+    <span class="s3">display</span><span class="s4">: </span><span class="s5">block</span><span class="s1">; </span><span class="s0">/* Ensure button takes full width */</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">new-energy-rating-container </span><span class="s1">.</span><span class="s2">button-blue </span><span class="s1">{</span>
+    <span class="s3">padding</span><span class="s4">: </span><span class="s6">10</span><span class="s5">px </span><span class="s6">20</span><span class="s5">px</span><span class="s1">;</span>
+    <span class="s3">display</span><span class="s4">: </span><span class="s5">block</span><span class="s1">; </span><span class="s0">/* Make the button block level for full width */</span>
+    <span class="s3">text-align</span><span class="s4">: </span><span class="s5">center</span><span class="s1">;</span>
+    <span class="s3">margin</span><span class="s4">: </span><span class="s6">0 </span><span class="s5">auto</span><span class="s1">; </span><span class="s0">/* Center the button horizontally */</span>
+    <span class="s3">margin-top</span><span class="s4">: </span><span class="s6">10</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Space above the button */</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">button-blue </span><span class="s1">{</span>
+    <span class="s3">padding</span><span class="s4">: </span><span class="s6">12</span><span class="s5">px </span><span class="s6">24</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* More padding for bigger button */</span>
+    <span class="s3">font-size</span><span class="s4">: </span><span class="s6">1</span><span class="s5">rem</span><span class="s1">; </span><span class="s0">/* Standard button text size */</span>
+    <span class="s3">font-weight</span><span class="s4">: </span><span class="s6">500</span><span class="s1">; </span><span class="s0">/* Medium font weight */</span>
+    <span class="s3">letter-spacing</span><span class="s4">: </span><span class="s6">0.05</span><span class="s5">em</span><span class="s1">; </span><span class="s0">/* Slight spacing between letters */</span>
+    <span class="s3">margin-top</span><span class="s4">: </span><span class="s6">20</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Space above button */</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">return-button-container </span><span class="s1">{</span>
+    <span class="s3">text-align</span><span class="s4">: </span><span class="s5">center</span><span class="s1">; </span><span class="s0">/* Center the button container */</span>
+    <span class="s3">margin-top</span><span class="s4">: </span><span class="s6">20</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Add some space above the button */</span>
+    <span class="s3">margin-bottom</span><span class="s4">: </span><span class="s6">20</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Add some space below the button */</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">button-blue</span><span class="s1">.</span><span class="s2">return-to-form </span><span class="s1">{</span>
+    <span class="s3">padding</span><span class="s4">: </span><span class="s6">10</span><span class="s5">px </span><span class="s6">20</span><span class="s5">px</span><span class="s1">;</span>
+    <span class="s3">display</span><span class="s4">: </span><span class="s5">inline-block</span><span class="s1">; </span><span class="s0">/* Align button properly without full width */</span>
+    <span class="s3">text-align</span><span class="s4">: </span><span class="s5">center</span><span class="s1">;</span>
+<span class="s1">}</span>
+
+<span class="s0">/* Checkbox and label within the table styling */</span>
+<span class="s1">.</span><span class="s2">improvements-table </span><span class="s1">.</span><span class="s2">checkbox-container </span><span class="s1">{</span>
+    <span class="s3">display</span><span class="s4">: </span><span class="s5">flex</span><span class="s1">;</span>
+    <span class="s3">align-items</span><span class="s4">: </span><span class="s5">center</span><span class="s1">;</span>
+    <span class="s3">justify-content</span><span class="s4">: </span><span class="s5">center</span><span class="s1">;</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">improvements-table </span><span class="s1">.</span><span class="s2">checkbox-container input</span><span class="s1">[</span><span class="s2">type</span><span class="s1">=</span><span class="s5">&quot;checkbox&quot;</span><span class="s1">] {</span>
+    <span class="s0">/* Make checkbox bigger */</span>
+    <span class="s3">width</span><span class="s4">: </span><span class="s6">20</span><span class="s5">px</span><span class="s1">;</span>
+    <span class="s3">height</span><span class="s4">: </span><span class="s6">20</span><span class="s5">px</span><span class="s1">;</span>
+    <span class="s3">cursor</span><span class="s4">: </span><span class="s5">pointer</span><span class="s1">;</span>
+    <span class="s3">margin-right</span><span class="s4">: </span><span class="s6">5</span><span class="s5">px</span><span class="s1">; </span><span class="s0">/* Space between checkbox and label */</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">improvements-table </span><span class="s1">.</span><span class="s2">checkbox-container label </span><span class="s1">{</span>
+    <span class="s3">margin</span><span class="s4">: </span><span class="s6">0</span><span class="s1">; </span><span class="s0">/* Adjust as needed */</span>
+    <span class="s3">cursor</span><span class="s4">: </span><span class="s5">pointer</span><span class="s1">;</span>
+<span class="s1">}</span>
+
+
+<span class="s0">/* Total row styling */</span>
+<span class="s1">.</span><span class="s2">improvements-table </span><span class="s1">.</span><span class="s2">total-row </span><span class="s1">{</span>
+    <span class="s3">background-color</span><span class="s4">: </span><span class="s2">#4a90e2</span><span class="s1">; </span><span class="s0">/* Blue background */</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">improvements-table </span><span class="s1">.</span><span class="s2">total-row td </span><span class="s1">{</span>
+    <span class="s3">border-top</span><span class="s4">: </span><span class="s6">2</span><span class="s5">px solid </span><span class="s2">#ddd</span><span class="s1">; </span><span class="s0">/* Adds a top border to separate from other rows */</span>
+    <span class="s3">font-weight</span><span class="s4">: </span><span class="s6">600</span><span class="s1">; </span><span class="s0">/* Bold font for total row */</span>
+    <span class="s3">color</span><span class="s4">: </span><span class="s5">white </span><span class="s2">!important</span><span class="s1">; </span><span class="s0">/* White text */</span>
+<span class="s1">}</span>
+
+
+
+
+
+</pre>
+</body>
+</html>

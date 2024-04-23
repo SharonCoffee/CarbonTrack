@@ -1,0 +1,1278 @@
+<html>
+<head>
+<title>suggestions.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #8c8c8c; font-style: italic;}
+.s1 { color: #080808;}
+.s2 { color: #0033b3;}
+.s3 { color: #067d17;}
+.s4 { color: #1750eb;}
+.s5 { color: #174ad4;}
+.s6 { color: #080808;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+suggestions.js</font>
+</center></td></tr></table>
+<pre><span class="s0">// TODO:</span>
+<span class="s0">// 1. Add the heat pump assessment to the heat pump costs and the bonus heat pump too.</span>
+<span class="s0">// 2. Inform user of additional grants for other things that can be obtained.  Or maybe just show 1 in here too in a table for the homeowner.</span>
+<span class="s0">// 3. Modify the recalculated grants total and homeownercost total to keep a running total of each individual recalculated grant and homeownercost instead of doing a full reculation at the end.</span>
+
+<span class="s2">import </span><span class="s1">React, { useState, useEffect } from </span><span class="s3">'react'</span><span class="s1">;</span>
+<span class="s2">import </span><span class="s1">{ useNavigate, useLocation } from </span><span class="s3">'react-router-dom'</span><span class="s1">;</span>
+<span class="s2">import </span><span class="s1">Papa from </span><span class="s3">'papaparse'</span><span class="s1">;</span>
+<span class="s2">import </span><span class="s1">{ getAuth, signOut } from </span><span class="s3">'firebase/auth'</span><span class="s1">;</span>
+
+<span class="s2">function </span><span class="s1">SuggestionsPage () {</span>
+  <span class="s2">const </span><span class="s1">navigate = useNavigate(); </span><span class="s0">// Initialize the useNavigate hook</span>
+  <span class="s2">const </span><span class="s1">location = useLocation();</span>
+
+  <span class="s2">const </span><span class="s1">selectedProperty = location.state ? location.state.selectedProperty : </span><span class="s2">null</span><span class="s1">;</span>
+  <span class="s2">const </span><span class="s1">initialBerRating = location.state ? Number(location.state.selectedProperty.BerRating) : </span><span class="s4">0</span><span class="s1">;</span>
+  <span class="s2">const </span><span class="s1">[adjustedBerRating, setAdjustedBerRating] = useState(initialBerRating);</span>
+  <span class="s2">const </span><span class="s1">[newEnergyRating, setNewEnergyRating] = useState(</span><span class="s3">''</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">[tempNewEnergyRating, setTempNewEnergyRating] = useState(</span><span class="s3">''</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">[newBerRating, setNewBerRating] = useState(</span><span class="s4">0</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">[selectClass, setSelectClass] = useState(</span><span class="s3">''</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">[archetype, setArchetype] = useState([]);</span>
+  <span class="s2">const </span><span class="s1">[seaiGrants, setSeaiGrants] = useState([]);</span>
+  <span class="s2">const </span><span class="s1">[selectedUValues, setSelectedUValues] = useState({</span>
+    <span class="s1">UValueWall: </span><span class="s2">false</span><span class="s1">,</span>
+    <span class="s1">UValueRoof: </span><span class="s2">false</span><span class="s1">,</span>
+    <span class="s1">UValueFloor: </span><span class="s2">false</span><span class="s1">,</span>
+    <span class="s1">UValueWindow: </span><span class="s2">false</span><span class="s1">,</span>
+    <span class="s1">UvalueDoor: </span><span class="s2">false</span>
+  <span class="s1">});</span>
+  <span class="s2">const </span><span class="s1">[wallInsulationQuantity, setWallInsulationQuantity] = useState(selectedProperty ? selectedProperty.WallArea : </span><span class="s4">0</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">[roofInsulationQuantity, setRoofInsulationQuantity] = useState(selectedProperty ? selectedProperty.RoofArea : </span><span class="s4">0</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">[floorInsulationQuantity, setFloorInsulationQuantity] = useState(selectedProperty ? selectedProperty.FloorArea : </span><span class="s4">0</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">[windowQuantity, setWindowQuantity] = useState(</span><span class="s4">1</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">[BackDoorQuantity, setBackDoorQuantity] = useState(</span><span class="s4">1</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">[FrontDoorQuantity, setFrontDoorQuantity] = useState(</span><span class="s4">1</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">[SolarPanelQuantity, setSolarPanelQuantity] = useState(</span><span class="s4">1</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">[SolarHotWaterQuantity, setSolarHotWaterQuantity] = useState(</span><span class="s4">1</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">[HeatPumpQuantity, setHeatPumpQuantity] = useState(</span><span class="s4">1</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">[CentralHeatingSystemQuantity, setCentralHeatingSystemQuantity] = useState(</span><span class="s4">1</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">[HeatingControlsQuantity, setHeatingControlsQuantity] = useState(</span><span class="s4">1</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">[MechanicalVentilationQuantity, setMechanicalVentilationQuantity] = useState(</span><span class="s4">1</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">[AirTightnessQuantity, setAirTightnessQuantity] = useState(</span><span class="s4">1</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">[totalEstimatedCost, setTotalEstimatedCost] = useState(</span><span class="s4">0</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">[totalAvailableGrant, setTotalAvailableGrant] = useState(</span><span class="s4">0</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">[totalRecalculatedGrant, setTotalRecalculatedGrant] = useState(</span><span class="s4">0</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">[totalCostToHomeowner, setTotalCostToHomeowner] = useState(</span><span class="s4">0</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">[selectedItemsCosts, setSelectedItemsCosts] = useState([]);</span>
+  <span class="s2">const </span><span class="s1">[selectedItemsGrants, setSelectedItemsGrants] = useState([]);</span>
+
+  <span class="s2">const </span><span class="s1">availableRatings = selectedProperty &amp;&amp; [</span><span class="s3">'A1'</span><span class="s1">, </span><span class="s3">'A2'</span><span class="s1">, </span><span class="s3">'A3'</span><span class="s1">, </span><span class="s3">'B1'</span><span class="s1">, </span><span class="s3">'B2'</span><span class="s1">].filter(rating =&gt; rating !== selectedProperty.EnergyRating &amp;&amp; rating &lt; selectedProperty.EnergyRating);</span>
+
+  <span class="s2">const </span><span class="s1">[thresholdValues, setThresholdValues] = useState({</span>
+    <span class="s1">wall: </span><span class="s4">0</span><span class="s1">, </span><span class="s0">// Default values, will be updated dynamically</span>
+    <span class="s1">roof: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">floor: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">window: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">door: </span><span class="s4">0</span>
+  <span class="s1">});</span>
+
+  <span class="s2">const </span><span class="s1">[lowestMeanValues, setLowestMeanValues] = useState({</span>
+    <span class="s1">wall: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">roof: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">floor: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">window: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">door: </span><span class="s4">0</span>
+  <span class="s1">});</span>
+
+  <span class="s2">const </span><span class="s1">[improvementCosts, setImprovementCosts] = useState({</span>
+    <span class="s1">WallCavityInsulation: </span><span class="s4">0</span><span class="s1">, </span><span class="s0">// initial values</span>
+    <span class="s1">WallInternalInsulation: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">WallExternalInsulation: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">AtticInsulation: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">RafterInsulation: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">FloorInsulation: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">WindowReplacement: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">BackDoorReplacement: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">FrontDoorReplacement: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">SolarPanels: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">SolarHotWater: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">HeatPumpAssessment: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">HeatPumpAirToWater: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">HeatPumpGroundSource: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">HeatPumpExhaustAir: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">HeatPumpWaterToWater: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">HeatPumpAirToAir: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">CentralHeatingSystem: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">HeatingControls: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">HeatPumpBonus: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">MechanicalVentilation: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">AirTightness: </span><span class="s4">0</span>
+    <span class="s0">// other initial values</span>
+  <span class="s1">});</span>
+
+  <span class="s2">const </span><span class="s1">[availableGrants, setAvailableGrants] = useState({</span>
+    <span class="s1">WallCavityGrant: </span><span class="s4">0</span><span class="s1">, </span><span class="s0">// initial values</span>
+    <span class="s1">WallInternalGrant: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">WallExternalGrant: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">AtticGrant: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">RafterGrant: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">FloorGrant: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">WindowGrant: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">BackDoorGrant: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">FrontDoorGrant: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">SolarPanelsGrant: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">SolarHotWaterGrant: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">HeatPumpAssessmentGrant: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">HeatPumpAirToWaterGrant: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">HeatPumpGroundSourceGrant: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">HeatPumpExhaustAirGrant: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">HeatPumpWaterToWaterGrant: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">HeatPumpAirToAirGrant: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">CentralHeatingSystemGrant: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">HeatingControlsGrant: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">HeatPumpBonusGrant: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">MechanicalVentilationGrant: </span><span class="s4">0</span><span class="s1">,</span>
+    <span class="s1">AirTightnessGrant: </span><span class="s4">0</span>
+    <span class="s0">// other initial values</span>
+  <span class="s1">});</span>
+
+  <span class="s0">// Define the impact weights for each U-Value type</span>
+  <span class="s2">const </span><span class="s1">impactWeights = {</span>
+    <span class="s1">UValueWall: </span><span class="s4">5</span><span class="s1">,</span>
+    <span class="s1">UValueRoof: </span><span class="s4">4</span><span class="s1">,</span>
+    <span class="s1">UValueWindow: </span><span class="s4">3</span><span class="s1">,</span>
+    <span class="s1">UValueFloor: </span><span class="s4">2</span><span class="s1">,</span>
+    <span class="s1">UvalueDoor: </span><span class="s4">1</span><span class="s1">,</span>
+    <span class="s1">SolarPanels: </span><span class="s4">2.5</span><span class="s1">,</span>
+    <span class="s1">HeatPump: </span><span class="s4">2.5</span>
+  <span class="s1">};</span>
+
+  <span class="s2">const </span><span class="s1">totalImpactWeights = Object.values(impactWeights).reduce((acc, cur) =&gt; acc + cur, </span><span class="s4">0</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">mapBerToColour = (ber) =&gt; {</span>
+    <span class="s2">if </span><span class="s1">(ber &lt; </span><span class="s4">25</span><span class="s1">) </span><span class="s2">return </span><span class="s3">'dark green'</span><span class="s1">;</span>
+    <span class="s2">else if </span><span class="s1">(ber &gt;= </span><span class="s4">25 </span><span class="s1">&amp;&amp; ber &lt; </span><span class="s4">50</span><span class="s1">) </span><span class="s2">return </span><span class="s3">'green'</span><span class="s1">;</span>
+    <span class="s2">else if </span><span class="s1">(ber &gt;= </span><span class="s4">50 </span><span class="s1">&amp;&amp; ber &lt; </span><span class="s4">75</span><span class="s1">) </span><span class="s2">return </span><span class="s3">'light green'</span><span class="s1">;</span>
+    <span class="s2">else if </span><span class="s1">(ber &gt;= </span><span class="s4">75 </span><span class="s1">&amp;&amp; ber &lt; </span><span class="s4">100</span><span class="s1">) </span><span class="s2">return </span><span class="s3">'lime green'</span><span class="s1">;</span>
+    <span class="s2">else if </span><span class="s1">(ber &gt;= </span><span class="s4">100 </span><span class="s1">&amp;&amp; ber &lt; </span><span class="s4">125</span><span class="s1">) </span><span class="s2">return </span><span class="s3">'yellowgreen'</span><span class="s1">;</span>
+    <span class="s2">else if </span><span class="s1">(ber &gt;= </span><span class="s4">125 </span><span class="s1">&amp;&amp; ber &lt; </span><span class="s4">150</span><span class="s1">) </span><span class="s2">return </span><span class="s3">'dark yellow'</span><span class="s1">;</span>
+    <span class="s2">else if </span><span class="s1">(ber &gt;= </span><span class="s4">150 </span><span class="s1">&amp;&amp; ber &lt; </span><span class="s4">175</span><span class="s1">) </span><span class="s2">return </span><span class="s3">'orange'</span><span class="s1">;</span>
+    <span class="s2">else if </span><span class="s1">(ber &gt;= </span><span class="s4">175 </span><span class="s1">&amp;&amp; ber &lt; </span><span class="s4">200</span><span class="s1">) </span><span class="s2">return </span><span class="s3">'coral'</span><span class="s1">;</span>
+    <span class="s2">else if </span><span class="s1">(ber &gt;= </span><span class="s4">200 </span><span class="s1">&amp;&amp; ber &lt; </span><span class="s4">225</span><span class="s1">) </span><span class="s2">return </span><span class="s3">'tomato'</span><span class="s1">;</span>
+    <span class="s2">else if </span><span class="s1">(ber &gt;= </span><span class="s4">225 </span><span class="s1">&amp;&amp; ber &lt; </span><span class="s4">260</span><span class="s1">) </span><span class="s2">return </span><span class="s3">'orangered'</span><span class="s1">;</span>
+    <span class="s2">else if </span><span class="s1">(ber &gt;= </span><span class="s4">260 </span><span class="s1">&amp;&amp; ber &lt; </span><span class="s4">300</span><span class="s1">) </span><span class="s2">return </span><span class="s3">'red'</span><span class="s1">;</span>
+    <span class="s2">else if </span><span class="s1">(ber &gt;= </span><span class="s4">300 </span><span class="s1">&amp;&amp; ber &lt; </span><span class="s4">340</span><span class="s1">) </span><span class="s2">return </span><span class="s3">'darkred'</span><span class="s1">;</span>
+    <span class="s2">else if </span><span class="s1">(ber &gt;= </span><span class="s4">340 </span><span class="s1">&amp;&amp; ber &lt; </span><span class="s4">380</span><span class="s1">) </span><span class="s2">return </span><span class="s3">'maroon'</span><span class="s1">;</span>
+    <span class="s2">else if </span><span class="s1">(ber &gt;= </span><span class="s4">380 </span><span class="s1">&amp;&amp; ber &lt; </span><span class="s4">450</span><span class="s1">) </span><span class="s2">return </span><span class="s3">'brown'</span><span class="s1">;</span>
+    <span class="s2">else return </span><span class="s3">'firebrick'</span><span class="s1">; </span><span class="s0">// For G and beyond</span>
+  <span class="s1">};</span>
+
+  <span class="s0">// Map initial and adjusted BER ratings to colours for display</span>
+  <span class="s2">const </span><span class="s1">initialRatingColour = mapBerToColour(initialBerRating);</span>
+  <span class="s2">const </span><span class="s1">adjustedBerRatingColour = mapBerToColour(adjustedBerRating);</span>
+
+  <span class="s2">const </span><span class="s1">initialBerRatingStyle = {</span>
+    <span class="s1">color: initialRatingColour,</span>
+    <span class="s1">fontSize: </span><span class="s3">'36px'</span><span class="s1">, </span><span class="s0">// Large font size for visibility</span>
+    <span class="s1">fontWeight: </span><span class="s3">'bold'</span>
+  <span class="s1">};</span>
+
+  <span class="s2">const </span><span class="s1">adjustedBerRatingStyle = {</span>
+    <span class="s1">color: adjustedBerRatingColour,</span>
+    <span class="s1">fontSize: </span><span class="s3">'36px'</span><span class="s1">, </span><span class="s0">// Large font size for visibility</span>
+    <span class="s1">fontWeight: </span><span class="s3">'bold'</span>
+  <span class="s1">};</span>
+
+  <span class="s2">const </span><span class="s1">handleLogout = () =&gt; {</span>
+    <span class="s2">const </span><span class="s1">auth = getAuth();</span>
+    <span class="s1">signOut(auth).then(() =&gt; {</span>
+      <span class="s0">// Sign-out successful.</span>
+      <span class="s1">navigate(</span><span class="s3">'/login'</span><span class="s1">); </span><span class="s0">// Redirect to login page after logout</span>
+    <span class="s1">}).catch((error) =&gt; {</span>
+      <span class="s0">// An error happened.</span>
+      <span class="s1">console.error(</span><span class="s3">'Logout Error:'</span><span class="s1">, error);</span>
+    <span class="s1">});</span>
+  <span class="s1">};</span>
+
+  <span class="s2">const </span><span class="s1">handleUValueChange = (e, field) =&gt; {</span>
+    <span class="s1">setSelectedUValues({ ...selectedUValues, [field]: e.target.checked });</span>
+  <span class="s1">};</span>
+
+  <span class="s2">const </span><span class="s1">submitNewEnergyRating = () =&gt; {</span>
+    <span class="s1">setNewEnergyRating(tempNewEnergyRating);</span>
+    <span class="s2">const </span><span class="s1">newSelectClass = tempNewEnergyRating.startsWith(</span><span class="s3">'A'</span><span class="s1">) ? </span><span class="s3">'a-rating' </span><span class="s1">: tempNewEnergyRating.startsWith(</span><span class="s3">'B'</span><span class="s1">) ? </span><span class="s3">'b-rating' </span><span class="s1">: </span><span class="s3">''</span><span class="s1">;</span>
+    <span class="s1">setSelectClass(newSelectClass);</span>
+
+    <span class="s0">// Existing logic for updating target U-Values based on the new energy rating</span>
+    <span class="s0">// Logic to calculate predicted results based on new U-values</span>
+    <span class="s1">console.log(</span><span class="s3">'New U-Values submitted:'</span><span class="s1">, tempNewEnergyRating);</span>
+  <span class="s1">};</span>
+
+  <span class="s2">const </span><span class="s1">handleCheckboxChange = (e, improvementType, cost, grant) =&gt; {</span>
+    <span class="s0">// Prevent scrolling when refocusing</span>
+    <span class="s2">const </span><span class="s1">x = window.scrollX; </span><span class="s2">const </span><span class="s1">y = window.scrollY;</span>
+    <span class="s1">e.target.focus();</span>
+    <span class="s1">window.scrollTo(x, y);</span>
+
+    <span class="s2">const </span><span class="s1">numericCost = parseFloat(cost);</span>
+    <span class="s2">const </span><span class="s1">numericGrant = parseFloat(grant);</span>
+
+    <span class="s2">if </span><span class="s1">(e.target.checked) {</span>
+      <span class="s0">// Add the cost and grant of the selected item</span>
+      <span class="s1">setSelectedItemsCosts(oldCosts =&gt; [...oldCosts, numericCost]);</span>
+      <span class="s1">setSelectedItemsGrants(oldGrants =&gt; [...oldGrants, numericGrant]);</span>
+    <span class="s1">} </span><span class="s2">else </span><span class="s1">{</span>
+      <span class="s0">// Remove the cost and grant of the deselected item</span>
+      <span class="s1">setSelectedItemsCosts(oldCosts =&gt; oldCosts.filter(itemCost =&gt; itemCost !== numericCost));</span>
+      <span class="s1">setSelectedItemsGrants(oldGrants =&gt; oldGrants.filter(itemGrant =&gt; itemGrant !== numericGrant));</span>
+    <span class="s1">}</span>
+  <span class="s1">};</span>
+
+  <span class="s1">useEffect(() =&gt; {</span>
+    <span class="s0">// Set the initial wall insulation quantity based on the selected property</span>
+    <span class="s2">if </span><span class="s1">(selectedProperty &amp;&amp; selectedProperty.WallArea) {</span>
+      <span class="s1">setWallInsulationQuantity(selectedProperty.WallArea);</span>
+    <span class="s1">}</span>
+
+    <span class="s0">// Set the initial roof insulation quantity based on the selected property</span>
+    <span class="s2">if </span><span class="s1">(selectedProperty &amp;&amp; selectedProperty.RoofArea) {</span>
+      <span class="s1">setRoofInsulationQuantity(selectedProperty.RoofArea);</span>
+    <span class="s1">}</span>
+
+    <span class="s0">// Set the initial floor insulation quantity based on the selected property</span>
+    <span class="s2">if </span><span class="s1">(selectedProperty &amp;&amp; selectedProperty.FloorArea) {</span>
+      <span class="s1">setFloorInsulationQuantity(selectedProperty.FloorArea);</span>
+    <span class="s1">}</span>
+
+    <span class="s0">// Set the SolarHotWater quantity based on the selected property</span>
+    <span class="s2">if </span><span class="s1">(selectedProperty &amp;&amp; selectedProperty.SolarHotWater) {</span>
+      <span class="s1">setSolarHotWaterQuantity(selectedProperty.SolarHotWater);</span>
+    <span class="s1">}</span>
+
+    <span class="s0">// Set the HeatPump quantity based on the selected property</span>
+    <span class="s2">if </span><span class="s1">(selectedProperty &amp;&amp; selectedProperty.HeatPump) {</span>
+      <span class="s1">setHeatPumpQuantity(selectedProperty.HeatPump);</span>
+    <span class="s1">}</span>
+
+    <span class="s0">// Set the CentralHeatingSystem quantity based on the selected property</span>
+    <span class="s2">if </span><span class="s1">(selectedProperty &amp;&amp; selectedProperty.CentralHeatingSystem) {</span>
+      <span class="s1">setCentralHeatingSystemQuantity(selectedProperty.CentralHeatingSystem);</span>
+    <span class="s1">}</span>
+
+    <span class="s0">// Set the HeatingControls quantity based on the selected property</span>
+    <span class="s2">if </span><span class="s1">(selectedProperty &amp;&amp; selectedProperty.HeatingControls) {</span>
+      <span class="s1">setHeatingControlsQuantity(selectedProperty.HeatingControls);</span>
+    <span class="s1">}</span>
+
+    <span class="s0">// Set the MechanicalVentilation quantity based on the selected property</span>
+    <span class="s2">if </span><span class="s1">(selectedProperty &amp;&amp; selectedProperty.MechanicalVentilation) {</span>
+      <span class="s1">setMechanicalVentilationQuantity(selectedProperty.MechanicalVentilation);</span>
+    <span class="s1">}</span>
+
+    <span class="s0">// Set the AirTightness quantity based on the selected property</span>
+    <span class="s2">if </span><span class="s1">(selectedProperty &amp;&amp; selectedProperty.AirTightness) {</span>
+      <span class="s1">setAirTightnessQuantity(selectedProperty.AirTightness);</span>
+    <span class="s1">}</span>
+
+    <span class="s0">// Define a function to fetch and parse the SEAI grants data</span>
+    <span class="s2">const </span><span class="s1">fetchSEAIgrants = async () =&gt; {</span>
+      <span class="s2">const </span><span class="s1">response = </span><span class="s2">await </span><span class="s1">fetch(</span><span class="s3">'/data/seai_grants.csv'</span><span class="s1">);</span>
+      <span class="s2">const </span><span class="s1">text = </span><span class="s2">await </span><span class="s1">response.text();</span>
+      <span class="s2">return </span><span class="s1">Papa.parse(text, { header: </span><span class="s2">true</span><span class="s1">, dynamicTyping: </span><span class="s2">true </span><span class="s1">}).data;</span>
+    <span class="s1">};</span>
+
+    <span class="s0">// Define a function to fetch and parse the building archetype data</span>
+    <span class="s2">const </span><span class="s1">fetchArchetypeData = async () =&gt; {</span>
+      <span class="s2">const </span><span class="s1">response = </span><span class="s2">await </span><span class="s1">fetch(</span><span class="s3">'/data/data_building_archetype.csv'</span><span class="s1">);</span>
+      <span class="s2">const </span><span class="s1">text = </span><span class="s2">await </span><span class="s1">response.text();</span>
+      <span class="s2">return </span><span class="s1">Papa.parse(text, { header: </span><span class="s2">true</span><span class="s1">, dynamicTyping: </span><span class="s2">true </span><span class="s1">}).data;</span>
+    <span class="s1">};</span>
+
+    <span class="s0">// Use Promise.all to fetch both datasets concurrently</span>
+    <span class="s1">Promise.all([fetchSEAIgrants(), fetchArchetypeData()]).then(([seaiGrantsData, archetypeData]) =&gt; {</span>
+      <span class="s1">setSeaiGrants(seaiGrantsData);</span>
+      <span class="s1">setArchetype(archetypeData);</span>
+
+      <span class="s0">// Assuming selectedDwellingType holds type like 'Semi-detached house'</span>
+      <span class="s2">const </span><span class="s1">dwellingType = selectedProperty ? selectedProperty.DwellingTypeDescr : </span><span class="s3">''</span><span class="s1">;</span>
+      <span class="s2">const </span><span class="s1">newRating = newEnergyRating;</span>
+
+      <span class="s0">// Added in to remove the eslint error message</span>
+      <span class="s2">if </span><span class="s1">(archetype.length === </span><span class="s4">0</span><span class="s1">) {</span>
+        <span class="s2">return</span><span class="s1">; </span><span class="s0">// Exit if archetype data is not available</span>
+      <span class="s1">}</span>
+      <span class="s2">if </span><span class="s1">(newBerRating.length === </span><span class="s4">0</span><span class="s1">) {</span>
+        <span class="s2">return</span><span class="s1">;</span>
+      <span class="s1">}</span>
+
+      <span class="s0">// Find matching row for new energy rating and dwelling type from archetype data</span>
+      <span class="s2">const </span><span class="s1">matchedRow = archetypeData.find(row =&gt; row.DwellingType === dwellingType &amp;&amp; row.EnergyRating === newRating);</span>
+
+      <span class="s0">// If a matching row is found, update the threshold values</span>
+      <span class="s2">if </span><span class="s1">(matchedRow) {</span>
+        <span class="s1">setThresholdValues({</span>
+          <span class="s1">wall: matchedRow.UValueWallMean,</span>
+          <span class="s1">roof: matchedRow.UValueRoofMean,</span>
+          <span class="s1">floor: matchedRow.UValueFloorMean,</span>
+          <span class="s1">window: matchedRow.UValueWindowMean,</span>
+          <span class="s1">door: matchedRow.UValueDoorMean</span>
+        <span class="s1">});</span>
+        <span class="s1">setNewBerRating(matchedRow.BerRatingMean);</span>
+      <span class="s1">}</span>
+
+      <span class="s0">// Find the Energy Rating A1 for dwelling type from archetype data</span>
+      <span class="s2">const </span><span class="s1">lowestMeanRow = archetypeData.find(row =&gt; row.DwellingType === dwellingType &amp;&amp; row.EnergyRating === </span><span class="s3">'A1'</span><span class="s1">);</span>
+
+      <span class="s0">// If a matching row is found, update the lowest mean values</span>
+      <span class="s2">if </span><span class="s1">(lowestMeanRow) {</span>
+        <span class="s1">setLowestMeanValues({</span>
+          <span class="s1">wall: lowestMeanRow.UValueWallMean,</span>
+          <span class="s1">roof: lowestMeanRow.UValueRoofMean,</span>
+          <span class="s1">floor: lowestMeanRow.UValueFloorMean,</span>
+          <span class="s1">window: lowestMeanRow.UValueWindowMean,</span>
+          <span class="s1">door: lowestMeanRow.UValueDoorMean</span>
+        <span class="s1">});</span>
+      <span class="s1">}</span>
+
+      <span class="s0">// Update improvement costs and available grants based on SEAI grants data and dwelling type</span>
+      <span class="s2">const </span><span class="s1">updatedImprovementCosts = { ...improvementCosts };</span>
+      <span class="s2">const </span><span class="s1">updatedAvailableGrants = { ...availableGrants };</span>
+
+      <span class="s0">// Added in to remove the eslint error message</span>
+      <span class="s2">if </span><span class="s1">(seaiGrants.length === </span><span class="s4">0</span><span class="s1">) {</span>
+        <span class="s2">return</span><span class="s1">;</span>
+      <span class="s1">}</span>
+
+      <span class="s1">seaiGrantsData.forEach(grant =&gt; {</span>
+        <span class="s1">console.log(grant); </span><span class="s0">// To check what's in each grant entry</span>
+        <span class="s2">if </span><span class="s1">(grant.DwellingTypes === dwellingType) {</span>
+          <span class="s2">switch </span><span class="s1">(grant.GrantName) { </span><span class="s0">// Use 'GrantName' as in the CSV</span>
+            <span class="s2">case </span><span class="s3">'Cavity wall insulation'</span><span class="s1">: </span><span class="s0">// Use the exact name from the CSV</span>
+              <span class="s1">updatedImprovementCosts.WallCavityInsulation = grant.EstimatedImprovementCost;</span>
+              <span class="s1">updatedAvailableGrants.WallCavityGrant = grant.GrantValue;</span>
+              <span class="s2">break</span><span class="s1">;</span>
+            <span class="s2">case </span><span class="s3">'Internal Insulation (Dry Lining)'</span><span class="s1">: </span><span class="s0">// Use the exact name from the CSV</span>
+              <span class="s1">updatedImprovementCosts.WallInternalInsulation = grant.EstimatedImprovementCost;</span>
+              <span class="s1">updatedAvailableGrants.WallInternalGrant = grant.GrantValue;</span>
+              <span class="s2">break</span><span class="s1">;</span>
+            <span class="s2">case </span><span class="s3">'External Wall Insulation (The Wrap)'</span><span class="s1">: </span><span class="s0">// Use the exact name from the CSV</span>
+              <span class="s1">updatedImprovementCosts.WallExternalInsulation = grant.EstimatedImprovementCost;</span>
+              <span class="s1">updatedAvailableGrants.WallExternalGrant = grant.GrantValue;</span>
+              <span class="s2">break</span><span class="s1">;</span>
+            <span class="s2">case </span><span class="s3">'Attic insulation'</span><span class="s1">: </span><span class="s0">// Use the exact name from the CSV</span>
+              <span class="s1">updatedImprovementCosts.AtticInsulation = grant.EstimatedImprovementCost;</span>
+              <span class="s1">updatedAvailableGrants.AtticGrant = grant.GrantValue;</span>
+              <span class="s2">break</span><span class="s1">;</span>
+            <span class="s2">case </span><span class="s3">'Rafter insulation'</span><span class="s1">: </span><span class="s0">// Use the exact name from the CSV</span>
+              <span class="s1">updatedImprovementCosts.RafterInsulation = grant.EstimatedImprovementCost;</span>
+              <span class="s1">updatedAvailableGrants.RafterGrant = grant.GrantValue;</span>
+              <span class="s2">break</span><span class="s1">;</span>
+            <span class="s2">case </span><span class="s3">'Floor Insulation'</span><span class="s1">: </span><span class="s0">// Use the exact name from the CSV</span>
+              <span class="s1">updatedImprovementCosts.FloorInsulation = grant.EstimatedImprovementCost;</span>
+              <span class="s1">updatedAvailableGrants.FloorGrant = grant.GrantValue;</span>
+              <span class="s2">break</span><span class="s1">;</span>
+            <span class="s2">case </span><span class="s3">'Windows (Complete Upgrade)'</span><span class="s1">: </span><span class="s0">// Use the exact name from the CSV</span>
+              <span class="s1">updatedImprovementCosts.WindowReplacement = grant.EstimatedImprovementCost;</span>
+              <span class="s1">updatedAvailableGrants.WindowGrant = grant.GrantValue;</span>
+              <span class="s2">break</span><span class="s1">;</span>
+            <span class="s2">case </span><span class="s3">'External Back door'</span><span class="s1">: </span><span class="s0">// Use the exact name from the CSV</span>
+              <span class="s1">updatedImprovementCosts.BackDoorReplacement = grant.EstimatedImprovementCost;</span>
+              <span class="s1">updatedAvailableGrants.BackDoorGrant = grant.GrantValue;</span>
+              <span class="s2">break</span><span class="s1">;</span>
+            <span class="s2">case </span><span class="s3">'External Front door'</span><span class="s1">: </span><span class="s0">// Use the exact name from the CSV</span>
+              <span class="s1">updatedImprovementCosts.FrontDoorReplacement = grant.EstimatedImprovementCost;</span>
+              <span class="s1">updatedAvailableGrants.FrontDoorGrant = grant.GrantValue;</span>
+              <span class="s2">break</span><span class="s1">;</span>
+            <span class="s2">case </span><span class="s3">'Solar PV Grant'</span><span class="s1">: </span><span class="s0">// Use the exact name from the CSV</span>
+              <span class="s1">updatedImprovementCosts.SolarPanels = grant.EstimatedImprovementCost;</span>
+              <span class="s1">updatedAvailableGrants.SolarPanelsGrant = grant.GrantValue;</span>
+              <span class="s2">break</span><span class="s1">;</span>
+            <span class="s2">case </span><span class="s3">'Solar Hot Water'</span><span class="s1">: </span><span class="s0">// Use the exact name from the CSV</span>
+              <span class="s1">updatedImprovementCosts.SolarHotWater = grant.EstimatedImprovementCost;</span>
+              <span class="s1">updatedAvailableGrants.SolarHotWaterGrant = grant.GrantValue;</span>
+              <span class="s2">break</span><span class="s1">;</span>
+            <span class="s2">case </span><span class="s3">'Heat Pump Technical Assessment'</span><span class="s1">: </span><span class="s0">// Use the exact name from the CSV</span>
+              <span class="s1">updatedImprovementCosts.HeatPumpAssessment = grant.EstimatedImprovementCost;</span>
+              <span class="s1">updatedAvailableGrants.HeatPumpAssessmentGrant = grant.GrantValue;</span>
+              <span class="s2">break</span><span class="s1">;</span>
+            <span class="s2">case </span><span class="s3">'Air to Water heat pump system'</span><span class="s1">: </span><span class="s0">// Use the exact name from the CSV</span>
+              <span class="s1">updatedImprovementCosts.HeatPumpAirToWater = grant.EstimatedImprovementCost;</span>
+              <span class="s1">updatedAvailableGrants.HeatPumpAirToWaterGrant = grant.GrantValue;</span>
+              <span class="s2">break</span><span class="s1">;</span>
+            <span class="s2">case </span><span class="s3">'Ground Source to Water heat pump system'</span><span class="s1">: </span><span class="s0">// Use the exact name from the CSV</span>
+              <span class="s1">updatedImprovementCosts.HeatPumpGroundSource = grant.EstimatedImprovementCost;</span>
+              <span class="s1">updatedAvailableGrants.HeatPumpGroundSourceGrant = grant.GrantValue;</span>
+              <span class="s2">break</span><span class="s1">;</span>
+            <span class="s2">case </span><span class="s3">'Exhaust Air to Water heat pump system'</span><span class="s1">: </span><span class="s0">// Use the exact name from the CSV</span>
+              <span class="s1">updatedImprovementCosts.HeatPumpExhaustAir = grant.EstimatedImprovementCost;</span>
+              <span class="s1">updatedAvailableGrants.HeatPumpExhaustAirGrant = grant.GrantValue;</span>
+              <span class="s2">break</span><span class="s1">;</span>
+            <span class="s2">case </span><span class="s3">'Water to Water heat pump system'</span><span class="s1">: </span><span class="s0">// Use the exact name from the CSV</span>
+              <span class="s1">updatedImprovementCosts.HeatPumpWaterToWater = grant.EstimatedImprovementCost;</span>
+              <span class="s1">updatedAvailableGrants.HeatPumpWaterToWaterGrant = grant.GrantValue;</span>
+              <span class="s2">break</span><span class="s1">;</span>
+            <span class="s2">case </span><span class="s3">'Air to Air heat pump system'</span><span class="s1">: </span><span class="s0">// Use the exact name from the CSV</span>
+              <span class="s1">updatedImprovementCosts.HeatPumpAirToAir = grant.EstimatedImprovementCost;</span>
+              <span class="s1">updatedAvailableGrants.HeatPumpAirToAirGrant = grant.GrantValue;</span>
+              <span class="s2">break</span><span class="s1">;</span>
+            <span class="s2">case </span><span class="s3">'Central Heating System for Heat Pump'</span><span class="s1">: </span><span class="s0">// Use the exact name from the CSV</span>
+              <span class="s1">updatedImprovementCosts.CentralHeatingSystem = grant.EstimatedImprovementCost;</span>
+              <span class="s1">updatedAvailableGrants.CentralHeatingSystemGrant = grant.GrantValue;</span>
+              <span class="s2">break</span><span class="s1">;</span>
+            <span class="s2">case </span><span class="s3">'Heating Controls'</span><span class="s1">: </span><span class="s0">// Use the exact name from the CSV</span>
+              <span class="s1">updatedImprovementCosts.HeatingControls = grant.EstimatedImprovementCost;</span>
+              <span class="s1">updatedAvailableGrants.HeatingControlsGrant = grant.GrantValue;</span>
+              <span class="s2">break</span><span class="s1">;</span>
+            <span class="s2">case </span><span class="s3">'Heat Pump Bonus'</span><span class="s1">: </span><span class="s0">// Use the exact name from the CSV</span>
+              <span class="s1">updatedImprovementCosts.HeatPumpBonus = grant.EstimatedImprovementCost;</span>
+              <span class="s1">updatedAvailableGrants.HeatPumpBonusGrant = grant.GrantValue;</span>
+              <span class="s2">break</span><span class="s1">;</span>
+            <span class="s2">case </span><span class="s3">'Mechanical Ventilation'</span><span class="s1">: </span><span class="s0">// Use the exact name from the CSV</span>
+              <span class="s1">updatedImprovementCosts.MechanicalVentilation = grant.EstimatedImprovementCost;</span>
+              <span class="s1">updatedAvailableGrants.MechanicalVentilationGrant = grant.GrantValue;</span>
+              <span class="s2">break</span><span class="s1">;</span>
+            <span class="s2">case </span><span class="s3">'Air Tightness'</span><span class="s1">: </span><span class="s0">// Use the exact name from the CSV</span>
+              <span class="s1">updatedImprovementCosts.AirTightness = grant.EstimatedImprovementCost;</span>
+              <span class="s1">updatedAvailableGrants.AirTightnessGrant = grant.GrantValue;</span>
+              <span class="s2">break</span><span class="s1">;</span>
+            <span class="s2">case </span><span class="s3">'Home Energy Assessment'</span><span class="s1">: </span><span class="s0">// Use the exact name from the CSV</span>
+              <span class="s1">updatedImprovementCosts.HomeEnergyAssessment = grant.EstimatedImprovementCost;</span>
+              <span class="s1">updatedAvailableGrants.HomeEnergyAssessmentGrant = grant.GrantValue;</span>
+              <span class="s2">break</span><span class="s1">;</span>
+            <span class="s2">case </span><span class="s3">'Project Management'</span><span class="s1">: </span><span class="s0">// Use the exact name from the CSV</span>
+              <span class="s1">updatedImprovementCosts.ProjectManagement = grant.EstimatedImprovementCost;</span>
+              <span class="s1">updatedAvailableGrants.ProjectManagementGrant = grant.GrantValue;</span>
+              <span class="s2">break</span><span class="s1">;</span>
+          <span class="s1">}</span>
+        <span class="s1">}</span>
+      <span class="s1">});</span>
+
+      <span class="s1">setImprovementCosts(updatedImprovementCosts);</span>
+      <span class="s1">setAvailableGrants(updatedAvailableGrants);</span>
+    <span class="s1">});</span>
+
+    <span class="s2">let </span><span class="s1">SolarPanelQuantity = </span><span class="s4">0</span><span class="s1">;</span>
+    <span class="s2">switch </span><span class="s1">(selectedProperty.DwellingTypeDescr) {</span>
+      <span class="s2">case </span><span class="s3">'Mid-terrace house'</span><span class="s1">:</span>
+        <span class="s1">SolarPanelQuantity = </span><span class="s4">8</span><span class="s1">;</span>
+        <span class="s2">break</span><span class="s1">;</span>
+      <span class="s2">case </span><span class="s3">'Semi-detached house'</span><span class="s1">:</span>
+        <span class="s1">SolarPanelQuantity = </span><span class="s4">10</span><span class="s1">;</span>
+        <span class="s2">break</span><span class="s1">;</span>
+      <span class="s2">case </span><span class="s3">'End of terrace house'</span><span class="s1">:</span>
+        <span class="s1">SolarPanelQuantity = </span><span class="s4">8</span><span class="s1">;</span>
+        <span class="s2">break</span><span class="s1">;</span>
+      <span class="s2">case </span><span class="s3">'House'</span><span class="s1">:</span>
+        <span class="s1">SolarPanelQuantity = </span><span class="s4">12</span><span class="s1">;</span>
+        <span class="s2">break</span><span class="s1">;</span>
+      <span class="s2">case </span><span class="s3">'Detached house'</span><span class="s1">:</span>
+        <span class="s1">SolarPanelQuantity = </span><span class="s4">16</span><span class="s1">;</span>
+        <span class="s2">break</span><span class="s1">;</span>
+      <span class="s2">default</span><span class="s1">: SolarPanelQuantity = </span><span class="s4">0</span><span class="s1">;</span>
+    <span class="s1">}</span>
+    <span class="s1">setSolarPanelQuantity(SolarPanelQuantity);</span>
+
+    <span class="s2">const </span><span class="s1">totalCost = selectedItemsCosts.reduce((acc, cur) =&gt; acc + cur, </span><span class="s4">0</span><span class="s1">);</span>
+    <span class="s2">const </span><span class="s1">totalGrant = selectedItemsGrants.reduce((acc, cur) =&gt; acc + cur, </span><span class="s4">0</span><span class="s1">);</span>
+    <span class="s2">const </span><span class="s1">recalculatedGrant = Math.min(totalGrant, totalCost * </span><span class="s4">0.5</span><span class="s1">); </span><span class="s0">// Ensure grant doesn't exceed 50% of the total cost</span>
+    <span class="s2">const </span><span class="s1">homeownerCost = Math.max(</span><span class="s4">0</span><span class="s1">, totalCost - recalculatedGrant); </span><span class="s0">// Ensure homeowner cost doesn't go below 0</span>
+
+    <span class="s2">let </span><span class="s1">totalImpact = </span><span class="s4">0</span><span class="s1">;</span>
+    <span class="s1">Object.keys(selectedUValues).forEach(uValue =&gt; {</span>
+      <span class="s2">if </span><span class="s1">(selectedUValues[uValue]) {</span>
+        <span class="s1">totalImpact += impactWeights[uValue];</span>
+      <span class="s1">}</span>
+    <span class="s1">});</span>
+
+    <span class="s1">console.log(</span><span class="s3">`Total Impact: </span><span class="s1">${totalImpact}</span><span class="s3">`</span><span class="s1">);</span>
+
+    <span class="s0">// Calculate the adjusted BER rating based on the selection of U-Values for retrofitting</span>
+    <span class="s2">if </span><span class="s1">(newBerRating &amp;&amp; initialBerRating) {</span>
+      <span class="s2">const </span><span class="s1">berRatingDifference = Number(initialBerRating) - Number(newBerRating);</span>
+
+      <span class="s0">// Adjusted calculation with added logging</span>
+      <span class="s2">const </span><span class="s1">adjustedBerRatingValue = Number(initialBerRating) - (berRatingDifference / totalImpactWeights * totalImpact);</span>
+
+      <span class="s1">console.log(</span><span class="s3">`Adjusted BER Rating Value: </span><span class="s1">${adjustedBerRatingValue}</span><span class="s3">`</span><span class="s1">);</span>
+
+      <span class="s1">setAdjustedBerRating(adjustedBerRatingValue);</span>
+    <span class="s1">}</span>
+
+    <span class="s1">setTotalEstimatedCost(totalCost);</span>
+    <span class="s1">setTotalAvailableGrant(totalGrant);</span>
+    <span class="s1">setTotalRecalculatedGrant(recalculatedGrant);</span>
+    <span class="s1">setTotalCostToHomeowner(homeownerCost);</span>
+  <span class="s1">}, [selectedProperty, newEnergyRating, selectedItemsCosts, selectedItemsGrants, selectedUValues, newBerRating, initialBerRating, totalImpactWeights]); </span><span class="s0">// Ensure useEffect is triggered when these values change</span>
+
+  <span class="s0">// Display the selected property and inputs for modifying U-values</span>
+  <span class="s2">return </span><span class="s1">(</span>
+      <span class="s1">&lt;&gt;</span>
+        <span class="s1">&lt;</span><span class="s2">div</span><span class="s1">&gt;</span>
+          <span class="s1">{</span><span class="s0">/* Logout Button */</span><span class="s1">}</span>
+          <span class="s1">&lt;</span><span class="s2">button </span><span class="s5">type</span><span class="s3">=&quot;button&quot; </span><span class="s5">className</span><span class="s3">=&quot;logout-button&quot; </span><span class="s5">onClick</span><span class="s3">=</span><span class="s1">{handleLogout}&gt;</span><span class="s6">Logout</span><span class="s1">&lt;/</span><span class="s2">button</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;</span><span class="s2">div</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s2">h1</span><span class="s1">&gt;</span><span class="s6">Your Selected Property Details</span><span class="s1">&lt;/</span><span class="s2">h1</span><span class="s1">&gt;</span>
+          <span class="s1">{selectedProperty &amp;&amp; (</span>
+              <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;properties-container&quot;</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;</span><span class="s2">table </span><span class="s5">className</span><span class="s3">=&quot;properties-table&quot;</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">thead</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s6">Property ID</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s6">Dwelling Type</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s6">Year of Construction</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s6">Energy Rating</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s6">BER Rating</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;/</span><span class="s2">thead</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">tbody</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{selectedProperty.PropertyID}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{selectedProperty.DwellingTypeDescr}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{selectedProperty.Year_of_Construction}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{selectedProperty.EnergyRating}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{selectedProperty.BerRating}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;/</span><span class="s2">tbody</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;/</span><span class="s2">table</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+          <span class="s1">)}</span>
+        <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;return-button-container&quot;</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s2">button</span>
+              <span class="s5">type</span><span class="s3">=&quot;button&quot;</span>
+              <span class="s5">className</span><span class="s3">=&quot;button-blue return-to-form&quot;</span>
+              <span class="s5">onClick</span><span class="s3">=</span><span class="s1">{() =&gt; navigate(</span><span class="s3">'/BerRatingForm'</span><span class="s1">)} </span><span class="s0">// Adjust the path as necessary</span>
+          <span class="s1">&gt;</span>
+            <span class="s6">Start New Property Search</span>
+          <span class="s1">&lt;/</span><span class="s2">button</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;new-energy-rating-container&quot;</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s2">h2</span><span class="s1">&gt;</span><span class="s6">Select new energy rating category to compare your existing U-Values</span><span class="s1">&lt;/</span><span class="s2">h2</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s2">p</span><span class="s1">&gt;</span>
+            <span class="s6">Choosing a new energy rating category for your home is a proactive step towards improving your living</span>
+            <span class="s6">environment and reducing your energy bills.</span>
+            <span class="s6">A higher energy rating category means that your home is more energy-efficient, meaning that your home</span>
+            <span class="s6">retains more heat and uses less energy to maintain a comfortable temperature.</span>
+            <span class="s6">This not only improves comfort, but also reduces the need for excessive heating or cooling, leading to lower</span>
+            <span class="s6">energy bills and a reduced carbon footprint.</span>
+            <span class="s6">Select a new energy rating category to compare your existing U-Values with the recommended U-Values for the</span>
+            <span class="s6">selected energy rating category.</span>
+            <span class="s6">Any discrepancies between the existing and recommended U-Values will be highlighted.</span>
+            <span class="s6">If your existing U-Values are higher than the recommended U-Values, these will be highlighted in red,</span>
+            <span class="s6">indicating areas where improvements can be made to improve the energy efficiency of your home.</span>
+            <span class="s6">You can then explore the potential improvements that can be made to your home to achieve the selected energy</span>
+            <span class="s6">rating category, with the potential grants you can receive.</span>
+            <span class="s6">If your existing U-Values are lower than the recommended U-Values, these will be highlighted in green,</span>
+            <span class="s6">indicating areas where your home already meets or exceeds the energy efficiency requirements for the</span>
+            <span class="s6">selected energy rating category.</span>
+            <span class="s6">This may mean that your home could require some additional improvements, as other factors such as</span>
+            <span class="s6">air tightness and ventilation also play a role in determining the energy rating of your home.</span>
+            <span class="s6">Thus, it may be necessary to select a different energy rating category to see how your existing U-Values</span>
+            <span class="s6">compare.</span>
+          <span class="s1">&lt;/</span><span class="s2">p</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s2">select</span>
+              <span class="s5">value</span><span class="s3">=</span><span class="s1">{tempNewEnergyRating}</span>
+              <span class="s5">onChange</span><span class="s3">=</span><span class="s1">{e =&gt; setTempNewEnergyRating(e.target.value)}</span>
+              <span class="s5">className</span><span class="s3">=</span><span class="s1">{</span><span class="s3">`energy-rating-select </span><span class="s1">${selectClass}</span><span class="s3">`</span><span class="s1">}</span>
+          <span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">option </span><span class="s5">value</span><span class="s3">=&quot;&quot;</span><span class="s1">&gt;</span><span class="s6">Select New Energy Rating</span><span class="s1">&lt;/</span><span class="s2">option</span><span class="s1">&gt;</span>
+            <span class="s1">{availableRatings &amp;&amp; availableRatings.map(rating =&gt; (</span>
+                <span class="s1">&lt;</span><span class="s2">option </span><span class="s5">key</span><span class="s3">=</span><span class="s1">{rating} </span><span class="s5">value</span><span class="s3">=</span><span class="s1">{rating}&gt;{rating}&lt;/</span><span class="s2">option</span><span class="s1">&gt;</span>
+            <span class="s1">))}</span>
+          <span class="s1">&lt;/</span><span class="s2">select</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s2">button </span><span class="s5">onClick</span><span class="s3">=</span><span class="s1">{submitNewEnergyRating} </span><span class="s5">className</span><span class="s3">=&quot;button-blue&quot;</span><span class="s1">&gt;</span><span class="s6">Submit</span><span class="s1">&lt;/</span><span class="s2">button</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;u-values-table-container&quot;</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s2">h2</span><span class="s1">&gt;</span><span class="s6">Target U-Values vs Existing U-Values for </span><span class="s1">{newEnergyRating} </span><span class="s6">Energy Rating Category</span><span class="s1">&lt;/</span><span class="s2">h2</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s2">p</span><span class="s1">&gt;</span>
+            <span class="s6">If your existing U-Values are higher than the recommended U-Values, these will be highlighted in</span>
+            <span class="s1">&lt;</span><span class="s2">span </span><span class="s5">className</span><span class="s3">=&quot;color-block red&quot;</span><span class="s1">&gt;&lt;/</span><span class="s2">span</span><span class="s1">&gt;&lt;</span><span class="s2">span </span><span class="s5">className</span><span class="s3">=&quot;color-word&quot;</span><span class="s1">&gt;</span><span class="s6">red</span><span class="s1">&lt;/</span><span class="s2">span</span><span class="s1">&gt;</span><span class="s6">,</span>
+            <span class="s6">indicating areas where improvements can be made to improve the energy efficiency of your home.</span><span class="s1">&lt;</span><span class="s2">br</span><span class="s1">&gt;&lt;/</span><span class="s2">br</span><span class="s1">&gt;</span>
+            <span class="s6">If your existing U-Values are lower than the recommended U-Values, these will be highlighted in</span>
+            <span class="s1">&lt;</span><span class="s2">span </span><span class="s5">className</span><span class="s3">=&quot;color-block green&quot;</span><span class="s1">&gt;&lt;/</span><span class="s2">span</span><span class="s1">&gt;&lt;</span><span class="s2">span </span><span class="s5">className</span><span class="s3">=&quot;color-word&quot;</span><span class="s1">&gt;</span><span class="s6">green</span><span class="s1">&lt;/</span><span class="s2">span</span><span class="s1">&gt;</span><span class="s6">,</span>
+            <span class="s6">indicating areas where your home already meets or exceeds the energy efficiency requirements for the</span>
+            <span class="s6">selected energy rating category.</span><span class="s1">&lt;</span><span class="s2">br</span><span class="s1">&gt;&lt;/</span><span class="s2">br</span><span class="s1">&gt;</span>
+            <span class="s6">If your existing U-Values are close to the recommended U-Values, these will be highlighted in</span>
+            <span class="s1">&lt;</span><span class="s2">span </span><span class="s5">className</span><span class="s3">=&quot;color-block amber&quot;</span><span class="s1">&gt;&lt;/</span><span class="s2">span</span><span class="s1">&gt;&lt;</span><span class="s2">span </span><span class="s5">className</span><span class="s3">=&quot;color-word&quot;</span><span class="s1">&gt;</span><span class="s6">amber</span><span class="s1">&lt;/</span><span class="s2">span</span><span class="s1">&gt;</span><span class="s6">,</span>
+            <span class="s6">indicating that your home meets the minimum standards but could still benefit from improvements.</span>
+          <span class="s1">&lt;/</span><span class="s2">p</span><span class="s1">&gt;</span>
+
+          <span class="s1">&lt;</span><span class="s2">table </span><span class="s5">className</span><span class="s3">=&quot;u-values-table&quot;</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">thead</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s6">U-Value Types</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s6">Target U-Values</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s6">Existing U-Values</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s6">Description</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s6">Select U-Values for Retrofitting</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s2">thead</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">tbody</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s6">Walls UValue</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{thresholdValues.wall}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td </span><span class="s5">className</span><span class="s3">=</span><span class="s1">{</span><span class="s3">`value-cell </span><span class="s1">${</span>
+                  <span class="s1">selectedProperty.UValueWall &gt; thresholdValues.wall</span>
+                      <span class="s1">? </span><span class="s3">'u-value-high'</span>
+                      <span class="s1">: selectedProperty.UValueWall &lt; thresholdValues.wall &amp;&amp; selectedProperty.UValueWall &gt; lowestMeanValues.wall</span>
+                          <span class="s1">? </span><span class="s3">'u-value-medium'</span>
+                          <span class="s1">: </span><span class="s3">'u-value-low'</span>
+              <span class="s1">}</span><span class="s3">`</span><span class="s1">}&gt;</span>
+                <span class="s1">{selectedProperty.UValueWall}</span>
+              <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{</span>
+                <span class="s1">selectedProperty.UValueWall &gt; thresholdValues.wall</span>
+                  <span class="s1">? </span><span class="s3">'Your walls are not holding heat well. Consider upgrading insulation.'</span>
+                  <span class="s1">: selectedProperty.UValueWall &lt; thresholdValues.wall &amp;&amp; selectedProperty.UValueWall &gt; lowestMeanValues.wall</span>
+                    <span class="s1">? </span><span class="s3">'Your walls meet the minimum standard, but improvements could still be beneficial.'</span>
+                    <span class="s1">: </span><span class="s3">'Your walls are well insulated against heat loss.'</span>
+              <span class="s1">}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;</span><span class="s2">button </span><span class="s5">type</span><span class="s3">=&quot;button&quot; </span><span class="s5">className</span><span class="s3">=&quot;button-blue&quot;</span>
+                        <span class="s5">onClick</span><span class="s3">=</span><span class="s1">{() =&gt; handleUValueChange({ target: { checked: !selectedUValues.UValueWall } }, </span><span class="s3">'UValueWall'</span><span class="s1">)}&gt;</span>
+                  <span class="s1">{selectedUValues.UValueWall ? </span><span class="s3">'Deselect' </span><span class="s1">: </span><span class="s3">'Select'</span><span class="s1">}</span>
+                <span class="s1">&lt;/</span><span class="s2">button</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s6">Roof UValue</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{thresholdValues.roof}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td </span><span class="s5">className</span><span class="s3">=</span><span class="s1">{</span><span class="s3">`value-cell </span><span class="s1">${</span>
+                  <span class="s1">selectedProperty.UValueRoof &gt; thresholdValues.roof</span>
+                      <span class="s1">? </span><span class="s3">'u-value-high'</span>
+                      <span class="s1">: selectedProperty.UValueRoof &lt; thresholdValues.roof &amp;&amp; selectedProperty.UValueRoof &gt; lowestMeanValues.roof</span>
+                          <span class="s1">? </span><span class="s3">'u-value-medium'</span>
+                          <span class="s1">: </span><span class="s3">'u-value-low'</span>
+              <span class="s1">}</span><span class="s3">`</span><span class="s1">}&gt;</span>
+                <span class="s1">{selectedProperty.UValueRoof}</span>
+              <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{</span>
+                <span class="s1">selectedProperty.UValueRoof &gt; thresholdValues.roof</span>
+                  <span class="s1">? </span><span class="s3">'Your roof is not insulating well. Consider upgrading insulation.'</span>
+                  <span class="s1">: selectedProperty.UValueRoof &lt; thresholdValues.roof &amp;&amp; selectedProperty.UValueRoof &gt; lowestMeanValues.roof</span>
+                    <span class="s1">? </span><span class="s3">'Your roof meets the minimum standard, but improvements could still be beneficial.'</span>
+                    <span class="s1">: </span><span class="s3">'Your roof is well insulated against heat loss.'</span>
+              <span class="s1">}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;</span><span class="s2">button </span><span class="s5">type</span><span class="s3">=&quot;button&quot; </span><span class="s5">className</span><span class="s3">=&quot;button-blue&quot;</span>
+                        <span class="s5">onClick</span><span class="s3">=</span><span class="s1">{() =&gt; handleUValueChange({ target: { checked: !selectedUValues.UValueRoof } }, </span><span class="s3">'UValueRoof'</span><span class="s1">)}&gt;</span>
+                  <span class="s1">{selectedUValues.UValueRoof ? </span><span class="s3">'Deselect' </span><span class="s1">: </span><span class="s3">'Select'</span><span class="s1">}</span>
+                <span class="s1">&lt;/</span><span class="s2">button</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s6">Floors UValue</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{thresholdValues.floor}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td </span><span class="s5">className</span><span class="s3">=</span><span class="s1">{</span><span class="s3">`value-cell </span><span class="s1">${</span>
+                  <span class="s1">selectedProperty.UValueFloor &gt; thresholdValues.floor</span>
+                      <span class="s1">? </span><span class="s3">'u-value-high'</span>
+                      <span class="s1">: selectedProperty.UValueFloor &lt; thresholdValues.floor &amp;&amp; selectedProperty.UValueFloor &gt; lowestMeanValues.floor</span>
+                          <span class="s1">? </span><span class="s3">'u-value-medium'</span>
+                          <span class="s1">: </span><span class="s3">'u-value-low'</span>
+              <span class="s1">}</span><span class="s3">`</span><span class="s1">}&gt;</span>
+                <span class="s1">{selectedProperty.UValueFloor}</span>
+              <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{</span>
+                <span class="s1">selectedProperty.UValueFloor &gt; thresholdValues.floor</span>
+                  <span class="s1">? </span><span class="s3">'Your floors are not insulating well. Consider upgrading insulation.'</span>
+                  <span class="s1">: selectedProperty.UValueFloor &lt; thresholdValues.floor &amp;&amp; selectedProperty.UValueFloor &gt; lowestMeanValues.floor</span>
+                    <span class="s1">? </span><span class="s3">'Your floors meet the minimum standard, but improvements could still be beneficial.'</span>
+                    <span class="s1">: </span><span class="s3">'Your floors are well insulated against heat loss.'</span>
+              <span class="s1">}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;</span><span class="s2">button </span><span class="s5">type</span><span class="s3">=&quot;button&quot; </span><span class="s5">className</span><span class="s3">=&quot;button-blue&quot;</span>
+                        <span class="s5">onClick</span><span class="s3">=</span><span class="s1">{() =&gt; handleUValueChange({ target: { checked: !selectedUValues.UValueFloor } }, </span><span class="s3">'UValueFloor'</span><span class="s1">)}&gt;</span>
+                  <span class="s1">{selectedUValues.UValueFloor ? </span><span class="s3">'Deselect' </span><span class="s1">: </span><span class="s3">'Select'</span><span class="s1">}</span>
+                <span class="s1">&lt;/</span><span class="s2">button</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s6">Windows UValue</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{thresholdValues.window}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td </span><span class="s5">className</span><span class="s3">=</span><span class="s1">{</span><span class="s3">`value-cell </span><span class="s1">${</span>
+                  <span class="s1">selectedProperty.UValueWindow &gt; thresholdValues.window</span>
+                      <span class="s1">? </span><span class="s3">'u-value-high'</span>
+                      <span class="s1">: selectedProperty.UValueWindow &lt; thresholdValues.window &amp;&amp; selectedProperty.UValueWindow &gt; lowestMeanValues.window</span>
+                          <span class="s1">? </span><span class="s3">'u-value-medium'</span>
+                          <span class="s1">: </span><span class="s3">'u-value-low'</span>
+              <span class="s1">}</span><span class="s3">`</span><span class="s1">}&gt;</span>
+                <span class="s1">{selectedProperty.UValueWindow}</span>
+              <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{</span>
+                <span class="s1">selectedProperty.UValueWindow &gt; thresholdValues.window</span>
+                  <span class="s1">? </span><span class="s3">'Your windows are not insulating well. Consider upgrading to double or triple glazing.'</span>
+                  <span class="s1">: selectedProperty.UValueWindow &lt; thresholdValues.window &amp;&amp; selectedProperty.UValueWindow &gt; lowestMeanValues.window</span>
+                    <span class="s1">? </span><span class="s3">'Your windows meet the minimum standard, but improvements could still be beneficial.'</span>
+                    <span class="s1">: </span><span class="s3">'Your windows are well insulated against heat loss.'</span>
+              <span class="s1">}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;</span><span class="s2">button </span><span class="s5">type</span><span class="s3">=&quot;button&quot; </span><span class="s5">className</span><span class="s3">=&quot;button-blue&quot;</span>
+                        <span class="s5">onClick</span><span class="s3">=</span><span class="s1">{() =&gt; handleUValueChange({ target: { checked: !selectedUValues.UValueWindow } }, </span><span class="s3">'UValueWindow'</span><span class="s1">)}&gt;</span>
+                  <span class="s1">{selectedUValues.UValueWindow ? </span><span class="s3">'Deselect' </span><span class="s1">: </span><span class="s3">'Select'</span><span class="s1">}</span>
+                <span class="s1">&lt;/</span><span class="s2">button</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s6">Doors UValue</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{thresholdValues.door}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td </span><span class="s5">className</span><span class="s3">=</span><span class="s1">{</span><span class="s3">`value-cell </span><span class="s1">${</span>
+                  <span class="s1">selectedProperty.UvalueDoor &gt; thresholdValues.door</span>
+                      <span class="s1">? </span><span class="s3">'u-value-high'</span>
+                      <span class="s1">: selectedProperty.UvalueDoor &lt; thresholdValues.door &amp;&amp; selectedProperty.UvalueDoor &gt; lowestMeanValues.door</span>
+                          <span class="s1">? </span><span class="s3">'u-value-medium'</span>
+                          <span class="s1">: </span><span class="s3">'u-value-low'</span>
+              <span class="s1">}</span><span class="s3">`</span><span class="s1">}&gt;</span>
+                <span class="s1">{selectedProperty.UvalueDoor}</span>
+              <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{</span>
+                <span class="s1">selectedProperty.UvalueDoor &gt; thresholdValues.door</span>
+                  <span class="s1">? </span><span class="s3">'Your doors are not insulating well. Consider upgrading to insulated doors.'</span>
+                  <span class="s1">: selectedProperty.UvalueDoor &lt; thresholdValues.door &amp;&amp; selectedProperty.UvalueDoor &gt; lowestMeanValues.door</span>
+                    <span class="s1">? </span><span class="s3">'Your doors meet the minimum standard, but improvements could still be beneficial.'</span>
+                    <span class="s1">: </span><span class="s3">'Your doors are well insulated against heat loss.'</span>
+              <span class="s1">}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;</span><span class="s2">button </span><span class="s5">type</span><span class="s3">=&quot;button&quot; </span><span class="s5">className</span><span class="s3">=&quot;button-blue&quot;</span>
+                        <span class="s5">onClick</span><span class="s3">=</span><span class="s1">{() =&gt; handleUValueChange({ target: { checked: !selectedUValues.UvalueDoor } }, </span><span class="s3">'UvalueDoor'</span><span class="s1">)}&gt;</span>
+                  <span class="s1">{selectedUValues.UvalueDoor ? </span><span class="s3">'Deselect' </span><span class="s1">: </span><span class="s3">'Select'</span><span class="s1">}</span>
+                <span class="s1">&lt;/</span><span class="s2">button</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s2">tbody</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;/</span><span class="s2">table</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;ber-value-container&quot;</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;ber-value initial-ber&quot;</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">p </span><span class="s5">style</span><span class="s3">=</span><span class="s1">{initialBerRatingStyle}&gt;</span><span class="s6">Initial BER Value: </span><span class="s1">{initialBerRating}&lt;/</span><span class="s2">p</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;ber-value estimated-ber&quot;</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">p </span><span class="s5">style</span><span class="s3">=</span><span class="s1">{adjustedBerRatingStyle}&gt;</span><span class="s6">Estimated New BER</span>
+              <span class="s6">Value: </span><span class="s1">{</span><span class="s2">typeof </span><span class="s1">adjustedBerRating === </span><span class="s3">'number' </span><span class="s1">? adjustedBerRating.toFixed(</span><span class="s4">2</span><span class="s1">) : </span><span class="s3">'N/A'</span><span class="s1">}&lt;/</span><span class="s2">p</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;optional-table-container&quot;</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s2">h2</span><span class="s1">&gt;</span><span class="s6">Select optional items to install</span><span class="s1">&lt;/</span><span class="s2">h2</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s2">table </span><span class="s5">className</span><span class="s3">=&quot;optional-table&quot;</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">thead</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s6">Other Improvements</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s6">Select</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s2">thead</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">tbody</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">Solar Panels</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;</span><span class="s2">button </span><span class="s5">type</span><span class="s3">=&quot;button&quot; </span><span class="s5">className</span><span class="s3">=&quot;button-blue&quot;</span>
+                        <span class="s5">onClick</span><span class="s3">=</span><span class="s1">{() =&gt; handleUValueChange({ target: { checked: !selectedUValues.SolarPanels } }, </span><span class="s3">'SolarPanels'</span><span class="s1">)}&gt;</span>
+                  <span class="s1">{selectedUValues.SolarPanels ? </span><span class="s3">'Deselect' </span><span class="s1">: </span><span class="s3">'Select'</span><span class="s1">}</span>
+                <span class="s1">&lt;/</span><span class="s2">button</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">Heat Pump</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;</span><span class="s2">button </span><span class="s5">type</span><span class="s3">=&quot;button&quot; </span><span class="s5">className</span><span class="s3">=&quot;button-blue&quot;</span>
+                        <span class="s5">onClick</span><span class="s3">=</span><span class="s1">{() =&gt; handleUValueChange({ target: { checked: !selectedUValues.HeatPump } }, </span><span class="s3">'HeatPump'</span><span class="s1">)}&gt;</span>
+                  <span class="s1">{selectedUValues.HeatPump ? </span><span class="s3">'Deselect' </span><span class="s1">: </span><span class="s3">'Select'</span><span class="s1">}</span>
+                <span class="s1">&lt;/</span><span class="s2">button</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s2">tbody</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;/</span><span class="s2">table</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+
+        <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;improvements-table-container&quot;</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s2">h2</span><span class="s1">&gt;</span><span class="s6">Improvement Estimates for </span><span class="s1">{selectedProperty.DwellingTypeDescr}&lt;/</span><span class="s2">h2</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s2">p</span><span class="s1">&gt;</span>
+            <span class="s6">Based on the selected improvements, the estimated costs and potential grants are displayed below.</span>
+            <span class="s6">The estimated costs are based on the average costs for each improvement, while the potential grants</span>
+            <span class="s6">are based on the SEAI grants available for each improvement.</span>
+            <span class="s6">The total estimated cost and potential grants are also displayed.</span>
+            <span class="s6">The estimated savings are based on the energy savings from the improvements and the potential grants</span>
+            <span class="s6">received.</span>
+          <span class="s1">&lt;/</span><span class="s2">p</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s2">table </span><span class="s5">className</span><span class="s3">=&quot;improvements-table&quot;</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">thead</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s6">Improvement</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s6">Quantity</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s6">Estimated Works Cost</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s6">Maximum Available SEAI Grant*</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s6">Recalculated SEAI Grant</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s6">Estimated Cost to Homeowner</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s6">Select items to apply for grants</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s2">thead</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">tbody</span><span class="s1">&gt;</span>
+            <span class="s1">{selectedUValues.UValueWall &amp;&amp; (</span>
+                <span class="s1">&lt;&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">Cavity Wall Insulation</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{wallInsulationQuantity} </span><span class="s6">m²</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{(improvementCosts.WallCavityInsulation * wallInsulationQuantity).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.WallCavityGrant}</span><span class="s6">*</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.min(availableGrants.WallCavityGrant, (improvementCosts.WallCavityInsulation * wallInsulationQuantity) / </span><span class="s4">2 </span><span class="s1">|| </span><span class="s4">0</span><span class="s1">).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.max(</span><span class="s4">0</span><span class="s1">, (improvementCosts.WallCavityInsulation * wallInsulationQuantity) - Math.min(availableGrants.WallCavityGrant, (improvementCosts.WallCavityInsulation * wallInsulationQuantity) / </span><span class="s4">2</span><span class="s1">) || </span><span class="s4">0</span><span class="s1">).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;checkbox-container&quot;</span><span class="s1">&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">input </span><span class="s5">type</span><span class="s3">=&quot;checkbox&quot; </span><span class="s5">id</span><span class="s3">=&quot;applyCavityWallInsulation&quot; </span><span class="s5">name</span><span class="s3">=&quot;applyCavityWallInsulationGrant&quot;</span>
+                               <span class="s5">onChange</span><span class="s3">=</span><span class="s1">{(e) =&gt; handleCheckboxChange(e,</span>
+                                 <span class="s3">'WallCavityInsulation'</span><span class="s1">,</span>
+                                 <span class="s1">improvementCosts.WallCavityInsulation * wallInsulationQuantity,</span>
+                                 <span class="s1">availableGrants.WallCavityGrant)}</span>
+                        <span class="s1">/&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">label </span><span class="s5">htmlFor</span><span class="s3">=&quot;applyCavityWallInsulation&quot;</span><span class="s1">&gt;</span><span class="s6">Select</span><span class="s1">&lt;/</span><span class="s2">label</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">Internal Wall Insulation</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{wallInsulationQuantity} </span><span class="s6">m²</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{(improvementCosts.WallInternalInsulation * wallInsulationQuantity).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.WallInternalGrant}</span><span class="s6">*</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.min(availableGrants.WallInternalGrant, (improvementCosts.WallInternalInsulation * wallInsulationQuantity) / </span><span class="s4">2 </span><span class="s1">|| </span><span class="s4">0</span><span class="s1">).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.max(</span><span class="s4">0</span><span class="s1">, (improvementCosts.WallInternalInsulation * wallInsulationQuantity) - Math.min(availableGrants.WallInternalGrant, (improvementCosts.WallInternalInsulation * wallInsulationQuantity) / </span><span class="s4">2</span><span class="s1">) || </span><span class="s4">0</span><span class="s1">).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;checkbox-container&quot;</span><span class="s1">&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">input </span><span class="s5">type</span><span class="s3">=&quot;checkbox&quot; </span><span class="s5">id</span><span class="s3">=&quot;applyInternalWallInsulation&quot; </span><span class="s5">name</span><span class="s3">=&quot;applyInternalWallInsulationGrant&quot;</span>
+                               <span class="s5">onChange</span><span class="s3">=</span><span class="s1">{(e) =&gt; handleCheckboxChange(e,</span>
+                                 <span class="s3">'WallInternalInsulation'</span><span class="s1">,</span>
+                                 <span class="s1">improvementCosts.WallInternalInsulation * wallInsulationQuantity,</span>
+                                 <span class="s1">availableGrants.WallInternalGrant)}</span>
+                        <span class="s1">/&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">label </span><span class="s5">htmlFor</span><span class="s3">=&quot;applyInternalWallInsulation&quot;</span><span class="s1">&gt;</span><span class="s6">Select</span><span class="s1">&lt;/</span><span class="s2">label</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">External Wall Insulation</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{wallInsulationQuantity} </span><span class="s6">m²</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{(improvementCosts.WallExternalInsulation * wallInsulationQuantity).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.WallExternalGrant}</span><span class="s6">*</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.min(availableGrants.WallExternalGrant, (improvementCosts.WallExternalInsulation * wallInsulationQuantity) / </span><span class="s4">2 </span><span class="s1">|| </span><span class="s4">0</span><span class="s1">).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.max(</span><span class="s4">0</span><span class="s1">, (improvementCosts.WallExternalInsulation * wallInsulationQuantity) - Math.min(availableGrants.WallExternalGrant, (improvementCosts.WallExternalInsulation * wallInsulationQuantity) / </span><span class="s4">2</span><span class="s1">) || </span><span class="s4">0</span><span class="s1">).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;checkbox-container&quot;</span><span class="s1">&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">input </span><span class="s5">type</span><span class="s3">=&quot;checkbox&quot; </span><span class="s5">id</span><span class="s3">=&quot;applyExternalWallInsulation&quot; </span><span class="s5">name</span><span class="s3">=&quot;applyExternalWallInsulationGrant&quot;</span>
+                               <span class="s5">onChange</span><span class="s3">=</span><span class="s1">{(e) =&gt; handleCheckboxChange(e,</span>
+                                 <span class="s3">'WallExternalInsulation'</span><span class="s1">,</span>
+                                 <span class="s1">improvementCosts.WallExternalInsulation * wallInsulationQuantity,</span>
+                                 <span class="s1">availableGrants.WallExternalGrant)}</span>
+                        <span class="s1">/&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">label </span><span class="s5">htmlFor</span><span class="s3">=&quot;applyExternalWallInsulation&quot;</span><span class="s1">&gt;</span><span class="s6">Select</span><span class="s1">&lt;/</span><span class="s2">label</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+
+                  <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;/&gt;</span>
+            <span class="s1">)}</span>
+            <span class="s1">{selectedUValues.UValueRoof &amp;&amp; (</span>
+                <span class="s1">&lt;&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">Attic Insulation</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{roofInsulationQuantity} </span><span class="s6">m²</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{(improvementCosts.AtticInsulation * roofInsulationQuantity).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.AtticGrant}</span><span class="s6">*</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.min(availableGrants.AtticGrant, (improvementCosts.AtticInsulation * roofInsulationQuantity) / </span><span class="s4">2 </span><span class="s1">|| </span><span class="s4">0</span><span class="s1">).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.max(</span><span class="s4">0</span><span class="s1">, (improvementCosts.AtticInsulation * roofInsulationQuantity) - Math.min(availableGrants.AtticGrant, (improvementCosts.AtticInsulation * roofInsulationQuantity) / </span><span class="s4">2</span><span class="s1">) || </span><span class="s4">0</span><span class="s1">).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;checkbox-container&quot;</span><span class="s1">&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">input </span><span class="s5">type</span><span class="s3">=&quot;checkbox&quot; </span><span class="s5">id</span><span class="s3">=&quot;applyAtticInsulation&quot; </span><span class="s5">name</span><span class="s3">=&quot;applyAtticInsulationGrant&quot;</span>
+                               <span class="s5">onChange</span><span class="s3">=</span><span class="s1">{(e) =&gt; handleCheckboxChange(e,</span>
+                                 <span class="s3">'AtticInsulation'</span><span class="s1">,</span>
+                                 <span class="s1">improvementCosts.AtticInsulation * roofInsulationQuantity,</span>
+                                 <span class="s1">availableGrants.AtticGrant)}</span>
+                        <span class="s1">/&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">label </span><span class="s5">htmlFor</span><span class="s3">=&quot;applyAtticInsulation&quot;</span><span class="s1">&gt;</span><span class="s6">Select</span><span class="s1">&lt;/</span><span class="s2">label</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">Rafter Insulation</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{roofInsulationQuantity} </span><span class="s6">m²</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{(improvementCosts.RafterInsulation * roofInsulationQuantity).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.RafterGrant}</span><span class="s6">*</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.min(availableGrants.RafterGrant, (improvementCosts.RafterInsulation * roofInsulationQuantity) / </span><span class="s4">2 </span><span class="s1">|| </span><span class="s4">0</span><span class="s1">).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.max(</span><span class="s4">0</span><span class="s1">, (improvementCosts.RafterInsulation * roofInsulationQuantity) - Math.min(availableGrants.RafterGrant, (improvementCosts.RafterInsulation * roofInsulationQuantity) / </span><span class="s4">2</span><span class="s1">) || </span><span class="s4">0</span><span class="s1">).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;checkbox-container&quot;</span><span class="s1">&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">input </span><span class="s5">type</span><span class="s3">=&quot;checkbox&quot; </span><span class="s5">id</span><span class="s3">=&quot;applyRafterInsulation&quot; </span><span class="s5">name</span><span class="s3">=&quot;applyRafterInsulationGrant&quot;</span>
+                               <span class="s5">onChange</span><span class="s3">=</span><span class="s1">{(e) =&gt; handleCheckboxChange(e,</span>
+                                 <span class="s3">'RafterInsulation'</span><span class="s1">,</span>
+                                 <span class="s1">improvementCosts.RafterInsulation * roofInsulationQuantity,</span>
+                                 <span class="s1">availableGrants.RafterGrant)}</span>
+                        <span class="s1">/&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">label </span><span class="s5">htmlFor</span><span class="s3">=&quot;applyRafterInsulation&quot;</span><span class="s1">&gt;</span><span class="s6">Select</span><span class="s1">&lt;/</span><span class="s2">label</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;/&gt;</span>
+            <span class="s1">)}</span>
+            <span class="s1">{selectedUValues.UValueFloor &amp;&amp; (</span>
+                <span class="s1">&lt;&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">Floor Insulation</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{floorInsulationQuantity} </span><span class="s6">m²</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{(improvementCosts.FloorInsulation * floorInsulationQuantity).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.FloorGrant}</span><span class="s6">*</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.min(availableGrants.FloorGrant, (improvementCosts.FloorInsulation * floorInsulationQuantity) / </span><span class="s4">2 </span><span class="s1">|| </span><span class="s4">0</span><span class="s1">).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.max(</span><span class="s4">0</span><span class="s1">, (improvementCosts.FloorInsulation * floorInsulationQuantity) - Math.min(availableGrants.FloorGrant, (improvementCosts.FloorInsulation * floorInsulationQuantity) / </span><span class="s4">2</span><span class="s1">) || </span><span class="s4">0</span><span class="s1">).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;checkbox-container&quot;</span><span class="s1">&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">input </span><span class="s5">type</span><span class="s3">=&quot;checkbox&quot; </span><span class="s5">id</span><span class="s3">=&quot;applyFloorInsulation&quot; </span><span class="s5">name</span><span class="s3">=&quot;applyFloorInsulationGrant&quot;</span>
+                               <span class="s5">onChange</span><span class="s3">=</span><span class="s1">{(e) =&gt; handleCheckboxChange(e,</span>
+                                 <span class="s3">'FloorInsulation'</span><span class="s1">,</span>
+                                 <span class="s1">improvementCosts.FloorInsulation * floorInsulationQuantity,</span>
+                                 <span class="s1">availableGrants.FloorGrant)}</span>
+                        <span class="s1">/&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">label </span><span class="s5">htmlFor</span><span class="s3">=&quot;applyFloorInsulation&quot;</span><span class="s1">&gt;</span><span class="s6">Select</span><span class="s1">&lt;/</span><span class="s2">label</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;/&gt;</span>
+            <span class="s1">)}</span>
+            <span class="s1">{selectedUValues.UValueWindow &amp;&amp; (</span>
+                <span class="s1">&lt;&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">Windows Upgrade</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">select</span>
+                          <span class="s5">value</span><span class="s3">=</span><span class="s1">{windowQuantity}</span>
+                          <span class="s5">onChange</span><span class="s3">=</span><span class="s1">{e =&gt; setWindowQuantity(Math.max(</span><span class="s4">1</span><span class="s1">, Math.min(</span><span class="s4">50</span><span class="s1">, parseInt(e.target.value, </span><span class="s4">10</span><span class="s1">))))}</span>
+                      <span class="s1">&gt;</span>
+                        <span class="s1">{Array.from({ length: </span><span class="s4">50 </span><span class="s1">}, (_, i) =&gt; (</span>
+                            <span class="s1">&lt;</span><span class="s2">option </span><span class="s5">key</span><span class="s3">=</span><span class="s1">{i + </span><span class="s4">1</span><span class="s1">} </span><span class="s5">value</span><span class="s3">=</span><span class="s1">{i + </span><span class="s4">1</span><span class="s1">}&gt;</span>
+                              <span class="s1">{i + </span><span class="s4">1</span><span class="s1">}</span>
+                            <span class="s1">&lt;/</span><span class="s2">option</span><span class="s1">&gt;</span>
+                        <span class="s1">))}</span>
+                      <span class="s1">&lt;/</span><span class="s2">select</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{(improvementCosts.WindowReplacement * windowQuantity).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.WindowGrant}</span><span class="s6">*</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.min(availableGrants.WindowGrant, (improvementCosts.WindowReplacement * windowQuantity) / </span><span class="s4">2 </span><span class="s1">|| </span><span class="s4">0</span><span class="s1">).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.max(</span><span class="s4">0</span><span class="s1">, (improvementCosts.WindowReplacement * windowQuantity) - Math.min(availableGrants.WindowGrant, (improvementCosts.WindowReplacement * windowQuantity) / </span><span class="s4">2</span><span class="s1">) || </span><span class="s4">0</span><span class="s1">).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;checkbox-container&quot;</span><span class="s1">&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">input </span><span class="s5">type</span><span class="s3">=&quot;checkbox&quot; </span><span class="s5">id</span><span class="s3">=&quot;applyWindowReplacement&quot; </span><span class="s5">name</span><span class="s3">=&quot;applyWindowReplacementGrant&quot;</span>
+                               <span class="s5">onChange</span><span class="s3">=</span><span class="s1">{(e) =&gt; handleCheckboxChange(e,</span>
+                                 <span class="s3">'WindowReplacement'</span><span class="s1">,</span>
+                                 <span class="s1">improvementCosts.WindowReplacement * windowQuantity,</span>
+                                 <span class="s1">availableGrants.WindowGrant)}</span>
+                        <span class="s1">/&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">label </span><span class="s5">htmlFor</span><span class="s3">=&quot;applyWindowReplacement&quot;</span><span class="s1">&gt;</span><span class="s6">Select</span><span class="s1">&lt;/</span><span class="s2">label</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;/&gt;</span>
+            <span class="s1">)}</span>
+            <span class="s1">{selectedUValues.UvalueDoor &amp;&amp; (</span>
+                <span class="s1">&lt;&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">External Back Door Upgrade</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">select</span>
+                          <span class="s5">value</span><span class="s3">=</span><span class="s1">{BackDoorQuantity}</span>
+                          <span class="s5">onChange</span><span class="s3">=</span><span class="s1">{e =&gt; setBackDoorQuantity(Math.max(</span><span class="s4">1</span><span class="s1">, Math.min(</span><span class="s4">5</span><span class="s1">, parseInt(e.target.value, </span><span class="s4">10</span><span class="s1">))))}</span>
+                      <span class="s1">&gt;</span>
+                        <span class="s1">{Array.from({ length: </span><span class="s4">5 </span><span class="s1">}, (_, i) =&gt; (</span>
+                            <span class="s1">&lt;</span><span class="s2">option </span><span class="s5">key</span><span class="s3">=</span><span class="s1">{i + </span><span class="s4">1</span><span class="s1">} </span><span class="s5">value</span><span class="s3">=</span><span class="s1">{i + </span><span class="s4">1</span><span class="s1">}&gt;</span>
+                              <span class="s1">{i + </span><span class="s4">1</span><span class="s1">}</span>
+                            <span class="s1">&lt;/</span><span class="s2">option</span><span class="s1">&gt;</span>
+                        <span class="s1">))}</span>
+                      <span class="s1">&lt;/</span><span class="s2">select</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{(improvementCosts.BackDoorReplacement * BackDoorQuantity).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.BackDoorGrant}</span><span class="s6">*</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.BackDoorGrant.toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.max(</span><span class="s4">0</span><span class="s1">, (improvementCosts.BackDoorReplacement * BackDoorQuantity) - availableGrants.BackDoorGrant).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;checkbox-container&quot;</span><span class="s1">&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">input </span><span class="s5">type</span><span class="s3">=&quot;checkbox&quot; </span><span class="s5">id</span><span class="s3">=&quot;applyBackDoorReplacement&quot; </span><span class="s5">name</span><span class="s3">=&quot;applyBackDoorReplacementGrant&quot;</span>
+                               <span class="s5">onChange</span><span class="s3">=</span><span class="s1">{(e) =&gt; handleCheckboxChange(e,</span>
+                                 <span class="s3">'BackDoorReplacement'</span><span class="s1">,</span>
+                                 <span class="s1">improvementCosts.BackDoorReplacement * BackDoorQuantity,</span>
+                                 <span class="s1">availableGrants.BackDoorGrant)}</span>
+                        <span class="s1">/&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">label </span><span class="s5">htmlFor</span><span class="s3">=&quot;applyBackDoorReplacement&quot;</span><span class="s1">&gt;</span><span class="s6">Select</span><span class="s1">&lt;/</span><span class="s2">label</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">External Front Door Upgrade</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">select</span>
+                          <span class="s5">value</span><span class="s3">=</span><span class="s1">{FrontDoorQuantity}</span>
+                          <span class="s5">onChange</span><span class="s3">=</span><span class="s1">{e =&gt; setFrontDoorQuantity(Math.max(</span><span class="s4">1</span><span class="s1">, Math.min(</span><span class="s4">5</span><span class="s1">, parseInt(e.target.value, </span><span class="s4">10</span><span class="s1">))))}</span>
+                      <span class="s1">&gt;</span>
+                        <span class="s1">{Array.from({ length: </span><span class="s4">5 </span><span class="s1">}, (_, i) =&gt; (</span>
+                            <span class="s1">&lt;</span><span class="s2">option </span><span class="s5">key</span><span class="s3">=</span><span class="s1">{i + </span><span class="s4">1</span><span class="s1">} </span><span class="s5">value</span><span class="s3">=</span><span class="s1">{i + </span><span class="s4">1</span><span class="s1">}&gt;</span>
+                              <span class="s1">{i + </span><span class="s4">1</span><span class="s1">}</span>
+                            <span class="s1">&lt;/</span><span class="s2">option</span><span class="s1">&gt;</span>
+                        <span class="s1">))}</span>
+                      <span class="s1">&lt;/</span><span class="s2">select</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{(improvementCosts.FrontDoorReplacement * FrontDoorQuantity).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.FrontDoorGrant}</span><span class="s6">*</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.FrontDoorGrant.toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.max(</span><span class="s4">0</span><span class="s1">, (improvementCosts.FrontDoorReplacement * FrontDoorQuantity) - availableGrants.FrontDoorGrant).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;checkbox-container&quot;</span><span class="s1">&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">input </span><span class="s5">type</span><span class="s3">=&quot;checkbox&quot; </span><span class="s5">id</span><span class="s3">=&quot;applyFrontDoorReplacement&quot; </span><span class="s5">name</span><span class="s3">=&quot;applyFrontDoorReplacementGrant&quot;</span>
+                               <span class="s5">onChange</span><span class="s3">=</span><span class="s1">{(e) =&gt; handleCheckboxChange(e,</span>
+                                 <span class="s3">'FrontDoorReplacement'</span><span class="s1">,</span>
+                                 <span class="s1">improvementCosts.FrontDoorReplacement * FrontDoorQuantity,</span>
+                                 <span class="s1">availableGrants.FrontDoorGrant)}</span>
+                        <span class="s1">/&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">label </span><span class="s5">htmlFor</span><span class="s3">=&quot;applyFrontDoorReplacement&quot;</span><span class="s1">&gt;</span><span class="s6">Select</span><span class="s1">&lt;/</span><span class="s2">label</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;/&gt;</span>
+            <span class="s1">)}</span>
+            <span class="s1">{selectedUValues.SolarPanels &amp;&amp; (</span>
+                <span class="s1">&lt;&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">Solar Panels (incl. Inverter and Batteries)</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{SolarPanelQuantity}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{(improvementCosts.SolarPanels).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.SolarPanelsGrant}</span><span class="s6">*</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.SolarPanelsGrant.toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.max(</span><span class="s4">0</span><span class="s1">, (improvementCosts.SolarPanels - availableGrants.SolarPanelsGrant)).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;checkbox-container&quot;</span><span class="s1">&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">input </span><span class="s5">type</span><span class="s3">=&quot;checkbox&quot; </span><span class="s5">id</span><span class="s3">=&quot;applySolarPanels&quot; </span><span class="s5">name</span><span class="s3">=&quot;applySolarPanelsGrant&quot;</span>
+                               <span class="s5">onChange</span><span class="s3">=</span><span class="s1">{(e) =&gt; handleCheckboxChange(e,</span>
+                                 <span class="s3">'SolarPanels'</span><span class="s1">,</span>
+                                 <span class="s1">improvementCosts.SolarPanels,</span>
+                                 <span class="s1">availableGrants.SolarPanelsGrant)}</span>
+                        <span class="s1">/&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">label </span><span class="s5">htmlFor</span><span class="s3">=&quot;applySolarPanels&quot;</span><span class="s1">&gt;</span><span class="s6">Select</span><span class="s1">&lt;/</span><span class="s2">label</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">Solar Hot Water</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{SolarHotWaterQuantity}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{(improvementCosts.SolarHotWater * SolarHotWaterQuantity).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.SolarHotWaterGrant}</span><span class="s6">*</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.SolarHotWaterGrant.toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.max(</span><span class="s4">0</span><span class="s1">, (improvementCosts.SolarHotWater * SolarHotWaterQuantity) - availableGrants.SolarHotWaterGrant).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;checkbox-container&quot;</span><span class="s1">&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">input </span><span class="s5">type</span><span class="s3">=&quot;checkbox&quot; </span><span class="s5">id</span><span class="s3">=&quot;applySolarHotWater&quot; </span><span class="s5">name</span><span class="s3">=&quot;applySolarHotWaterGrant&quot;</span>
+                               <span class="s5">onChange</span><span class="s3">=</span><span class="s1">{(e) =&gt; handleCheckboxChange(e,</span>
+                                 <span class="s3">'SolarHotWater'</span><span class="s1">,</span>
+                                 <span class="s1">improvementCosts.SolarHotWater * SolarHotWaterQuantity,</span>
+                                 <span class="s1">availableGrants.SolarHotWaterGrant)}</span>
+                        <span class="s1">/&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">label </span><span class="s5">htmlFor</span><span class="s3">=&quot;applySolarHotWater&quot;</span><span class="s1">&gt;</span><span class="s6">Select</span><span class="s1">&lt;/</span><span class="s2">label</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;/&gt;</span>
+            <span class="s1">)}</span>
+            <span class="s1">{selectedUValues.HeatPump &amp;&amp; (</span>
+                <span class="s1">&lt;&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">Air to Water Heat Pump System</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{HeatPumpQuantity}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{(improvementCosts.HeatPumpAirToWater * HeatPumpQuantity).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.HeatPumpAirToWaterGrant}</span><span class="s6">*</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.HeatPumpAirToWaterGrant.toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.max(</span><span class="s4">0</span><span class="s1">, (improvementCosts.HeatPumpAirToWater * HeatPumpQuantity) - availableGrants.HeatPumpAirToWaterGrant).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;checkbox-container&quot;</span><span class="s1">&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">input </span><span class="s5">type</span><span class="s3">=&quot;checkbox&quot; </span><span class="s5">id</span><span class="s3">=&quot;applyHeatPumpAirToWater&quot; </span><span class="s5">name</span><span class="s3">=&quot;applyHeatPumpAirToWaterGrant&quot;</span>
+                               <span class="s5">onChange</span><span class="s3">=</span><span class="s1">{(e) =&gt; handleCheckboxChange(e,</span>
+                                 <span class="s3">'HeatPumpAirToWater'</span><span class="s1">,</span>
+                                 <span class="s1">improvementCosts.HeatPumpAirToWater * HeatPumpQuantity,</span>
+                                 <span class="s1">availableGrants.HeatPumpAirToWaterGrant)}</span>
+                        <span class="s1">/&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">label </span><span class="s5">htmlFor</span><span class="s3">=&quot;applyHeatPumpAirToWater&quot;</span><span class="s1">&gt;</span><span class="s6">Select</span><span class="s1">&lt;/</span><span class="s2">label</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">Ground Source Heat Pump System</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{HeatPumpQuantity}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{(improvementCosts.HeatPumpGroundSource * HeatPumpQuantity).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.HeatPumpGroundSourceGrant}</span><span class="s6">*</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.HeatPumpGroundSourceGrant.toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.max(</span><span class="s4">0</span><span class="s1">, (improvementCosts.HeatPumpGroundSource * HeatPumpQuantity) - availableGrants.HeatPumpGroundSourceGrant).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;checkbox-container&quot;</span><span class="s1">&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">input </span><span class="s5">type</span><span class="s3">=&quot;checkbox&quot; </span><span class="s5">id</span><span class="s3">=&quot;applyHeatPumpGroundSource&quot; </span><span class="s5">name</span><span class="s3">=&quot;applyHeatPumpGroundSourceGrant&quot;</span>
+                               <span class="s5">onChange</span><span class="s3">=</span><span class="s1">{(e) =&gt; handleCheckboxChange(e,</span>
+                                 <span class="s3">'HeatPumpGroundSource'</span><span class="s1">,</span>
+                                 <span class="s1">improvementCosts.HeatPumpGroundSource * HeatPumpQuantity,</span>
+                                 <span class="s1">availableGrants.HeatPumpGroundSourceGrant)}</span>
+                        <span class="s1">/&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">label </span><span class="s5">htmlFor</span><span class="s3">=&quot;applyHeatPumpGroundSource&quot;</span><span class="s1">&gt;</span><span class="s6">Select</span><span class="s1">&lt;/</span><span class="s2">label</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">Exhaust Air to Water Heat Pump System</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{HeatPumpQuantity}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{(improvementCosts.HeatPumpExhaustAir * HeatPumpQuantity).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.HeatPumpExhaustAirGrant}</span><span class="s6">*</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.HeatPumpExhaustAirGrant.toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.max(</span><span class="s4">0</span><span class="s1">, (improvementCosts.HeatPumpExhaustAir * HeatPumpQuantity) - availableGrants.HeatPumpExhaustAirGrant).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;checkbox-container&quot;</span><span class="s1">&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">input </span><span class="s5">type</span><span class="s3">=&quot;checkbox&quot; </span><span class="s5">id</span><span class="s3">=&quot;applyHeatPumpExhaustAir&quot; </span><span class="s5">name</span><span class="s3">=&quot;applyHeatPumpExhaustAirGrant&quot;</span>
+                               <span class="s5">onChange</span><span class="s3">=</span><span class="s1">{(e) =&gt; handleCheckboxChange(e,</span>
+                                 <span class="s3">'HeatPumpExhaustAir'</span><span class="s1">,</span>
+                                 <span class="s1">improvementCosts.HeatPumpExhaustAir * HeatPumpQuantity,</span>
+                                 <span class="s1">availableGrants.HeatPumpExhaustAirGrant)}</span>
+                        <span class="s1">/&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">label </span><span class="s5">htmlFor</span><span class="s3">=&quot;applyHeatPumpExhaustAir&quot;</span><span class="s1">&gt;</span><span class="s6">Select</span><span class="s1">&lt;/</span><span class="s2">label</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">Water to Water Heat Pump System</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{HeatPumpQuantity}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{(improvementCosts.HeatPumpWaterToWater * HeatPumpQuantity).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.HeatPumpWaterToWaterGrant}</span><span class="s6">*</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.HeatPumpWaterToWaterGrant.toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.max(</span><span class="s4">0</span><span class="s1">, (improvementCosts.HeatPumpWaterToWater * HeatPumpQuantity) - availableGrants.HeatPumpWaterToWaterGrant).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;checkbox-container&quot;</span><span class="s1">&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">input </span><span class="s5">type</span><span class="s3">=&quot;checkbox&quot; </span><span class="s5">id</span><span class="s3">=&quot;applyHeatPumpWaterToWater&quot; </span><span class="s5">name</span><span class="s3">=&quot;applyHeatPumpWaterToWaterGrant&quot;</span>
+                               <span class="s5">onChange</span><span class="s3">=</span><span class="s1">{(e) =&gt; handleCheckboxChange(e,</span>
+                                 <span class="s3">'HeatPumpWaterToWater'</span><span class="s1">,</span>
+                                 <span class="s1">improvementCosts.HeatPumpWaterToWater * HeatPumpQuantity,</span>
+                                 <span class="s1">availableGrants.HeatPumpWaterToWaterGrant)}</span>
+                        <span class="s1">/&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">label </span><span class="s5">htmlFor</span><span class="s3">=&quot;applyHeatPumpWaterToWater&quot;</span><span class="s1">&gt;</span><span class="s6">Select</span><span class="s1">&lt;/</span><span class="s2">label</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">Air to Air Heat Pump System</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{HeatPumpQuantity}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{(improvementCosts.HeatPumpAirToAir * HeatPumpQuantity).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.HeatPumpAirToAirGrant}</span><span class="s6">*</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.HeatPumpAirToAirGrant.toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.max(</span><span class="s4">0</span><span class="s1">, (improvementCosts.HeatPumpAirToAir * HeatPumpQuantity) - availableGrants.HeatPumpAirToAirGrant).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;checkbox-container&quot;</span><span class="s1">&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">input </span><span class="s5">type</span><span class="s3">=&quot;checkbox&quot; </span><span class="s5">id</span><span class="s3">=&quot;applyHeatPumpAirToAir&quot; </span><span class="s5">name</span><span class="s3">=&quot;applyHeatPumpAirToAirGrant&quot;</span>
+                               <span class="s5">onChange</span><span class="s3">=</span><span class="s1">{(e) =&gt; handleCheckboxChange(e,</span>
+                                 <span class="s3">'HeatPumpAirToAir'</span><span class="s1">,</span>
+                                 <span class="s1">improvementCosts.HeatPumpAirToAir * HeatPumpQuantity,</span>
+                                 <span class="s1">availableGrants.HeatPumpAirToAirGrant)}</span>
+                        <span class="s1">/&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">label </span><span class="s5">htmlFor</span><span class="s3">=&quot;applyHeatPumpAirToAir&quot;</span><span class="s1">&gt;</span><span class="s6">Select</span><span class="s1">&lt;/</span><span class="s2">label</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">Central Heating System for Heat Pump</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{CentralHeatingSystemQuantity}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{(improvementCosts.CentralHeatingSystem * CentralHeatingSystemQuantity).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.CentralHeatingSystemGrant}</span><span class="s6">*</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.CentralHeatingSystemGrant.toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.CentralHeatingSystemGrant.toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;checkbox-container&quot;</span><span class="s1">&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">input </span><span class="s5">type</span><span class="s3">=&quot;checkbox&quot; </span><span class="s5">id</span><span class="s3">=&quot;applyCentralHeatingSystem&quot; </span><span class="s5">name</span><span class="s3">=&quot;applyCentralHeatingSystemGrant&quot;</span>
+                               <span class="s5">onChange</span><span class="s3">=</span><span class="s1">{(e) =&gt; handleCheckboxChange(e,</span>
+                                 <span class="s3">'CentralHeatingSystem'</span><span class="s1">,</span>
+                                 <span class="s1">improvementCosts.CentralHeatingSystem * CentralHeatingSystemQuantity,</span>
+                                 <span class="s1">availableGrants.CentralHeatingSystemGrant)}</span>
+                        <span class="s1">/&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">label </span><span class="s5">htmlFor</span><span class="s3">=&quot;applyCentralHeatingSystem&quot;</span><span class="s1">&gt;</span><span class="s6">Select</span><span class="s1">&lt;/</span><span class="s2">label</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">Heating Controls</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{HeatingControlsQuantity}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{(improvementCosts.HeatingControls * HeatingControlsQuantity).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.HeatingControlsGrant}</span><span class="s6">*</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.HeatingControlsGrant.toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.max(</span><span class="s4">0</span><span class="s1">, (improvementCosts.HeatingControls * HeatingControlsQuantity) - availableGrants.HeatingControlsGrant).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;checkbox-container&quot;</span><span class="s1">&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">input </span><span class="s5">type</span><span class="s3">=&quot;checkbox&quot; </span><span class="s5">id</span><span class="s3">=&quot;applyHeatingControls&quot; </span><span class="s5">name</span><span class="s3">=&quot;applyHeatingControlsGrant&quot;</span>
+                               <span class="s5">onChange</span><span class="s3">=</span><span class="s1">{(e) =&gt; handleCheckboxChange(e,</span>
+                                 <span class="s3">'HeatingControls'</span><span class="s1">,</span>
+                                 <span class="s1">improvementCosts.HeatingControls * HeatingControlsQuantity,</span>
+                                 <span class="s1">availableGrants.HeatingControlsGrant)}</span>
+                        <span class="s1">/&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">label </span><span class="s5">htmlFor</span><span class="s3">=&quot;applyHeatingControls&quot;</span><span class="s1">&gt;</span><span class="s6">Select</span><span class="s1">&lt;/</span><span class="s2">label</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;/&gt;</span>
+            <span class="s1">)}</span>
+            <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">Mechanical Ventilation</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{MechanicalVentilationQuantity}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{(improvementCosts.MechanicalVentilation * MechanicalVentilationQuantity).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.MechanicalVentilationGrant}</span><span class="s6">*</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.MechanicalVentilationGrant.toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.max(</span><span class="s4">0</span><span class="s1">, (improvementCosts.MechanicalVentilation * MechanicalVentilationQuantity) - availableGrants.MechanicalVentilationGrant).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;checkbox-container&quot;</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">input </span><span class="s5">type</span><span class="s3">=&quot;checkbox&quot; </span><span class="s5">id</span><span class="s3">=&quot;applyMechanicalVentilation&quot; </span><span class="s5">name</span><span class="s3">=&quot;applyMechanicalVentilationGrant&quot;</span>
+                         <span class="s5">onChange</span><span class="s3">=</span><span class="s1">{(e) =&gt; handleCheckboxChange(e,</span>
+                           <span class="s3">'MechanicalVentilation'</span><span class="s1">,</span>
+                           <span class="s1">improvementCosts.MechanicalVentilation * MechanicalVentilationQuantity,</span>
+                           <span class="s1">availableGrants.MechanicalVentilationGrant)}</span>
+                  <span class="s1">/&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">label </span><span class="s5">htmlFor</span><span class="s3">=&quot;applyMechanicalVentilation&quot;</span><span class="s1">&gt;</span><span class="s6">Select</span><span class="s1">&lt;/</span><span class="s2">label</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">Air Tightness</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{AirTightnessQuantity}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{(improvementCosts.AirTightness * AirTightnessQuantity).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.AirTightnessGrant}</span><span class="s6">*</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{availableGrants.AirTightnessGrant.toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{Math.max(</span><span class="s4">0</span><span class="s1">, (improvementCosts.AirTightness * AirTightnessQuantity) - availableGrants.AirTightnessGrant).toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;</span><span class="s2">div </span><span class="s5">className</span><span class="s3">=&quot;checkbox-container&quot;</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">input </span><span class="s5">type</span><span class="s3">=&quot;checkbox&quot; </span><span class="s5">id</span><span class="s3">=&quot;applyAirTightness&quot; </span><span class="s5">name</span><span class="s3">=&quot;applyAirTightnessGrant&quot;</span>
+                         <span class="s5">onChange</span><span class="s3">=</span><span class="s1">{(e) =&gt; handleCheckboxChange(e,</span>
+                           <span class="s3">'AirTightness'</span><span class="s1">,</span>
+                           <span class="s1">improvementCosts.AirTightness * AirTightnessQuantity,</span>
+                           <span class="s1">availableGrants.AirTightnessGrant)}</span>
+                  <span class="s1">/&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">label </span><span class="s5">htmlFor</span><span class="s3">=&quot;applyAirTightness&quot;</span><span class="s1">&gt;</span><span class="s6">Select</span><span class="s1">&lt;/</span><span class="s2">label</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">tr </span><span class="s5">className</span><span class="s3">=&quot;total-row&quot;</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td </span><span class="s5">colSpan</span><span class="s3">=&quot;2&quot;</span><span class="s1">&gt;</span><span class="s6">Total</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{totalEstimatedCost.toFixed(</span><span class="s4">2</span><span class="s1">)}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{totalAvailableGrant}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{totalRecalculatedGrant.toFixed(</span><span class="s4">2</span><span class="s1">)}</span><span class="s6">*</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span><span class="s6">€</span><span class="s1">{totalCostToHomeowner.toFixed(</span><span class="s4">2</span><span class="s1">)}</span><span class="s6">**</span><span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;&lt;</span><span class="s2">a </span><span class="s5">href</span><span class="s3">=&quot;https://www.seai.ie/grants/home-energy-grants/insulation-grants/&quot; </span><span class="s5">target</span><span class="s3">=&quot;_blank&quot;</span>
+                     <span class="s5">rel</span><span class="s3">=&quot;noopener noreferrer&quot; </span><span class="s5">className</span><span class="s3">=&quot;button-blue&quot;</span><span class="s1">&gt;</span><span class="s6">Apply</span><span class="s1">&lt;/</span><span class="s2">a</span><span class="s1">&gt;&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s2">tbody</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;/</span><span class="s2">table</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s2">h3</span><span class="s1">&gt;</span><span class="s6">Disclaimer</span><span class="s1">&lt;/</span><span class="s2">h3</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s2">p</span><span class="s1">&gt;</span><span class="s6">*Grants may be limited to only 50% of the total estimated cost for each improvement. </span><span class="s1">&lt;</span><span class="s2">br</span><span class="s1">/&gt;&lt;</span><span class="s2">br</span><span class="s1">/&gt;</span>
+            <span class="s6">**Total estimated cost to homeowner is based on the estimated works cost minus the total SEAI grants limited</span>
+            <span class="s6">to 50% of the estimated works cost.</span>
+            <span class="s6">However, this amount may be change, depending on the SEAI grants approved.</span>
+          <span class="s1">&lt;/</span><span class="s2">p</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+
+      <span class="s1">&lt;/&gt;</span>
+  <span class="s1">);</span>
+<span class="s1">}</span>
+
+<span class="s2">export default </span><span class="s1">SuggestionsPage;</span>
+</pre>
+</body>
+</html>

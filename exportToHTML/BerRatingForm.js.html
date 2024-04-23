@@ -1,0 +1,257 @@
+<html>
+<head>
+<title>BerRatingForm.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #8c8c8c; font-style: italic;}
+.s1 { color: #080808;}
+.s2 { color: #0033b3;}
+.s3 { color: #067d17;}
+.s4 { color: #1750eb;}
+.s5 { color: #264eff;}
+.s6 { color: #174ad4;}
+.s7 { color: #080808;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+BerRatingForm.js</font>
+</center></td></tr></table>
+<pre><span class="s0">// TODO:</span>
+<span class="s0">// 1. Add a line that says searching for properties</span>
+<span class="s0">// 2. Add a line that says no properties found</span>
+<span class="s0">// 3. Add a line that says select a property</span>
+
+<span class="s2">import </span><span class="s1">React, { useState } from </span><span class="s3">'react'</span><span class="s1">;</span>
+<span class="s2">import </span><span class="s1">{ useNavigate } from </span><span class="s3">'react-router-dom'</span><span class="s1">;</span>
+<span class="s2">import </span><span class="s1">Papa from </span><span class="s3">'papaparse'</span><span class="s1">;</span>
+
+<span class="s2">function </span><span class="s1">BerRatingForm () {</span>
+  <span class="s2">const </span><span class="s1">[selectedCounty, setSelectedCounty] = useState(</span><span class="s3">''</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">csvFilePath = </span><span class="s3">`/data/data_</span><span class="s1">${selectedCounty.toLowerCase()}</span><span class="s3">.csv`</span><span class="s1">;</span>
+  <span class="s2">const </span><span class="s1">counties = [</span>
+    <span class="s3">'Carlow'</span><span class="s1">, </span><span class="s3">'Cavan'</span><span class="s1">, </span><span class="s3">'Clare'</span><span class="s1">, </span><span class="s3">'Cork'</span><span class="s1">, </span><span class="s3">'Donegal'</span><span class="s1">, </span><span class="s3">'Dublin'</span><span class="s1">, </span><span class="s3">'Galway'</span><span class="s1">, </span><span class="s3">'Kerry'</span><span class="s1">,</span>
+    <span class="s3">'Kildare'</span><span class="s1">, </span><span class="s3">'Kilkenny'</span><span class="s1">, </span><span class="s3">'Laois'</span><span class="s1">, </span><span class="s3">'Leitrim'</span><span class="s1">, </span><span class="s3">'Limerick'</span><span class="s1">, </span><span class="s3">'Louth'</span><span class="s1">, </span><span class="s3">'Longford'</span><span class="s1">,</span>
+    <span class="s3">'Mayo'</span><span class="s1">, </span><span class="s3">'Meath'</span><span class="s1">, </span><span class="s3">'Monaghan'</span><span class="s1">, </span><span class="s3">'Offaly'</span><span class="s1">, </span><span class="s3">'Roscommon'</span><span class="s1">, </span><span class="s3">'Sligo'</span><span class="s1">,</span>
+    <span class="s3">'Tipperary'</span><span class="s1">, </span><span class="s3">'Waterford'</span><span class="s1">, </span><span class="s3">'Westmeath'</span><span class="s1">, </span><span class="s3">'Wexford'</span><span class="s1">, </span><span class="s3">'Wicklow'</span>
+  <span class="s1">];</span>
+
+  <span class="s2">const </span><span class="s1">[propertyType, setPropertyType] = useState(</span><span class="s3">''</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">propertyTypes = [</span>
+    <span class="s3">'Apartment'</span><span class="s1">,</span>
+    <span class="s3">'Basement Dwelling'</span><span class="s1">,</span>
+    <span class="s3">'Detached house'</span><span class="s1">,</span>
+    <span class="s3">'End of terrace house'</span><span class="s1">,</span>
+    <span class="s3">'Ground-floor apartment'</span><span class="s1">,</span>
+    <span class="s3">'House'</span><span class="s1">,</span>
+    <span class="s3">'Maisonette'</span><span class="s1">,</span>
+    <span class="s3">'Mid-floor apartment'</span><span class="s1">,</span>
+    <span class="s3">'Mid-terrace house'</span><span class="s1">,</span>
+    <span class="s3">'Semi-detached house'</span><span class="s1">,</span>
+    <span class="s3">'Top-floor apartment'</span>
+  <span class="s1">];</span>
+
+  <span class="s2">const </span><span class="s1">[constructionYear, setConstructionYear] = useState(</span><span class="s3">''</span><span class="s1">);</span>
+  <span class="s0">// Years range from 1700 to 2023</span>
+  <span class="s2">const </span><span class="s1">constructionYears = Array.from(</span><span class="s2">new </span><span class="s1">Array(</span><span class="s4">2024 </span><span class="s1">- </span><span class="s4">1700</span><span class="s1">), (_, index) =&gt; </span><span class="s4">1700 </span><span class="s1">+ index);</span>
+
+  <span class="s2">const </span><span class="s1">[energyRating, setEnergyRating] = useState(</span><span class="s3">''</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">energyRatings = [</span><span class="s3">'A1'</span><span class="s1">, </span><span class="s3">'A2'</span><span class="s1">, </span><span class="s3">'A3'</span><span class="s1">, </span><span class="s3">'B1'</span><span class="s1">, </span><span class="s3">'B2'</span><span class="s1">, </span><span class="s3">'B3'</span><span class="s1">, </span><span class="s3">'C1'</span><span class="s1">, </span><span class="s3">'C2'</span><span class="s1">, </span><span class="s3">'C3'</span><span class="s1">, </span><span class="s3">'D1'</span><span class="s1">, </span><span class="s3">'D2'</span><span class="s1">, </span><span class="s3">'E1'</span><span class="s1">, </span><span class="s3">'E2'</span><span class="s1">, </span><span class="s3">'F'</span><span class="s1">, </span><span class="s3">'G'</span><span class="s1">];</span>
+
+  <span class="s2">const </span><span class="s1">[berRating, setBerRating] = useState(</span><span class="s3">''</span><span class="s1">);</span>
+
+  <span class="s2">const </span><span class="s1">[selectedProperty, setSelectedProperty] = useState(</span><span class="s2">null</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">[properties, setProperties] = useState([]);</span>
+  <span class="s2">const </span><span class="s1">[isPropertyConfirmed, setIsPropertyConfirmed] = useState(</span><span class="s2">false</span><span class="s1">);</span>
+  <span class="s2">const </span><span class="s1">[berRatingError, setBerRatingError] = useState(</span><span class="s3">''</span><span class="s1">); </span><span class="s0">// For BER rating validation error message</span>
+
+  <span class="s2">const </span><span class="s1">navigate = useNavigate();</span>
+
+  <span class="s2">const </span><span class="s1">propertyLabels = {</span>
+    <span class="s1">PropertyID: </span><span class="s3">'Property ID'</span><span class="s1">,</span>
+    <span class="s1">CountyName: </span><span class="s3">'County Name'</span><span class="s1">,</span>
+    <span class="s1">DwellingTypeDescr: </span><span class="s3">'Dwelling Type'</span><span class="s1">,</span>
+    <span class="s1">Year_of_Construction: </span><span class="s3">'Year of Construction'</span><span class="s1">,</span>
+    <span class="s1">TypeofRating: </span><span class="s3">'Type of Rating'</span><span class="s1">,</span>
+    <span class="s1">EnergyRating: </span><span class="s3">'Energy Rating'</span><span class="s1">,</span>
+    <span class="s1">BerRating: </span><span class="s3">'BER Rating'</span><span class="s1">,</span>
+    <span class="s1">TotalFloorArea: </span><span class="s3">'Total Floor Area'</span><span class="s1">,</span>
+    <span class="s1">UValueWall: </span><span class="s3">'U-Value Wall'</span><span class="s1">,</span>
+    <span class="s1">UValueRoof: </span><span class="s3">'U-Value Roof'</span><span class="s1">,</span>
+    <span class="s1">UValueFloor: </span><span class="s3">'U-Value Floor'</span><span class="s1">,</span>
+    <span class="s1">UValueWindow: </span><span class="s3">'U-Value Window'</span><span class="s1">,</span>
+    <span class="s1">UvalueDoor: </span><span class="s3">'U-Value Door'</span><span class="s1">,</span>
+    <span class="s1">WallArea: </span><span class="s3">'Wall Area'</span><span class="s1">,</span>
+    <span class="s1">RoofArea: </span><span class="s3">'Roof Area'</span><span class="s1">,</span>
+    <span class="s1">FloorArea: </span><span class="s3">'Floor Area'</span><span class="s1">,</span>
+    <span class="s1">WindowArea: </span><span class="s3">'Window Area'</span><span class="s1">,</span>
+    <span class="s1">DoorArea: </span><span class="s3">'Door Area'</span><span class="s1">,</span>
+    <span class="s1">NoStoreys: </span><span class="s3">'No. of Storeys'</span><span class="s1">,</span>
+    <span class="s1">CO2Rating: </span><span class="s3">'CO2 Rating'</span>
+  <span class="s1">};</span>
+
+  <span class="s0">// Validation function for BER Rating</span>
+  <span class="s2">const </span><span class="s1">validateBerRating = () =&gt; {</span>
+    <span class="s2">if </span><span class="s1">(!berRating.match(</span><span class="s5">/^\d+(\.\d+)?$/</span><span class="s1">)) {</span>
+      <span class="s1">setBerRatingError(</span><span class="s3">'Invalid BER Rating. Please enter a number. If decimal, use a dot (e.g., 150.50)'</span><span class="s1">);</span>
+      <span class="s2">return false</span><span class="s1">;</span>
+    <span class="s1">}</span>
+    <span class="s1">setBerRatingError(</span><span class="s3">''</span><span class="s1">);</span>
+    <span class="s2">return true</span><span class="s1">;</span>
+  <span class="s1">};</span>
+
+  <span class="s2">const </span><span class="s1">handleBerRatingChange = (e) =&gt; {</span>
+    <span class="s1">setBerRating(e.target.value);</span>
+  <span class="s1">};</span>
+
+  <span class="s2">const </span><span class="s1">handleSearch = () =&gt; {</span>
+    <span class="s0">// Ensure BER Rating is valid before searching</span>
+    <span class="s2">if </span><span class="s1">(!validateBerRating()) </span><span class="s2">return</span><span class="s1">;</span>
+
+    <span class="s0">// CSV is stored in public/data/data_countyname.csv</span>
+    <span class="s1">Papa.parse(csvFilePath, {</span>
+      <span class="s1">download: </span><span class="s2">true</span><span class="s1">,</span>
+      <span class="s1">header: </span><span class="s2">true</span><span class="s1">,</span>
+      <span class="s1">complete: (result) =&gt; {</span>
+        <span class="s1">console.log(</span><span class="s3">'Parsed data:'</span><span class="s1">, result.data);</span>
+        <span class="s2">const </span><span class="s1">filteredProperties = result.data.filter(property =&gt;</span>
+          <span class="s1">property.CountyName === selectedCounty &amp;&amp;</span>
+            <span class="s1">property.DwellingTypeDescr === propertyType &amp;&amp;</span>
+            <span class="s1">property.Year_of_Construction.toString() === constructionYear &amp;&amp;</span>
+            <span class="s1">property.EnergyRating === energyRating &amp;&amp;</span>
+            <span class="s1">property.BerRating.trim() === parseFloat(berRating).toString().trim()</span>
+        <span class="s1">);</span>
+        <span class="s1">console.log(</span><span class="s3">'Filtered properties:'</span><span class="s1">, filteredProperties);</span>
+        <span class="s1">setProperties(filteredProperties);</span>
+      <span class="s1">}</span>
+    <span class="s1">});</span>
+  <span class="s1">};</span>
+
+  <span class="s2">const </span><span class="s1">confirmPropertyAndNavigate = () =&gt; {</span>
+    <span class="s2">const </span><span class="s1">confirmSelection = window.confirm(</span><span class="s3">'Are you sure this is the correct property?'</span><span class="s1">);</span>
+    <span class="s2">if </span><span class="s1">(confirmSelection) {</span>
+      <span class="s1">setIsPropertyConfirmed(</span><span class="s2">true</span><span class="s1">);</span>
+      <span class="s1">navigate(</span><span class="s3">'/suggestions'</span><span class="s1">, { state: { selectedProperty } });</span>
+      <span class="s0">// Optionally, place window.scrollTo(0, 0); because the page may not scroll to the top automatically,</span>
+      <span class="s1">window.scrollTo(</span><span class="s4">0</span><span class="s1">, </span><span class="s4">0</span><span class="s1">);</span>
+      <span class="s0">// tried to manage this in the navigated-to page, but it continued to scroll to the top when states where changed in the navigated-to page.</span>
+    <span class="s1">}</span>
+  <span class="s1">};</span>
+
+  <span class="s2">const </span><span class="s1">handleSubmit = (e) =&gt; {</span>
+    <span class="s1">e.preventDefault();</span>
+    <span class="s2">if </span><span class="s1">(!selectedProperty || !isPropertyConfirmed) {</span>
+      <span class="s1">alert(</span><span class="s3">'Please select and confirm a property before submitting.'</span><span class="s1">);</span>
+      <span class="s2">return</span><span class="s1">;</span>
+    <span class="s1">}</span>
+    <span class="s1">navigate(</span><span class="s3">'/suggestions'</span><span class="s1">, { state: { selectedProperty } });</span>
+  <span class="s1">};</span>
+
+  <span class="s2">return </span><span class="s1">(</span>
+      <span class="s1">&lt;&gt;</span>
+        <span class="s1">&lt;</span><span class="s2">form </span><span class="s6">onSubmit</span><span class="s3">=</span><span class="s1">{handleSubmit}&gt;</span>
+          <span class="s1">&lt;</span><span class="s2">div </span><span class="s6">className</span><span class="s3">=&quot;form-elements&quot;</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">p</span><span class="s1">&gt;</span><span class="s7">Please fill out this form with details from your latest Building Energy Rating (BER) certificate.</span><span class="s1">&lt;/</span><span class="s2">p</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">select </span><span class="s6">value</span><span class="s3">=</span><span class="s1">{selectedCounty} </span><span class="s6">onChange</span><span class="s3">=</span><span class="s1">{(e) =&gt; setSelectedCounty(e.target.value)}&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">option </span><span class="s6">value</span><span class="s3">=&quot;&quot;</span><span class="s1">&gt;</span><span class="s7">Select a County</span><span class="s1">&lt;/</span><span class="s2">option</span><span class="s1">&gt;</span>
+              <span class="s1">{counties.map((county, index) =&gt; (</span>
+                  <span class="s1">&lt;</span><span class="s2">option </span><span class="s6">key</span><span class="s3">=</span><span class="s1">{index} </span><span class="s6">value</span><span class="s3">=</span><span class="s1">{county}&gt;{county}&lt;/</span><span class="s2">option</span><span class="s1">&gt;</span>
+              <span class="s1">))}</span>
+            <span class="s1">&lt;/</span><span class="s2">select</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">select </span><span class="s6">value</span><span class="s3">=</span><span class="s1">{propertyType} </span><span class="s6">onChange</span><span class="s3">=</span><span class="s1">{(e) =&gt; setPropertyType(e.target.value)}&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">option </span><span class="s6">value</span><span class="s3">=&quot;&quot;</span><span class="s1">&gt;</span><span class="s7">Select Property Type</span><span class="s1">&lt;/</span><span class="s2">option</span><span class="s1">&gt;</span>
+              <span class="s1">{propertyTypes.map((type, index) =&gt; (</span>
+                  <span class="s1">&lt;</span><span class="s2">option </span><span class="s6">key</span><span class="s3">=</span><span class="s1">{index} </span><span class="s6">value</span><span class="s3">=</span><span class="s1">{type}&gt;{type}&lt;/</span><span class="s2">option</span><span class="s1">&gt;</span>
+              <span class="s1">))}</span>
+            <span class="s1">&lt;/</span><span class="s2">select</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">select </span><span class="s6">value</span><span class="s3">=</span><span class="s1">{constructionYear} </span><span class="s6">onChange</span><span class="s3">=</span><span class="s1">{(e) =&gt; setConstructionYear(e.target.value)}&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">option </span><span class="s6">value</span><span class="s3">=&quot;&quot;</span><span class="s1">&gt;</span><span class="s7">Select Construction Year</span><span class="s1">&lt;/</span><span class="s2">option</span><span class="s1">&gt;</span>
+              <span class="s1">{constructionYears.map((year, index) =&gt; (</span>
+                  <span class="s1">&lt;</span><span class="s2">option </span><span class="s6">key</span><span class="s3">=</span><span class="s1">{index} </span><span class="s6">value</span><span class="s3">=</span><span class="s1">{year}&gt;{year}&lt;/</span><span class="s2">option</span><span class="s1">&gt;</span>
+              <span class="s1">))}</span>
+            <span class="s1">&lt;/</span><span class="s2">select</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">select </span><span class="s6">value</span><span class="s3">=</span><span class="s1">{energyRating} </span><span class="s6">onChange</span><span class="s3">=</span><span class="s1">{(e) =&gt; setEnergyRating(e.target.value)}&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">option </span><span class="s6">value</span><span class="s3">=&quot;&quot;</span><span class="s1">&gt;</span><span class="s7">Select Energy Rating</span><span class="s1">&lt;/</span><span class="s2">option</span><span class="s1">&gt;</span>
+              <span class="s1">{energyRatings.map((rating, index) =&gt; (</span>
+                  <span class="s1">&lt;</span><span class="s2">option </span><span class="s6">key</span><span class="s3">=</span><span class="s1">{index} </span><span class="s6">value</span><span class="s3">=</span><span class="s1">{rating}&gt;{rating}&lt;/</span><span class="s2">option</span><span class="s1">&gt;</span>
+              <span class="s1">))}</span>
+            <span class="s1">&lt;/</span><span class="s2">select</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s2">input</span>
+                <span class="s6">type</span><span class="s3">=&quot;text&quot;</span>
+                <span class="s6">value</span><span class="s3">=</span><span class="s1">{berRating}</span>
+                <span class="s6">onChange</span><span class="s3">=</span><span class="s1">{handleBerRatingChange}</span>
+                <span class="s6">onBlur</span><span class="s3">=</span><span class="s1">{validateBerRating} </span><span class="s0">// Validate when user leaves the input field</span>
+                <span class="s6">placeholder</span><span class="s3">=&quot;Enter BER Rating (e.g., 150.50)&quot;</span>
+            <span class="s1">/&gt;</span>
+            <span class="s1">{berRatingError &amp;&amp; &lt;</span><span class="s2">div </span><span class="s6">className</span><span class="s3">=&quot;error-message&quot;</span><span class="s1">&gt;{berRatingError}&lt;/</span><span class="s2">div</span><span class="s1">&gt;}</span>
+            <span class="s1">&lt;</span><span class="s2">div </span><span class="s6">className</span><span class="s3">=&quot;search-button-container&quot;</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">button </span><span class="s6">type</span><span class="s3">=&quot;button&quot; </span><span class="s6">className</span><span class="s3">=&quot;button-blue&quot; </span><span class="s6">onClick</span><span class="s3">=</span><span class="s1">{handleSearch}&gt;</span><span class="s7">Search Properties</span><span class="s1">&lt;/</span><span class="s2">button</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;/</span><span class="s2">form</span><span class="s1">&gt;</span>
+
+        <span class="s1">{</span><span class="s0">/* Result properties list */</span><span class="s1">}</span>
+        <span class="s1">{properties &amp;&amp; properties.length &gt; </span><span class="s4">0 </span><span class="s1">&amp;&amp; (</span>
+            <span class="s1">&lt;</span><span class="s2">div </span><span class="s6">className</span><span class="s3">=&quot;properties-container&quot;</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">h3</span><span class="s1">&gt;</span><span class="s7">Properties Found</span><span class="s1">&lt;/</span><span class="s2">h3</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">table </span><span class="s6">className</span><span class="s3">=&quot;properties-table&quot;</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;</span><span class="s2">thead</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s7">Property ID</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s7">Dwelling Type</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s7">Year of Construction</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s7">Energy Rating</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s7">BER Rating</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s2">th</span><span class="s1">&gt;</span><span class="s7">Select</span><span class="s1">&lt;/</span><span class="s2">th</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;/</span><span class="s2">thead</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;</span><span class="s2">tbody</span><span class="s1">&gt;</span>
+                <span class="s1">{properties.map((property, index) =&gt; (</span>
+                    <span class="s1">&lt;</span><span class="s2">tr </span><span class="s6">key</span><span class="s3">=</span><span class="s1">{index}&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{property.PropertyID}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{property.DwellingTypeDescr}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{property.Year_of_Construction}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{property.EnergyRating}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;{property.BerRating}&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">td</span><span class="s1">&gt;</span>
+                        <span class="s1">&lt;</span><span class="s2">button </span><span class="s6">type</span><span class="s3">=&quot;button&quot; </span><span class="s6">className</span><span class="s3">=&quot;button-blue&quot; </span><span class="s6">onClick</span><span class="s3">=</span><span class="s1">{() =&gt; {</span>
+                          <span class="s1">setSelectedProperty(property);</span>
+                          <span class="s1">setIsPropertyConfirmed(</span><span class="s2">false</span><span class="s1">);</span>
+                        <span class="s1">}}&gt;</span><span class="s7">Select</span>
+                        <span class="s1">&lt;/</span><span class="s2">button</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;/</span><span class="s2">td</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;/</span><span class="s2">tr</span><span class="s1">&gt;</span>
+                <span class="s1">))}</span>
+                <span class="s1">&lt;/</span><span class="s2">tbody</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;/</span><span class="s2">table</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s2">div</span><span class="s1">&gt;</span>
+                <span class="s1">{selectedProperty &amp;&amp; (</span>
+                    <span class="s1">&lt;</span><span class="s2">div </span><span class="s6">className</span><span class="s3">=&quot;property-select-card&quot;</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">h3</span><span class="s1">&gt;</span><span class="s7">Selected Property Details</span><span class="s1">&lt;/</span><span class="s2">h3</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">ul </span><span class="s6">className</span><span class="s3">=&quot;property-details&quot;</span><span class="s1">&gt;</span>
+                        <span class="s1">{Object.keys(selectedProperty)</span>
+                          <span class="s1">.filter(key =&gt; propertyLabels[key]) </span><span class="s0">// Only include keys that are in the mapping</span>
+                          <span class="s1">.map((key, index) =&gt; (</span>
+                                <span class="s1">&lt;</span><span class="s2">li </span><span class="s6">key</span><span class="s3">=</span><span class="s1">{index}&gt;</span>
+                                  <span class="s1">&lt;</span><span class="s2">strong</span><span class="s1">&gt;{propertyLabels[key]}</span><span class="s7">:</span><span class="s1">&lt;/</span><span class="s2">strong</span><span class="s1">&gt; {selectedProperty[key]}</span>
+                                <span class="s1">&lt;/</span><span class="s2">li</span><span class="s1">&gt;</span>
+                          <span class="s1">))}</span>
+                      <span class="s1">&lt;/</span><span class="s2">ul</span><span class="s1">&gt;</span>
+                      <span class="s1">&lt;</span><span class="s2">button </span><span class="s6">type</span><span class="s3">=&quot;submit&quot; </span><span class="s6">onClick</span><span class="s3">=</span><span class="s1">{confirmPropertyAndNavigate} </span><span class="s6">className</span><span class="s3">=&quot;button-blue&quot;</span><span class="s1">&gt;</span><span class="s7">Confirm Property</span><span class="s1">&lt;/</span><span class="s2">button</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+                <span class="s1">)}</span>
+              <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+
+            <span class="s1">&lt;/</span><span class="s2">div</span><span class="s1">&gt;</span>
+
+        <span class="s1">)}</span>
+      <span class="s1">&lt;/&gt;</span>
+  <span class="s1">);</span>
+<span class="s1">}</span>
+
+<span class="s2">export default </span><span class="s1">BerRatingForm;</span>
+</pre>
+</body>
+</html>

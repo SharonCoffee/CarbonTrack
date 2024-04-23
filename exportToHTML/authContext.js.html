@@ -1,0 +1,58 @@
+<html>
+<head>
+<title>authContext.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #0033b3;}
+.s1 { color: #080808;}
+.s2 { color: #067d17;}
+.s3 { color: #8c8c8c; font-style: italic;}
+.s4 { color: #174ad4;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+authContext.js</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">React, { createContext, useContext, useState, useEffect } from </span><span class="s2">'react'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">{ getAuth, onAuthStateChanged } from </span><span class="s2">'firebase/auth'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">PropTypes from </span><span class="s2">'prop-types'</span><span class="s1">;</span>
+
+<span class="s0">const </span><span class="s1">AuthContext = createContext();</span>
+
+<span class="s3">// Export AuthContext for useContext in other components</span>
+<span class="s0">export </span><span class="s1">{ AuthContext };</span>
+
+<span class="s0">export const </span><span class="s1">AuthProvider = ({ children }) =&gt; {</span>
+  <span class="s0">const </span><span class="s1">[currentUser, setCurrentUser] = useState(</span><span class="s0">null</span><span class="s1">);</span>
+  <span class="s3">// Initialize your auth state and logic here</span>
+
+  <span class="s1">useEffect(() =&gt; {</span>
+    <span class="s0">const </span><span class="s1">auth = getAuth();</span>
+    <span class="s0">const </span><span class="s1">unsubscribe = onAuthStateChanged(auth, (user) =&gt; {</span>
+      <span class="s1">setCurrentUser(user);</span>
+      <span class="s3">// Set state based on user presence</span>
+    <span class="s1">});</span>
+
+    <span class="s0">return </span><span class="s1">() =&gt; unsubscribe(); </span><span class="s3">// Cleanup subscription</span>
+  <span class="s1">}, []);</span>
+
+  <span class="s0">return </span><span class="s1">(</span>
+      <span class="s1">&lt;</span><span class="s0">AuthContext.Provider </span><span class="s4">value</span><span class="s2">=</span><span class="s1">{{ currentUser }}&gt;</span>
+        <span class="s1">{children}</span>
+      <span class="s1">&lt;/</span><span class="s0">AuthContext.Provider</span><span class="s1">&gt;</span>
+  <span class="s1">);</span>
+<span class="s1">};</span>
+
+<span class="s3">// Define PropTypes</span>
+<span class="s1">AuthProvider.propTypes = {</span>
+  <span class="s1">children: PropTypes.node.isRequired</span>
+<span class="s1">};</span>
+
+<span class="s3">// Custom hook to use the auth context</span>
+<span class="s0">export const </span><span class="s1">useAuth = () =&gt; useContext(AuthContext);</span>
+</pre>
+</body>
+</html>

@@ -1,0 +1,194 @@
+h1 {
+    flex: 1;
+}
+
+.logout-button {
+    background-color: #4a90e2; /* Blue background */
+    color: white; /* White text */
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center; width: auto; /* Only as wide as necessary */
+    margin-top: 10px; /* Space above the button */
+    align-self: flex-start; /* Align to the left side of the flex container */
+    margin-bottom: 20px;
+}
+
+.form-elements {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px; /* Same gap as in login-form for consistency */
+    width: 100%;
+    max-width: 400px; /* Same max-width as login-form for consistency */
+    margin: 50px auto; /* Center the form on the page */
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+    border-radius: 8px; /* Rounded corners for modern look */
+}
+
+.form-elements select,
+.form-elements input[type="text"] {
+    width: 100%; /* Full width to match the form layout */
+    padding: 10px; /* Adequate padding for touch interaction */
+    border: 1px solid #ddd; /* Subtle border */
+    border-radius: 4px; /* Rounded corners */
+    margin-bottom: 10px; /* Space below each input for clarity */
+}
+
+.form-elements .search-button-container {
+    width: 100%; /* Ensure full width to match the form layout */
+    display: flex;
+    justify-content: center; /* Center the search button */
+}
+
+.form-elements .button-blue {
+    background-color: #4a90e2; /* Blue background */
+    color: white; /* White text */
+    border: none; /* Remove border */
+    border-radius: 4px; /* Rounded corners */
+    padding: 10px 20px; /* Padding inside the button */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth color transition */
+    width: auto; /* Auto width based on content */
+    align-self: center; /* Align button in the center of form-elements */
+}
+
+.form-elements .button-blue:hover {
+    background-color: #357abd; /* Darker blue on hover */
+}
+
+.form-elements .error-message {
+    color: red; /* Error message in red for visibility */
+    text-align: center; /* Center the text for consistency */
+    width: 100%; /* Ensure it spans the width of the form */
+    margin-top: 10px; /* Space above the error message */
+}
+
+/* Properties Found Table styling */
+.properties-container {
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    align-items: center; /* Center items horizontally */
+    width: 100%; /* Take full width of its parent */
+}
+
+.properties-container h3 {
+    text-align: center; /* Center the text within the h3 */
+    margin-top: 20px; /* Space above the heading */
+    margin-bottom: 20px; /* Space below the heading */
+    color: #4a90e2; /* Blue color for heading */
+    width: 100%; /* Ensure full width to maintain center alignment */
+}
+
+.properties-table {
+    width: auto; /* Table width */
+    max-width: 600px; /* Maximum width of the table */
+    border-collapse: collapse; /* Collapse borders */
+    margin-top: 20px; /* Space above the table */
+    margin-bottom: 20px; /* Space below the table */
+    border: 1px solid #ddd; /* Grey border */
+}
+
+.properties-table th, .properties-table td {
+    text-align: left; /* Align text to the left */
+    padding: 12px; /* Padding for cells */
+    border: 1px solid #ddd; /* Light gray border for cells */
+}
+
+.properties-table th {
+    background-color: #4a90e2; /* Blue background for header */
+    color: #ffffff; /* White text for readability */
+}
+
+.properties-table td {
+    background-color: #f5f5dc; /* Cream color for table cells */
+}
+
+.properties-table tr:hover {
+    background-color: #f0ead6; /* Slightly darker cream for row hover */
+}
+
+/* Styling for buttons inside the table */
+.properties-table .button-blue {
+    width: auto; /* Auto width based on content */
+    background-color: #4a90e2; /* Blue background */
+    color: white; /* White text */
+    border: none; /* Remove border */
+    border-radius: 4px; /* Rounded corners */
+    padding: 8px 16px; /* Padding inside the button */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth color transition */
+    text-align: center; /* Center text in button */
+    margin: auto; /* Center button in cell */
+    display: block; /* Ensure button takes full width */
+}
+
+.properties-table .button-blue:hover {
+    background-color: #357abd; /* Darker shade on hover */
+}
+
+
+
+/* Property Details Card styling */
+.property-select-card {
+    background-color: white; /* Cream color */
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px; /* Padding inside the card */
+    margin-top: 20px; /* Space above the card */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    display: flex;
+    flex-direction: column; /* Stack the h3 and ul vertically */
+    align-items: center; /* Center align the items */
+    width: auto; /* Adjust width as necessary */
+}
+
+.property-select-card h3 {
+    color: #4a90e2; /* Blue color for the heading */
+    margin-bottom: 20px; /* Space below the heading */
+    text-align: center; /* Center the text */
+}
+
+.property-select-card ul.property-details {
+    background-color: #ffffff; /* White color for the gaps */
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns */
+    gap: 10px; /* Space between grid items */
+    width: 100%; /* Full width */
+    list-style-type: none; /* Remove default list styling */
+    padding: 0; /* Remove default padding */
+}
+
+.property-select-card ul.property-details li {
+    background-color: #f5f5dc; /* Cream color */
+    border: 1px solid #f5f5dc; /* Cream border */
+    border-radius: 4px; /* Rounded corners for the list items */
+    padding: 10px; /* Padding inside each list item */
+    display: flex; /* Allows proper alignment of the label and value */
+    justify-content: space-between; /* Separates the label and value */
+}
+
+.property-select-card ul.property-details li strong {
+    margin-right: 10px; /* Space between the label and the value */
+}
+
+.button-blue {
+    margin-top: 20px; /* Space above the button */
+    align-self: center; /* Center the button in the card */
+}
+
+.button-blue:hover {
+    background-color: #357abd; /* Darker blue on hover */
+}
+
+
+
+
+
+
+
+
+
+

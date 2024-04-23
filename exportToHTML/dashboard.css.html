@@ -1,0 +1,180 @@
+<html>
+<head>
+<title>dashboard.css</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #8c8c8c; font-style: italic;}
+.s1 { color: #080808;}
+.s2 { color: #0033b3;}
+.s3 { color: #174ad4;}
+.s4 { color: #080808;}
+.s5 { color: #1750eb;}
+.s6 { color: #067d17;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+dashboard.css</font>
+</center></td></tr></table>
+<pre><span class="s0">/* Bar chart */</span>
+<span class="s1">.</span><span class="s2">barChart </span><span class="s1">{</span>
+    <span class="s3">margin-top</span><span class="s4">: </span><span class="s5">50</span><span class="s6">px</span><span class="s1">;</span>
+    <span class="s3">margin-right</span><span class="s4">: </span><span class="s6">auto</span><span class="s1">;</span>
+    <span class="s3">margin-left</span><span class="s4">: </span><span class="s6">auto</span><span class="s1">;</span>
+    <span class="s3">margin-bottom</span><span class="s4">: </span><span class="s5">5</span><span class="s6">px</span><span class="s1">;</span>
+    <span class="s3">padding</span><span class="s4">: </span><span class="s5">20</span><span class="s6">px</span><span class="s1">;</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">cartesianGrid </span><span class="s1">{</span>
+    <span class="s3">stroke-dasharray</span><span class="s4">: </span><span class="s5">3 3</span><span class="s1">;</span>
+<span class="s1">}</span>
+
+<span class="s0">/* Layout for the property summary containers to appear next to each other */</span>
+<span class="s1">.</span><span class="s2">properties-summary-container </span><span class="s1">{</span>
+    <span class="s3">display</span><span class="s4">: </span><span class="s6">flex</span><span class="s1">;</span>
+    <span class="s3">justify-content</span><span class="s4">: </span><span class="s6">center</span><span class="s1">; </span><span class="s0">/* Center the containers */</span>
+    <span class="s3">align-items</span><span class="s4">: </span><span class="s6">stretch</span><span class="s1">; </span><span class="s0">/* Make containers of equal height */</span>
+    <span class="s3">width</span><span class="s4">: </span><span class="s5">100</span><span class="s1">%; </span><span class="s0">/* Make sure it matches the width of the energy-rating-container */</span>
+    <span class="s3">max-width</span><span class="s4">: </span><span class="s5">92</span><span class="s1">%; </span><span class="s0">/* Max-width can also be 80% */</span>
+    <span class="s3">margin-top</span><span class="s4">: </span><span class="s5">20</span><span class="s6">px</span><span class="s1">; </span><span class="s0">/* Space above the containers */</span>
+    <span class="s3">margin-bottom</span><span class="s4">: </span><span class="s5">20</span><span class="s6">px</span><span class="s1">; </span><span class="s0">/* Space below the containers */</span>
+    <span class="s3">margin-left</span><span class="s4">: </span><span class="s6">auto</span><span class="s1">; </span><span class="s0">/* Centers the container */</span>
+    <span class="s3">margin-right</span><span class="s4">: </span><span class="s6">auto</span><span class="s1">; </span><span class="s0">/* Centers the container */</span>
+    <span class="s3">gap</span><span class="s4">: </span><span class="s5">20</span><span class="s6">px</span><span class="s1">; </span><span class="s0">/* Space between the containers */</span>
+<span class="s1">}</span>
+
+<span class="s0">/* Individual container styling */</span>
+<span class="s1">.</span><span class="s2">properties-container</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">efg-properties-container</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">efg-percentage-container </span><span class="s1">{</span>
+    <span class="s3">flex</span><span class="s4">: </span><span class="s5">1</span><span class="s1">; </span><span class="s0">/* Make containers take equal width */</span>
+    <span class="s3">background-color</span><span class="s4">: </span><span class="s2">#ffffff</span><span class="s1">; </span><span class="s0">/* White background for cleanliness */</span>
+    <span class="s3">border</span><span class="s4">: </span><span class="s5">1</span><span class="s6">px solid </span><span class="s2">#e0e0e0</span><span class="s1">; </span><span class="s0">/* Light gray border */</span>
+    <span class="s3">box-shadow</span><span class="s4">: </span><span class="s5">0 4</span><span class="s6">px </span><span class="s5">6</span><span class="s6">px </span><span class="s2">rgba</span><span class="s1">(</span><span class="s5">0</span><span class="s1">, </span><span class="s5">0</span><span class="s1">, </span><span class="s5">0</span><span class="s1">, </span><span class="s5">0.1</span><span class="s1">); </span><span class="s0">/* Add shadow for depth */</span>
+    <span class="s3">border-radius</span><span class="s4">: </span><span class="s5">8</span><span class="s6">px</span><span class="s1">; </span><span class="s0">/* Rounded corners for modern look */</span>
+    <span class="s3">padding</span><span class="s4">: </span><span class="s5">20</span><span class="s6">px</span><span class="s1">; </span><span class="s0">/* Padding inside the containers */</span>
+    <span class="s3">display</span><span class="s4">: </span><span class="s6">flex</span><span class="s1">;</span>
+    <span class="s3">flex-direction</span><span class="s4">: </span><span class="s6">column</span><span class="s1">;</span>
+    <span class="s3">justify-content</span><span class="s4">: </span><span class="s6">space-between</span><span class="s1">; </span><span class="s0">/* Distribute space inside containers */</span>
+    <span class="s3">align-items</span><span class="s4">: </span><span class="s6">center</span><span class="s1">;</span>
+<span class="s1">}</span>
+
+<span class="s0">/* Styling for the large numbers */</span>
+<span class="s1">.</span><span class="s2">big-number </span><span class="s1">{</span>
+    <span class="s3">font-size</span><span class="s4">: </span><span class="s5">32</span><span class="s6">px</span><span class="s1">; </span><span class="s0">/* Large font size for the numbers */</span>
+    <span class="s3">font-weight</span><span class="s4">: </span><span class="s6">bold</span><span class="s1">; </span><span class="s0">/* Make the numbers bold */</span>
+    <span class="s3">color</span><span class="s4">: </span><span class="s2">#000000</span><span class="s1">; </span><span class="s0">/* Black color for the numbers */</span>
+    <span class="s3">margin</span><span class="s4">: </span><span class="s5">15</span><span class="s6">px </span><span class="s5">0</span><span class="s1">; </span><span class="s0">/* Space around the numbers */</span>
+<span class="s1">}</span>
+
+
+<span class="s0">/* Global styling for containers and tables to center them */</span>
+<span class="s1">.</span><span class="s2">energy-rating-container</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">energy-rating-chart-container</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">grant-supported-properties-container</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">efg-differences-chart-container </span><span class="s1">{</span>
+    <span class="s3">display</span><span class="s4">: </span><span class="s6">flex</span><span class="s1">;</span>
+    <span class="s3">flex-direction</span><span class="s4">: </span><span class="s6">column</span><span class="s1">;</span>
+    <span class="s3">align-items</span><span class="s4">: </span><span class="s6">center</span><span class="s1">;</span>
+    <span class="s3">width</span><span class="s4">: </span><span class="s5">100</span><span class="s1">%; </span><span class="s0">/* Adjust based on your layout */</span>
+    <span class="s3">margin</span><span class="s4">: </span><span class="s6">auto</span><span class="s1">;</span>
+<span class="s1">}</span>
+
+
+<span class="s0">/* Container for the new energy rating section */</span>
+<span class="s1">.</span><span class="s2">energy-rating-chart-container</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">grant-supported-properties-container</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">efg-differences-chart-container</span><span class="s1">{</span>
+    <span class="s3">background-color</span><span class="s4">: </span><span class="s2">#ffffff</span><span class="s1">; </span><span class="s0">/* White background for cleanliness */</span>
+    <span class="s3">border</span><span class="s4">: </span><span class="s5">1</span><span class="s6">px solid </span><span class="s2">#e0e0e0</span><span class="s1">; </span><span class="s0">/* Light gray border */</span>
+    <span class="s3">gap</span><span class="s4">: </span><span class="s5">15</span><span class="s6">px</span><span class="s1">; </span><span class="s0">/* Same gap as in login-form for consistency */</span>
+    <span class="s3">box-shadow</span><span class="s4">: </span><span class="s5">0 4</span><span class="s6">px </span><span class="s5">6</span><span class="s6">px </span><span class="s2">rgba</span><span class="s1">(</span><span class="s5">0</span><span class="s1">, </span><span class="s5">0</span><span class="s1">, </span><span class="s5">0</span><span class="s1">, </span><span class="s5">0.1</span><span class="s1">); </span><span class="s0">/* Add shadow for depth */</span>
+    <span class="s3">border-radius</span><span class="s4">: </span><span class="s5">8</span><span class="s6">px</span><span class="s1">; </span><span class="s0">/* Rounded corners for modern look */</span>
+    <span class="s3">padding</span><span class="s4">: </span><span class="s5">20</span><span class="s6">px</span><span class="s1">; </span><span class="s0">/* Adjust padding as needed */</span>
+    <span class="s3">max-width</span><span class="s4">: </span><span class="s5">92</span><span class="s1">%; </span><span class="s0">/* Max-width can also be 80% */</span>
+<span class="s1">}</span>
+
+
+<span class="s0">/* Global styling for titles and paragraphs inside the containers */</span>
+<span class="s2">h2 </span><span class="s1">{</span>
+    <span class="s3">color</span><span class="s4">: </span><span class="s2">#4a90e2</span><span class="s1">; </span><span class="s0">/* Blue color for title */</span>
+    <span class="s3">margin-top</span><span class="s4">: </span><span class="s5">20</span><span class="s6">px</span><span class="s1">; </span><span class="s0">/* Space above the title */</span>
+    <span class="s3">margin-bottom</span><span class="s4">: </span><span class="s5">20</span><span class="s6">px</span><span class="s1">; </span><span class="s0">/* Space below the title */</span>
+<span class="s1">}</span>
+
+<span class="s2">p </span><span class="s1">{</span>
+    <span class="s3">text-align</span><span class="s4">: </span><span class="s6">justify</span><span class="s1">; </span><span class="s0">/* Justify text for better readability */</span>
+    <span class="s3">font-size</span><span class="s4">: </span><span class="s6">medium</span><span class="s1">; </span><span class="s0">/* Medium font size for paragraphs */</span>
+    <span class="s3">margin-bottom</span><span class="s4">: </span><span class="s5">20</span><span class="s6">px</span><span class="s1">; </span><span class="s0">/* Space below the paragraph */</span>
+    <span class="s3">color</span><span class="s4">: </span><span class="s2">#333</span><span class="s1">; </span><span class="s0">/* Darker text for better readability */</span>
+<span class="s1">}</span>
+
+
+<span class="s0">/* Layout for the property summary containers to appear next to each other */</span>
+<span class="s1">.</span><span class="s2">grant-summary-container </span><span class="s1">{</span>
+    <span class="s3">display</span><span class="s4">: </span><span class="s6">flex</span><span class="s1">;</span>
+    <span class="s3">justify-content</span><span class="s4">: </span><span class="s6">center</span><span class="s1">; </span><span class="s0">/* Center the containers */</span>
+    <span class="s3">align-items</span><span class="s4">: </span><span class="s6">stretch</span><span class="s1">; </span><span class="s0">/* Make containers of equal height */</span>
+    <span class="s3">width</span><span class="s4">: </span><span class="s5">100</span><span class="s1">%; </span><span class="s0">/* Make sure it matches the width of the energy-rating-container */</span>
+    <span class="s3">max-width</span><span class="s4">: </span><span class="s5">92</span><span class="s1">%; </span><span class="s0">/* Max-width can also be 80% */</span>
+    <span class="s3">margin-top</span><span class="s4">: </span><span class="s5">20</span><span class="s6">px</span><span class="s1">; </span><span class="s0">/* Space above the containers */</span>
+    <span class="s3">margin-bottom</span><span class="s4">: </span><span class="s5">20</span><span class="s6">px</span><span class="s1">; </span><span class="s0">/* Space below the containers */</span>
+    <span class="s3">margin-left</span><span class="s4">: </span><span class="s6">auto</span><span class="s1">; </span><span class="s0">/* Centers the container */</span>
+    <span class="s3">margin-right</span><span class="s4">: </span><span class="s6">auto</span><span class="s1">; </span><span class="s0">/* Centers the container */</span>
+    <span class="s3">gap</span><span class="s4">: </span><span class="s5">20</span><span class="s6">px</span><span class="s1">; </span><span class="s0">/* Space between the containers */</span>
+<span class="s1">}</span>
+
+<span class="s0">/* Individual container styling */</span>
+<span class="s1">.</span><span class="s2">retrofit-yearly-chart-container</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">energy-rating-chart-container</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">efg-differences-chart-container</span><span class="s1">{</span>
+    <span class="s3">flex</span><span class="s4">: </span><span class="s5">1</span><span class="s1">; </span><span class="s0">/* Make containers take equal width */</span>
+    <span class="s3">background-color</span><span class="s4">: </span><span class="s2">#ffffff</span><span class="s1">; </span><span class="s0">/* White background for cleanliness */</span>
+    <span class="s3">border</span><span class="s4">: </span><span class="s5">1</span><span class="s6">px solid </span><span class="s2">#e0e0e0</span><span class="s1">; </span><span class="s0">/* Light gray border */</span>
+    <span class="s3">box-shadow</span><span class="s4">: </span><span class="s5">0 4</span><span class="s6">px </span><span class="s5">6</span><span class="s6">px </span><span class="s2">rgba</span><span class="s1">(</span><span class="s5">0</span><span class="s1">, </span><span class="s5">0</span><span class="s1">, </span><span class="s5">0</span><span class="s1">, </span><span class="s5">0.1</span><span class="s1">); </span><span class="s0">/* Add shadow for depth */</span>
+    <span class="s3">border-radius</span><span class="s4">: </span><span class="s5">8</span><span class="s6">px</span><span class="s1">; </span><span class="s0">/* Rounded corners for modern look */</span>
+    <span class="s3">padding</span><span class="s4">: </span><span class="s5">20</span><span class="s6">px</span><span class="s1">; </span><span class="s0">/* Padding inside the containers */</span>
+    <span class="s3">display</span><span class="s4">: </span><span class="s6">flex</span><span class="s1">;</span>
+    <span class="s3">flex-direction</span><span class="s4">: </span><span class="s6">column</span><span class="s1">;</span>
+    <span class="s3">justify-content</span><span class="s4">: </span><span class="s6">space-between</span><span class="s1">; </span><span class="s0">/* Distribute space inside containers */</span>
+    <span class="s3">align-items</span><span class="s4">: </span><span class="s6">center</span><span class="s1">;</span>
+<span class="s1">}</span>
+
+<span class="s1">.</span><span class="s2">error-message </span><span class="s1">{</span>
+    <span class="s3">color</span><span class="s4">: </span><span class="s6">red</span><span class="s1">; </span><span class="s0">/* Change as needed */</span>
+    <span class="s3">font-size</span><span class="s4">: </span><span class="s5">16</span><span class="s6">px</span><span class="s1">; </span><span class="s0">/* Change as needed */</span>
+    <span class="s3">margin</span><span class="s4">: </span><span class="s5">20</span><span class="s6">px </span><span class="s5">0</span><span class="s1">; </span><span class="s0">/* Change as needed */</span>
+<span class="s1">}</span>
+
+<span class="s0">/* Layout for the properties-needing-support-summary to appear next to each other */</span>
+<span class="s1">.</span><span class="s2">properties-needing-support-summary </span><span class="s1">{</span>
+    <span class="s3">display</span><span class="s4">: </span><span class="s6">flex</span><span class="s1">;</span>
+    <span class="s3">justify-content</span><span class="s4">: </span><span class="s6">center</span><span class="s1">; </span><span class="s0">/* Center the containers horizontally */</span>
+    <span class="s3">align-items</span><span class="s4">: </span><span class="s6">stretch</span><span class="s1">; </span><span class="s0">/* Make containers of equal height */</span>
+    <span class="s3">width</span><span class="s4">: </span><span class="s5">100</span><span class="s1">%; </span><span class="s0">/* Full width of the parent container */</span>
+    <span class="s3">max-width</span><span class="s4">: </span><span class="s5">92</span><span class="s1">%; </span><span class="s0">/* Maximum width similar to other sections */</span>
+    <span class="s3">margin-top</span><span class="s4">: </span><span class="s5">20</span><span class="s6">px</span><span class="s1">; </span><span class="s0">/* Space above the containers */</span>
+    <span class="s3">margin-bottom</span><span class="s4">: </span><span class="s5">20</span><span class="s6">px</span><span class="s1">; </span><span class="s0">/* Space below the containers */</span>
+    <span class="s3">margin-left</span><span class="s4">: </span><span class="s6">auto</span><span class="s1">; </span><span class="s0">/* Centers the container horizontally */</span>
+    <span class="s3">margin-right</span><span class="s4">: </span><span class="s6">auto</span><span class="s1">; </span><span class="s0">/* Centers the container horizontally */</span>
+    <span class="s3">gap</span><span class="s4">: </span><span class="s5">20</span><span class="s6">px</span><span class="s1">; </span><span class="s0">/* Space between the containers */</span>
+<span class="s1">}</span>
+
+<span class="s0">/* Individual container styling within properties-needing-support-summary */</span>
+<span class="s1">.</span><span class="s2">properties-received-support-container</span><span class="s1">,</span>
+<span class="s1">.</span><span class="s2">properties-needing-support-container </span><span class="s1">{</span>
+    <span class="s3">flex</span><span class="s4">: </span><span class="s5">1</span><span class="s1">; </span><span class="s0">/* Make containers take equal width */</span>
+    <span class="s3">background-color</span><span class="s4">: </span><span class="s2">#ffffff</span><span class="s1">; </span><span class="s0">/* White background for cleanliness */</span>
+    <span class="s3">border</span><span class="s4">: </span><span class="s5">1</span><span class="s6">px solid </span><span class="s2">#e0e0e0</span><span class="s1">; </span><span class="s0">/* Light gray border */</span>
+    <span class="s3">box-shadow</span><span class="s4">: </span><span class="s5">0 4</span><span class="s6">px </span><span class="s5">6</span><span class="s6">px </span><span class="s2">rgba</span><span class="s1">(</span><span class="s5">0</span><span class="s1">, </span><span class="s5">0</span><span class="s1">, </span><span class="s5">0</span><span class="s1">, </span><span class="s5">0.1</span><span class="s1">); </span><span class="s0">/* Add shadow for depth */</span>
+    <span class="s3">border-radius</span><span class="s4">: </span><span class="s5">8</span><span class="s6">px</span><span class="s1">; </span><span class="s0">/* Rounded corners for modern look */</span>
+    <span class="s3">padding</span><span class="s4">: </span><span class="s5">20</span><span class="s6">px</span><span class="s1">; </span><span class="s0">/* Padding inside the containers */</span>
+    <span class="s3">display</span><span class="s4">: </span><span class="s6">flex</span><span class="s1">;</span>
+    <span class="s3">flex-direction</span><span class="s4">: </span><span class="s6">column</span><span class="s1">;</span>
+    <span class="s3">justify-content</span><span class="s4">: </span><span class="s6">space-between</span><span class="s1">; </span><span class="s0">/* Distribute space inside containers */</span>
+    <span class="s3">align-items</span><span class="s4">: </span><span class="s6">center</span><span class="s1">; </span><span class="s0">/* Center the content vertically */</span>
+<span class="s1">}</span></pre>
+</body>
+</html>

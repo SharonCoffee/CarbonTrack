@@ -1,0 +1,54 @@
+.navbar {
+    background-color: #212221; /* Dark background for the navbar */
+    color: white;
+    padding: 10px;
+    display: flex; /* Ensures items are laid out in a row */
+    justify-content: space-between; /* Spaces items out */
+    align-items: center; /* Vertically centers items */
+}
+
+.navbar-brand {
+    font-size: 1.5em; /* Larger text for the brand */
+    background-color: #4a90e2; /* Blue background for brand */
+    padding: 10px; /* Padding for spacing inside the box */
+}
+
+.navbar-header {
+    background-color: white; /* Blue background */
+    color: white; /* White text color */
+    padding: 10px 20px; /* Padding around the text */
+    font-size: 36px; /* Larger font size */
+    text-align: center; /* Center the text */
+    font-weight: bold; /* Make the text bold */
+}
+
+.carbon {
+    color: #212221; /* Color for 'Carbon' */
+}
+
+.track {
+    color: #4a90e2; /* Color for 'Track' */
+}
+
+.navbar-nav {
+    list-style-type: none; /* Removes bullet points */
+    display: flex; /* Display list items in a row */
+    justify-content: center; /* Center the list items */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.navbar-nav li {
+    margin: 0 10px; /* Space between each navbar item */
+    background-color: #4a90e2; /* Blue background for list items */
+    padding: 10px; /* Padding for spacing inside the box */
+}
+
+.navbar-nav li a {
+    color: white; /* Text color for links */
+    text-decoration: none; /* Removes underline from links */
+}
+
+.navbar-nav li a.active {
+    border-bottom: 2px solid white; /* Underline effect for active link */
+}

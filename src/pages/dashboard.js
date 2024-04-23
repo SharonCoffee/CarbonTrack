@@ -1,17 +1,14 @@
-// TODO
-// 4. Import graphing libraries or components as needed
-// 5.  Show a button to navigate back to the countymap
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell } from 'recharts';
 import Papa from 'papaparse';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const Dashboard = () => {
   const navigate = useNavigate(); // Hook to navigate
 
   const { countyName } = useParams(); // This captures the dynamic part of the URL
-  console.log('County Name:', countyName);
   const [data, setData] = useState({});
   const [propertyData, setPropertyData] = useState([]);
   const [grantSupportDataByYear, setGrantSupportDataByYear] = useState([]);
@@ -60,6 +57,43 @@ const Dashboard = () => {
 
   const handleBackToCountyMap = () => {
     navigate('/countymap');
+  };
+
+  // Function to generate PDF report
+  const generatePDF = async () => {
+    // eslint-disable-next-line new-cap
+    const doc = new jsPDF({
+      orientation: 'landscape'
+    });
+
+    const titles = [
+      `Energy Rating Distribution for County ${capitalizeFirstLetter(countyName)}`,
+      `Grant Support by Year for County ${capitalizeFirstLetter(countyName)}`,
+      `Energy Ratings for Grant Support Properties in County ${capitalizeFirstLetter(countyName)}`,
+      `EFG Properties Still Needing Support in County ${capitalizeFirstLetter(countyName)}`
+    ];
+
+    const chartElements = document.querySelectorAll('.recharts-wrapper');
+
+    // Use for...of loop to handle asynchronous operations
+    for (let i = 0; i < chartElements.length; i++) {
+      const chartElement = chartElements[i];
+      const title = titles[i];
+
+      if (i > 0) { // Add a new page for each chart except the first one
+        doc.addPage();
+      }
+
+      doc.text(title, 14, 15); // Add title at the top of the page
+
+      const canvas = await html2canvas(chartElement); // Generate image from chart
+      const imgData = canvas.toDataURL('image/png');
+
+      doc.addImage(imgData, 'PNG', 15, 25, 260, 100); // Add the image below the title
+    }
+
+    // Save the PDF after processing all charts
+    doc.save('dashboard-report.pdf');
   };
 
   // Function to fetch county-specific data
@@ -344,7 +378,10 @@ const Dashboard = () => {
             ? renderEFGDifferencesChart()
             : <p>No data available.</p>}
         </div>
-      </>
+        <div className="pdf-report-container">
+          <button className="button-blue" onClick={generatePDF}>Download PDF Report</button>
+        </div>
+        </>
   );
 };
 

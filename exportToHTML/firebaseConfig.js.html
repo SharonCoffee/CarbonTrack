@@ -1,0 +1,44 @@
+<html>
+<head>
+<title>firebaseConfig.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #8c8c8c; font-style: italic;}
+.s1 { color: #080808;}
+.s2 { color: #0033b3;}
+.s3 { color: #067d17;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+firebaseConfig.js</font>
+</center></td></tr></table>
+<pre><span class="s0">// Import the functions you need from the SDKs you need</span>
+<span class="s2">import </span><span class="s1">{ initializeApp } from </span><span class="s3">'firebase/app'</span><span class="s1">;</span>
+<span class="s2">import </span><span class="s1">{ getAnalytics } from </span><span class="s3">'firebase/analytics'</span><span class="s1">;</span>
+<span class="s0">// TODO: Add SDKs for Firebase products that you want to use</span>
+<span class="s0">// https://firebase.google.com/docs/web/setup#available-libraries</span>
+
+<span class="s0">// Your web app's Firebase configuration</span>
+<span class="s0">// For Firebase JS SDK v7.20.0 and later, measurementId is optional</span>
+<span class="s2">const </span><span class="s1">firebaseConfig = {</span>
+  <span class="s1">apiKey: </span><span class="s3">'AIzaSyB3Ydb30ttl_HXiK3wgJz8N239pc_mQLZ4'</span><span class="s1">,</span>
+  <span class="s1">authDomain: </span><span class="s3">'carbontrack-a99b7.firebaseapp.com'</span><span class="s1">,</span>
+  <span class="s1">projectId: </span><span class="s3">'carbontrack-a99b7'</span><span class="s1">,</span>
+  <span class="s1">storageBucket: </span><span class="s3">'carbontrack-a99b7.appspot.com'</span><span class="s1">,</span>
+  <span class="s1">messagingSenderId: </span><span class="s3">'620675691389'</span><span class="s1">,</span>
+  <span class="s1">appId: </span><span class="s3">'1:620675691389:web:87768412a984ee340f1214'</span><span class="s1">,</span>
+  <span class="s1">measurementId: </span><span class="s3">'G-K61Y9GMLQT'</span>
+<span class="s1">};</span>
+
+<span class="s0">// Initialize Firebase</span>
+<span class="s2">const </span><span class="s1">app = initializeApp(firebaseConfig);</span>
+<span class="s0">// eslint-disable-next-line no-unused-vars</span>
+<span class="s2">const </span><span class="s1">analytics = getAnalytics(app);</span>
+
+<span class="s2">export default </span><span class="s1">app;</span>
+</pre>
+</body>
+</html>

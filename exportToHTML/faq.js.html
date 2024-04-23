@@ -1,0 +1,79 @@
+<html>
+<head>
+<title>faq.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #0033b3;}
+.s1 { color: #080808;}
+.s2 { color: #067d17;}
+.s3 { color: #0037a6;}
+.s4 { color: #174ad4;}
+.s5 { color: #080808;}
+.s6 { color: #8c8c8c; font-style: italic;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+faq.js</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">React, { useState } from </span><span class="s2">'react'</span><span class="s1">;</span>
+
+<span class="s0">const </span><span class="s1">faqData = [</span>
+  <span class="s1">{</span>
+    <span class="s1">title: </span><span class="s2">'What is BER?'</span><span class="s1">,</span>
+    <span class="s1">content: </span><span class="s2">'A Building Energy Rating (BER), is a standardised rating for the energy efficiency of a property. It helps property owners understand how energy-efficient their property is on a scale from A (most efficient) to G (least efficient). Improving your BER can lead to reduced energy bills, lower carbon emissions, and improved property value.'</span>
+  <span class="s1">},</span>
+  <span class="s1">{</span>
+    <span class="s1">title: </span><span class="s2">'How can I improve my property</span><span class="s3">\'</span><span class="s2">s BER?'</span><span class="s1">,</span>
+    <span class="s1">content: </span><span class="s2">'Improving your property</span><span class="s3">\'</span><span class="s2">s BER can be achieved through various measures, such as installing/replacing insulation, upgrading heating systems, installing energy-efficient windows, and more. CarbonTrack provides insights and recommendations tailored to your property to help you make informed decisions on improvements.'</span>
+  <span class="s1">},</span>
+  <span class="s1">{</span>
+    <span class="s1">title: </span><span class="s2">'Is CarbonTrack free to use?'</span><span class="s1">,</span>
+    <span class="s1">content: </span><span class="s2">'Yes, CarbonTrack is currently free to use for individual homeowners looking to improve their BER. Our goal is to empower as many people as possible to make their homes more energy-efficient and sustainable.'</span>
+  <span class="s1">},</span>
+  <span class="s1">{</span>
+    <span class="s1">title: </span><span class="s2">'How does CarbonTrack help policymakers?'</span><span class="s1">,</span>
+    <span class="s1">content: </span><span class="s2">'CarbonTrack assists policymakers by providing aggregated data on the energy efficiency of properties within their jurisdiction. This information can be instrumental in identifying areas with low BER, enabling targeted retrofitting programs and policies to improve overall energy efficiency.'</span>
+  <span class="s1">},</span>
+  <span class="s1">{</span>
+    <span class="s1">title: </span><span class="s2">'Can I use CarbonTrack if I</span><span class="s3">\'</span><span class="s2">m not in the process of selling my home?'</span><span class="s1">,</span>
+    <span class="s1">content: </span><span class="s2">'Absolutely! While BER certificates are often associated with the sale or renting of properties, improving your home</span><span class="s3">\'</span><span class="s2">s energy efficiency is beneficial at any time. It not only contributes to a more sustainable environment but also can significantly reduce your energy costs.'</span>
+  <span class="s1">}</span>
+<span class="s1">];</span>
+
+<span class="s0">const </span><span class="s1">FAQ = () =&gt; {</span>
+  <span class="s0">const </span><span class="s1">[activeIndex, setActiveIndex] = useState(</span><span class="s0">null</span><span class="s1">);</span>
+
+  <span class="s0">const </span><span class="s1">toggleFAQ = (index) =&gt; {</span>
+    <span class="s1">setActiveIndex(activeIndex === index ? </span><span class="s0">null </span><span class="s1">: index);</span>
+  <span class="s1">};</span>
+
+  <span class="s0">return </span><span class="s1">(</span>
+      <span class="s1">&lt;</span><span class="s0">div </span><span class="s4">className</span><span class="s2">=&quot;faq-container&quot;</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;</span><span class="s0">h2</span><span class="s1">&gt;</span><span class="s5">Frequently Asked Questions</span><span class="s1">&lt;/</span><span class="s0">h2</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;</span><span class="s0">p</span><span class="s1">&gt;</span><span class="s5">Click on a question below to view the answer.</span><span class="s1">&lt;/</span><span class="s0">p</span><span class="s1">&gt;</span>
+        <span class="s1">{faqData.map((faq, index) =&gt; (</span>
+            <span class="s1">&lt;</span><span class="s0">div </span><span class="s4">key</span><span class="s2">=</span><span class="s1">{index} </span><span class="s4">className</span><span class="s2">=&quot;faq-item&quot;</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s0">div</span>
+                  <span class="s4">className</span><span class="s2">=&quot;faq-question&quot;</span>
+                  <span class="s4">onClick</span><span class="s2">=</span><span class="s1">{() =&gt; toggleFAQ(index)}</span>
+              <span class="s1">&gt;</span>
+                <span class="s1">{faq.title} {</span><span class="s6">/* Corrected from faq.question to faq.title */</span><span class="s1">}</span>
+              <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+              <span class="s1">{activeIndex === index &amp;&amp; (</span>
+                  <span class="s1">&lt;</span><span class="s0">div </span><span class="s4">className</span><span class="s2">=&quot;faq-answer&quot;</span><span class="s1">&gt;</span>
+                    <span class="s1">{faq.content} {</span><span class="s6">/* Corrected from faq.answer to faq.content */</span><span class="s1">}</span>
+                  <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+              <span class="s1">)}</span>
+            <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+        <span class="s1">))}</span>
+      <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+  <span class="s1">);</span>
+<span class="s1">};</span>
+
+<span class="s0">export default </span><span class="s1">FAQ;</span>
+</pre>
+</body>
+</html>

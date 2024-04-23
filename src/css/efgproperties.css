@@ -1,0 +1,85 @@
+/* Global styling for containers and tables to center them */
+.average-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%; /* Adjust based on your layout */
+    margin: auto;
+    padding: 20px; /* Adjust padding as needed */
+    max-width: 90%; /* Max-width can also be 80% */
+    background-color: #ffffff; /* White background for cleanliness */
+    border: 1px solid #e0e0e0; /* Light gray border */
+    gap: 15px; /* Same gap as in login-form for consistency */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+    border-radius: 8px; /* Rounded corners for modern look */
+    color: #4a90e2; /* Blue color for title */
+    text-align: justify; /* Justify text for better readability */
+    font-size: medium; /* Medium font size for paragraphs */
+}
+
+
+/* Global styling for tables */
+.average-table {
+    width: 100%; /* Full width */
+    max-width: 70%; /* Max width to match other form elements */
+    margin: 20px auto; /* Center the table */
+    border: 1px solid #ddd; /* Grey border */
+    border-collapse: collapse; /* Ensures no gaps between cells */
+    align-content: center; /* Center the table */
+}
+
+.average-table th, .average-table td {
+    text-align: center; /* Center text for all */
+    vertical-align: middle; /* Centers the content vertically for all */
+    padding: 12px; /* Consistent padding */
+    border: 1px solid #ddd; /* Light grey border */
+}
+
+.average-table th {
+    background-color: #4a90e2;
+    color: white;
+    padding: 10px;
+    text-align: center; /* Center the text - can remove this if not needed*/
+    font-size: 1rem; /* Standard font size for headers - can remove this if not needed */
+}
+
+.average td {
+    border-bottom: 2px solid #e0e0e0; /* Slightly thicker bottom border for separation */
+    color: #333; /* Darker text color for contrast */
+}
+
+.amber {
+    background-color: #FFBF00; /* Amber color */
+    color: white;
+}
+
+.red {
+    background-color: #FF4136; /* Red color */
+    color: white;
+}
+
+.green {
+    background-color: #2ECC40; /* Green color */
+    color: white;
+}
+
+.button-blue {
+    background-color: #4a90e2; /* Adjust the color as needed */
+    color: white;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    border: none; /* Remove default border */
+    border-radius: 4px; /* Optional: for rounded corners */
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: inline-block;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.button-blue:hover {
+    background-color: #357abd; /* Darker shade on hover */
+}

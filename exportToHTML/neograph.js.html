@@ -1,0 +1,50 @@
+<html>
+<head>
+<title>neograph.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #080808;}
+.s1 { color: #067d17;}
+.s2 { color: #8c8c8c; font-style: italic;}
+.s3 { color: #0033b3;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+neograph.js</font>
+</center></td></tr></table>
+<pre><span class="s0">document.getElementById(</span><span class="s1">'loginButton'</span><span class="s0">).addEventListener(</span><span class="s1">'click'</span><span class="s0">, () =&gt; {</span>
+  <span class="s2">// Simulated function to login and interact with NeoDash</span>
+  <span class="s0">loginAndFetchData();</span>
+<span class="s0">});</span>
+
+<span class="s0">async </span><span class="s3">function </span><span class="s0">loginAndFetchData () {</span>
+  <span class="s3">const </span><span class="s0">NEO_DASH_API = </span><span class="s1">'neo4j+s://a4252f23.databases.neo4j.io:7687'</span><span class="s0">; </span><span class="s2">// Hypothetical API endpoint</span>
+  <span class="s3">try </span><span class="s0">{</span>
+    <span class="s2">// Simulate login - this is not a real code example, as NeoDash does not provide a direct login API like this</span>
+    <span class="s3">const </span><span class="s0">response = </span><span class="s3">await </span><span class="s0">fetch(NEO_DASH_API, {</span>
+      <span class="s0">method: </span><span class="s1">'POST'</span><span class="s0">,</span>
+      <span class="s0">headers: {</span>
+        <span class="s1">'Content-Type'</span><span class="s0">: </span><span class="s1">'application/json'</span>
+      <span class="s0">},</span>
+      <span class="s0">body: JSON.stringify({</span>
+        <span class="s0">username: </span><span class="s1">'neo4j'</span><span class="s0">, </span><span class="s2">// Storing credentials like this is not recommended</span>
+        <span class="s0">password: </span><span class="s1">'XwLUtPz3EDjAkDIRPZru48txQBKCbDf8sBPnS6j6jqk'</span>
+      <span class="s0">})</span>
+    <span class="s0">});</span>
+
+    <span class="s3">if </span><span class="s0">(response.ok) {</span>
+      <span class="s0">console.log(</span><span class="s1">'Logged in successfully'</span><span class="s0">);</span>
+      <span class="s2">// Further actions here, e.g., fetching data or using Text2Cypher</span>
+    <span class="s0">} </span><span class="s3">else </span><span class="s0">{</span>
+      <span class="s0">console.error(</span><span class="s1">'Login failed'</span><span class="s0">);</span>
+    <span class="s0">}</span>
+  <span class="s0">} </span><span class="s3">catch </span><span class="s0">(error) {</span>
+    <span class="s0">console.error(</span><span class="s1">'Error:'</span><span class="s0">, error);</span>
+  <span class="s0">}</span>
+<span class="s0">}</span>
+</pre>
+</body>
+</html>

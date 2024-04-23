@@ -1,0 +1,97 @@
+<html>
+<head>
+<title>App.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #0033b3;}
+.s1 { color: #080808;}
+.s2 { color: #067d17;}
+.s3 { color: #174ad4;}
+.s4 { color: #8c8c8c; font-style: italic;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+App.js</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">React from </span><span class="s2">'react'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s2">'semantic-ui-css/semantic.min.css'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">{ BrowserRouter as Router, Routes, Route } from </span><span class="s2">'react-router-dom'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">{ AuthProvider } from </span><span class="s2">'./contexts/authContext'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">Navbar from </span><span class="s2">'./components/navbar'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">Footer from </span><span class="s2">'./components/footer'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">Home from </span><span class="s2">'./pages/home'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">About from </span><span class="s2">'./pages/about'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">Contact from </span><span class="s2">'./pages/contact'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">Faq from </span><span class="s2">'./pages/faq'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">LoginPage from </span><span class="s2">'./pages/login'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">ResetPassword from </span><span class="s2">'./pages/resetpassword'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">SignupPage from </span><span class="s2">'./pages/signup'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">BerPage from </span><span class="s2">'./pages/ber'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">Suggestions from </span><span class="s2">'./pages/suggestions'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">Dashboard from </span><span class="s2">'./pages/dashboard'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">Countymap from </span><span class="s2">'./pages/countymap'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">EFGProperties from </span><span class="s2">'./pages/efgproperties'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">ProtectedRoute from </span><span class="s2">'./components/protectedRoute'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s2">'./App.css'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s2">'./firebase/firebaseConfig'</span><span class="s1">;</span>
+
+<span class="s0">function </span><span class="s1">App () {</span>
+  <span class="s0">return </span><span class="s1">(</span>
+        <span class="s1">&lt;</span><span class="s0">AuthProvider</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">Router</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;</span><span class="s0">div </span><span class="s3">className</span><span class="s2">=&quot;App&quot;</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s0">Navbar </span><span class="s1">/&gt;</span>
+                    <span class="s1">&lt;</span><span class="s0">Routes</span><span class="s1">&gt;</span>
+                        <span class="s1">&lt;</span><span class="s0">Route </span><span class="s3">path</span><span class="s2">=&quot;/&quot; </span><span class="s3">element</span><span class="s2">=</span><span class="s1">{&lt;</span><span class="s0">Home </span><span class="s1">/&gt;} /&gt;</span>
+                        <span class="s1">&lt;</span><span class="s0">Route </span><span class="s3">path</span><span class="s2">=&quot;/about&quot; </span><span class="s3">element</span><span class="s2">=</span><span class="s1">{&lt;</span><span class="s0">About </span><span class="s1">/&gt;} /&gt;</span>
+                        <span class="s1">&lt;</span><span class="s0">Route </span><span class="s3">path</span><span class="s2">=&quot;/contact&quot; </span><span class="s3">element</span><span class="s2">=</span><span class="s1">{&lt;</span><span class="s0">Contact </span><span class="s1">/&gt;} /&gt;</span>
+                        <span class="s1">&lt;</span><span class="s0">Route </span><span class="s3">path</span><span class="s2">=&quot;/faq&quot; </span><span class="s3">element</span><span class="s2">=</span><span class="s1">{&lt;</span><span class="s0">Faq </span><span class="s1">/&gt;} /&gt;</span>
+                        <span class="s1">&lt;</span><span class="s0">Route </span><span class="s3">path</span><span class="s2">=&quot;/login&quot; </span><span class="s3">element</span><span class="s2">=</span><span class="s1">{&lt;</span><span class="s0">LoginPage </span><span class="s1">/&gt;} /&gt;</span>
+                        <span class="s1">&lt;</span><span class="s0">Route </span><span class="s3">path</span><span class="s2">=&quot;/resetpassword&quot; </span><span class="s3">element</span><span class="s2">=</span><span class="s1">{&lt;</span><span class="s0">ResetPassword </span><span class="s1">/&gt;} /&gt;</span>
+                        <span class="s1">&lt;</span><span class="s0">Route </span><span class="s3">path</span><span class="s2">=&quot;/signup&quot; </span><span class="s3">element</span><span class="s2">=</span><span class="s1">{&lt;</span><span class="s0">SignupPage </span><span class="s1">/&gt;} /&gt;</span>
+                        <span class="s1">&lt;</span><span class="s0">Route </span><span class="s3">path</span><span class="s2">=&quot;/BerRatingForm&quot; </span><span class="s3">element</span><span class="s2">=</span><span class="s1">{</span>
+                                <span class="s1">&lt;</span><span class="s0">ProtectedRoute</span><span class="s1">&gt;</span>
+                                    <span class="s1">&lt;</span><span class="s0">BerPage </span><span class="s1">/&gt;</span>
+                                <span class="s1">&lt;/</span><span class="s0">ProtectedRoute</span><span class="s1">&gt;</span>
+                            <span class="s1">}</span>
+                        <span class="s1">/&gt;</span>
+                        <span class="s1">&lt;</span><span class="s0">Route </span><span class="s3">path</span><span class="s2">=&quot;/suggestions&quot; </span><span class="s3">element</span><span class="s2">=</span><span class="s1">{</span>
+                            <span class="s1">&lt;</span><span class="s0">ProtectedRoute</span><span class="s1">&gt;</span>
+                                <span class="s1">&lt;</span><span class="s0">Suggestions </span><span class="s1">/&gt;</span>
+                            <span class="s1">&lt;/</span><span class="s0">ProtectedRoute</span><span class="s1">&gt;</span>
+                        <span class="s1">} /&gt;</span>
+                        <span class="s1">{</span><span class="s4">/* Protected Route for Countymap */</span><span class="s1">}</span>
+                        <span class="s1">&lt;</span><span class="s0">Route </span><span class="s3">path</span><span class="s2">=&quot;/countymap&quot; </span><span class="s3">element</span><span class="s2">=</span><span class="s1">{</span>
+                            <span class="s1">&lt;</span><span class="s0">ProtectedRoute</span><span class="s1">&gt;</span>
+                                <span class="s1">&lt;</span><span class="s0">Countymap </span><span class="s1">/&gt;</span>
+                            <span class="s1">&lt;/</span><span class="s0">ProtectedRoute</span><span class="s1">&gt;</span>
+                        <span class="s1">} /&gt;</span>
+                        <span class="s1">{</span><span class="s4">/* Protected Route for Dashboards - dynamic route for every county */</span><span class="s1">}</span>
+                        <span class="s1">&lt;</span><span class="s0">Route </span><span class="s3">path</span><span class="s2">=&quot;/dashboard/:countyName&quot; </span><span class="s3">element</span><span class="s2">=</span><span class="s1">{</span>
+                            <span class="s1">&lt;</span><span class="s0">ProtectedRoute</span><span class="s1">&gt;</span>
+                                <span class="s1">&lt;</span><span class="s0">Dashboard </span><span class="s1">/&gt;</span>
+                            <span class="s1">&lt;/</span><span class="s0">ProtectedRoute</span><span class="s1">&gt;</span>
+                        <span class="s1">} /&gt;</span>
+                        <span class="s1">{</span><span class="s4">/* Protected Route for EFG Properties - dynamic route for every county and ratingType */</span><span class="s1">}</span>
+                        <span class="s1">&lt;</span><span class="s0">Route </span><span class="s3">path</span><span class="s2">=&quot;/efgproperties/:ratingType/:countyName&quot; </span><span class="s3">element</span><span class="s2">=</span><span class="s1">{</span>
+                            <span class="s1">&lt;</span><span class="s0">ProtectedRoute</span><span class="s1">&gt;</span>
+                            <span class="s1">&lt;</span><span class="s0">EFGProperties </span><span class="s1">/&gt;</span>
+                            <span class="s1">&lt;/</span><span class="s0">ProtectedRoute</span><span class="s1">&gt;</span>
+                        <span class="s1">} /&gt;</span>
+
+                        <span class="s1">{</span><span class="s4">/* Add additional routes here */</span><span class="s1">}</span>
+                    <span class="s1">&lt;/</span><span class="s0">Routes</span><span class="s1">&gt;</span>
+                    <span class="s1">&lt;</span><span class="s0">Footer </span><span class="s1">/&gt;</span>
+                <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s0">Router</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;/</span><span class="s0">AuthProvider</span><span class="s1">&gt;</span>
+  <span class="s1">);</span>
+<span class="s1">}</span>
+
+<span class="s0">export default </span><span class="s1">App;</span>
+</pre>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<html>
+<head>
+<title>home.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #0033b3;}
+.s1 { color: #080808;}
+.s2 { color: #067d17;}
+.s3 { color: #8c8c8c; font-style: italic;}
+.s4 { color: #174ad4;}
+.s5 { color: #080808;}
+.s6 { color: #174be6;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+home.js</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">React from </span><span class="s2">'react'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">{ useNavigate } from </span><span class="s2">'react-router-dom'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">{ useAuth } from </span><span class="s2">'../contexts/authContext'</span><span class="s1">;</span>
+
+<span class="s0">const </span><span class="s1">Home = () =&gt; {</span>
+  <span class="s0">const </span><span class="s1">{ currentUser } = useAuth();</span>
+  <span class="s0">const </span><span class="s1">navigate = useNavigate();</span>
+
+  <span class="s0">const </span><span class="s1">handleBerRatingClick = () =&gt; {</span>
+    <span class="s0">if </span><span class="s1">(currentUser) {</span>
+      <span class="s1">navigate(</span><span class="s2">'/berRatingForm'</span><span class="s1">); </span><span class="s3">// Navigate to BerRatingForm if logged in</span>
+    <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+      <span class="s1">navigate(</span><span class="s2">'/login'</span><span class="s1">); </span><span class="s3">// Navigate to login page if not logged in</span>
+    <span class="s1">}</span>
+  <span class="s1">};</span>
+
+  <span class="s0">const </span><span class="s1">handlePolicyInsightsClick = () =&gt; {</span>
+    <span class="s0">if </span><span class="s1">(currentUser) {</span>
+      <span class="s1">navigate(</span><span class="s2">'/policyinsights'</span><span class="s1">); </span><span class="s3">// Navigate to Countymap page</span>
+    <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+      <span class="s1">navigate(</span><span class="s2">'/login'</span><span class="s1">); </span><span class="s3">// Navigate to login page if not logged in</span>
+    <span class="s1">}</span>
+  <span class="s1">};</span>
+
+  <span class="s0">return </span><span class="s1">(</span>
+      <span class="s1">&lt;&gt;</span>
+        <span class="s1">&lt;</span><span class="s0">div </span><span class="s4">className</span><span class="s2">=&quot;home-header&quot;</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">br</span><span class="s1">&gt;&lt;/</span><span class="s0">br</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">h1</span><span class="s1">&gt;&lt;</span><span class="s0">span </span><span class="s4">className</span><span class="s2">=&quot;carbon&quot;</span><span class="s1">&gt;</span><span class="s5">Welcome to Carbon</span><span class="s1">&lt;/</span><span class="s0">span</span><span class="s1">&gt;&lt;</span><span class="s0">span </span><span class="s4">className</span><span class="s2">=&quot;track&quot;</span><span class="s1">&gt;</span><span class="s5">Track</span><span class="s1">&lt;/</span><span class="s0">span</span><span class="s1">&gt;&lt;/</span><span class="s0">h1</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">br</span><span class="s1">&gt;&lt;/</span><span class="s0">br</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;</span><span class="s0">div </span><span class="s4">className</span><span class="s2">=&quot;home-challenge-container&quot;</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">h2</span><span class="s1">&gt;</span><span class="s5">Steering Energy Efficiency for Homeowners and Policymakers</span><span class="s1">&lt;/</span><span class="s0">h2</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">h3</span><span class="s1">&gt;</span><span class="s5">The Challenge</span><span class="s1">&lt;/</span><span class="s0">h3</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">br</span><span class="s1">&gt;&lt;/</span><span class="s0">br</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">p</span><span class="s1">&gt;</span><span class="s5">Amid rising energy demands, residential buildings significantly contribute to CO2 emissions. Many homes,</span>
+            <span class="s5">especially older constructions, are not energy efficient.</span>
+            <span class="s1">&lt;</span><span class="s0">br</span><span class="s1">&gt;&lt;/</span><span class="s0">br</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">br</span><span class="s1">&gt;&lt;/</span><span class="s0">br</span><span class="s1">&gt;</span>
+            <span class="s5">Homeowners face the challenge of understanding and</span>
+            <span class="s5">undertaking the retrofitting process to improve their homes</span><span class="s6">&amp;apos; </span><span class="s5">energy performance. The lack of clear,</span>
+            <span class="s5">accessible information on where to begin, what improvements will have the most impact, and how to balance</span>
+            <span class="s5">the investment against the expected benefits adds layers of complexity. Moreover, deciphering the</span>
+            <span class="s5">technical aspects of Building Energy Ratings (BER) and understanding which retrofits will offer</span>
+            <span class="s5">significant improvements can be daunting. This lack of clarity can lead to indecision, delayed action, and</span>
+            <span class="s5">missed opportunities for both cost savings and environmental impact.</span>
+            <span class="s1">&lt;</span><span class="s0">br</span><span class="s1">&gt;&lt;/</span><span class="s0">br</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">br</span><span class="s1">&gt;&lt;/</span><span class="s0">br</span><span class="s1">&gt;</span>
+            <span class="s5">For policymakers, the challenge lies in effectively scaling retrofitting efforts to meet climate action</span>
+            <span class="s5">targets. They must prioritize initiatives across diverse residential landscapes, allocate grants and</span>
+            <span class="s5">subsidies judiciously, and measure the impact of these policies. Policymakers are often tasked with the</span>
+            <span class="s5">herculean job of streamlining processes to support homeowners</span><span class="s6">&amp;apos; </span><span class="s5">retrofitting projects while ensuring</span>
+            <span class="s5">transparency and fairness. They must also bridge the gap between policy goals and tangible actions,</span>
+            <span class="s5">facilitating homeowners in navigating through available assistance and retrofitting pathways, all while</span>
+            <span class="s5">operating within budget constraints and tight timelines.</span>
+          <span class="s1">&lt;/</span><span class="s0">p</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;</span><span class="s0">div </span><span class="s4">className</span><span class="s2">=&quot;solution-container&quot;</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">div </span><span class="s4">className</span><span class="s2">=&quot;homeowner-container&quot;</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">h3</span><span class="s1">&gt;</span><span class="s5">For the homeowner: A practical guide to a Home Energy Upgrade</span><span class="s1">&lt;/</span><span class="s0">h3</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">p</span><span class="s1">&gt;</span><span class="s5">Discover how you can improve your home</span><span class="s6">&amp;apos;</span><span class="s5">s Building Energy Rating (BER) by analysing your home</span><span class="s6">&amp;apos;</span><span class="s5">s</span>
+              <span class="s5">current energy usage and recommending targeted improvements. These targeted improvements range from</span>
+              <span class="s5">insulating walls</span>
+              <span class="s5">to upgrading windows, and also include installing solar PV panels or a heatpump. The platform outlines</span>
+              <span class="s5">estimated costs and</span>
+              <span class="s5">grant opportunities tailored to your home. It leverages machine learning to forecast potential energy</span>
+              <span class="s5">savings.</span><span class="s1">&lt;/</span><span class="s0">p</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">div</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s0">button </span><span class="s4">type</span><span class="s2">=&quot;button&quot; </span><span class="s4">className</span><span class="s2">=&quot;homeowner-button&quot; </span><span class="s4">onClick</span><span class="s2">=</span><span class="s1">{handleBerRatingClick}&gt;</span><span class="s5">Homeowners: Learn How to</span>
+                <span class="s5">Improve Your BER Rating</span>
+              <span class="s1">&lt;/</span><span class="s0">button</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">div </span><span class="s4">className</span><span class="s2">=&quot;policy-container&quot;</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">h3</span><span class="s1">&gt;</span><span class="s5">For local council officials: Strategic Insights for Decision-making</span><span class="s1">&lt;/</span><span class="s0">h3</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">p</span><span class="s1">&gt;</span><span class="s5">The platform visualises the energy status of home per county, tracks the progress of retrofits and grant</span>
+              <span class="s5">allocations. It pinpoints the number of homes needing attention. It</span><span class="s6">&amp;apos;</span><span class="s5">s a strategic asset in</span>
+              <span class="s5">accelerating</span>
+              <span class="s5">the retrofitting initiative, aiming to streamline decision-making and optimise resource allocation.</span><span class="s1">&lt;/</span><span class="s0">p</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">div</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s0">button </span><span class="s4">type</span><span class="s2">=&quot;button&quot; </span><span class="s4">className</span><span class="s2">=&quot;policy-button&quot; </span><span class="s4">onClick</span><span class="s2">=</span><span class="s1">{handlePolicyInsightsClick}&gt;</span><span class="s5">For Policymakers:</span>
+                <span class="s5">Start</span>
+                <span class="s5">Here</span>
+              <span class="s1">&lt;/</span><span class="s0">button</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+      <span class="s1">&lt;/&gt;</span>
+  <span class="s1">);</span>
+<span class="s1">};</span>
+
+<span class="s0">export default </span><span class="s1">Home;</span>
+</pre>
+</body>
+</html>

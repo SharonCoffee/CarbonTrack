@@ -1,0 +1,116 @@
+<html>
+<head>
+<title>home.css</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #080808;}
+.s1 { color: #0033b3;}
+.s2 { color: #174ad4;}
+.s3 { color: #080808;}
+.s4 { color: #8c8c8c; font-style: italic;}
+.s5 { color: #067d17;}
+.s6 { color: #1750eb;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+home.css</font>
+</center></td></tr></table>
+<pre><span class="s0">.</span><span class="s1">home-header </span><span class="s0">{</span>
+    <span class="s2">color</span><span class="s3">: </span><span class="s1">#4a90e2</span><span class="s0">; </span><span class="s4">/* A shade of blue for the header */</span>
+    <span class="s2">text-align</span><span class="s3">: </span><span class="s5">center</span><span class="s0">;</span>
+    <span class="s2">margin</span><span class="s3">: </span><span class="s6">20</span><span class="s5">px </span><span class="s6">0</span><span class="s0">;</span>
+<span class="s0">}</span>
+
+<span class="s1">h2 </span><span class="s0">{</span>
+    <span class="s2">color</span><span class="s3">: </span><span class="s1">#4a90e2</span><span class="s0">; </span><span class="s4">/* Blue text for the header */</span>
+<span class="s0">}</span>
+
+<span class="s1">h3 </span><span class="s0">{</span>
+    <span class="s2">color</span><span class="s3">: </span><span class="s1">#212221</span><span class="s0">;</span>
+<span class="s0">}</span>
+
+<span class="s1">p </span><span class="s0">{</span>
+    <span class="s2">text-align</span><span class="s3">: </span><span class="s5">justify</span><span class="s0">; </span><span class="s4">/* Justify text for better readability */</span>
+<span class="s0">}</span>
+
+<span class="s4">/* Global styling for containers in home page to center them */</span>
+<span class="s0">.</span><span class="s1">home-challenge-container</span><span class="s0">,</span>
+<span class="s0">.</span><span class="s1">solution-container </span><span class="s0">{</span>
+    <span class="s2">background-color</span><span class="s3">: </span><span class="s1">#ffffff</span><span class="s0">; </span><span class="s4">/* White background for cleanliness */</span>
+    <span class="s2">border</span><span class="s3">: </span><span class="s6">1</span><span class="s5">px solid </span><span class="s1">#e0e0e0</span><span class="s0">; </span><span class="s4">/* Light gray border */</span>
+    <span class="s2">box-shadow</span><span class="s3">: </span><span class="s6">0 4</span><span class="s5">px </span><span class="s6">6</span><span class="s5">px </span><span class="s1">rgba</span><span class="s0">(</span><span class="s6">0</span><span class="s0">, </span><span class="s6">0</span><span class="s0">, </span><span class="s6">0</span><span class="s0">, </span><span class="s6">0.1</span><span class="s0">); </span><span class="s4">/* Add shadow for depth */</span>
+    <span class="s2">border-radius</span><span class="s3">: </span><span class="s6">8</span><span class="s5">px</span><span class="s0">; </span><span class="s4">/* Rounded corners for modern look */</span>
+<span class="s0">}</span>
+
+<span class="s0">.</span><span class="s1">home-challenge-container </span><span class="s0">{</span>
+    <span class="s2">display</span><span class="s3">: </span><span class="s5">flex</span><span class="s0">;</span>
+    <span class="s2">flex-direction</span><span class="s3">: </span><span class="s5">column</span><span class="s0">;</span>
+    <span class="s2">align-items</span><span class="s3">: </span><span class="s5">center</span><span class="s0">;</span>
+    <span class="s2">width</span><span class="s3">: </span><span class="s6">100</span><span class="s0">%; </span><span class="s4">/* Adjust based on your layout */</span>
+    <span class="s2">margin</span><span class="s3">: </span><span class="s6">20</span><span class="s5">px auto</span><span class="s0">; </span><span class="s4">/* Adjust margin as needed */</span>
+    <span class="s2">padding</span><span class="s3">: </span><span class="s6">20</span><span class="s5">px</span><span class="s0">; </span><span class="s4">/* Adjust padding as needed */</span>
+    <span class="s2">max-width</span><span class="s3">: </span><span class="s6">90</span><span class="s0">%; </span><span class="s4">/* Max-width can also be 80% */</span>
+<span class="s0">}</span>
+
+<span class="s4">/* Layout for the solution-summary to appear next to each other */</span>
+<span class="s0">.</span><span class="s1">solution-container </span><span class="s0">{</span>
+    <span class="s2">display</span><span class="s3">: </span><span class="s5">flex</span><span class="s0">;</span>
+    <span class="s2">justify-content</span><span class="s3">: </span><span class="s5">space-between</span><span class="s0">; </span><span class="s4">/* This ensures space between the two child containers */</span>
+    <span class="s2">flex-wrap</span><span class="s3">: </span><span class="s5">nowrap</span><span class="s0">; </span><span class="s4">/* Prevents wrapping, forcing items to stay on the same line */</span>
+    <span class="s2">align-items</span><span class="s3">: </span><span class="s5">stretch</span><span class="s0">;</span>
+    <span class="s2">width</span><span class="s3">: </span><span class="s6">100</span><span class="s0">%;</span>
+    <span class="s2">max-width</span><span class="s3">: </span><span class="s6">90</span><span class="s0">%; </span><span class="s4">/* Adjust as needed to your page layout */</span>
+    <span class="s2">margin-top</span><span class="s3">: </span><span class="s6">20</span><span class="s5">px</span><span class="s0">; </span><span class="s4">/* Space above the containers */</span>
+    <span class="s2">margin-bottom</span><span class="s3">: </span><span class="s6">20</span><span class="s5">px</span><span class="s0">; </span><span class="s4">/* Space below the containers */</span>
+    <span class="s2">margin-left</span><span class="s3">: </span><span class="s5">auto</span><span class="s0">; </span><span class="s4">/* Centers the container horizontally */</span>
+    <span class="s2">margin-right</span><span class="s3">: </span><span class="s5">auto</span><span class="s0">; </span><span class="s4">/* Centers the container horizontally */</span>
+    <span class="s2">gap</span><span class="s3">: </span><span class="s6">20</span><span class="s5">px</span><span class="s0">; </span><span class="s4">/* Space between the containers */</span>
+<span class="s0">}</span>
+
+<span class="s4">/* Individual container styling */</span>
+<span class="s0">.</span><span class="s1">homeowner-container</span><span class="s0">,</span>
+<span class="s0">.</span><span class="s1">policy-container </span><span class="s0">{</span>
+    <span class="s2">flex</span><span class="s3">: </span><span class="s6">1</span><span class="s0">; </span><span class="s4">/* Make containers take equal width */</span>
+    <span class="s2">padding</span><span class="s3">: </span><span class="s6">20</span><span class="s5">px</span><span class="s0">; </span><span class="s4">/* Padding inside the containers */</span>
+    <span class="s2">display</span><span class="s3">: </span><span class="s5">flex</span><span class="s0">;</span>
+    <span class="s2">flex-direction</span><span class="s3">: </span><span class="s5">column</span><span class="s0">;</span>
+    <span class="s2">justify-content</span><span class="s3">: </span><span class="s5">space-between</span><span class="s0">; </span><span class="s4">/* Distribute space inside containers */</span>
+    <span class="s2">align-items</span><span class="s3">: </span><span class="s5">center</span><span class="s0">;</span>
+<span class="s0">}</span>
+<span class="s4">/* Add media query for responsive adjustment */</span>
+<span class="s1">@media </span><span class="s0">(</span><span class="s2">max-width</span><span class="s3">: </span><span class="s6">768</span><span class="s5">px</span><span class="s0">) {</span>
+    <span class="s0">.</span><span class="s1">solution-container </span><span class="s0">{</span>
+        <span class="s2">flex-direction</span><span class="s3">: </span><span class="s5">column</span><span class="s0">; </span><span class="s4">/* Stack containers on smaller screens */</span>
+    <span class="s0">}</span>
+
+    <span class="s0">.</span><span class="s1">homeowner-container</span><span class="s0">,</span>
+    <span class="s0">.</span><span class="s1">policy-container </span><span class="s0">{</span>
+        <span class="s2">flex-basis</span><span class="s3">: </span><span class="s6">100</span><span class="s0">%; </span><span class="s4">/* Each container takes full width on smaller screens */</span>
+        <span class="s2">margin</span><span class="s3">: </span><span class="s6">10</span><span class="s5">px </span><span class="s6">0</span><span class="s0">; </span><span class="s4">/* Add vertical spacing */</span>
+    <span class="s0">}</span>
+<span class="s0">}</span>
+
+
+<span class="s0">.</span><span class="s1">homeowner-button</span><span class="s0">,</span>
+<span class="s0">.</span><span class="s1">policy-button </span><span class="s0">{</span>
+    <span class="s2">background-color</span><span class="s3">: </span><span class="s1">#4a90e2</span><span class="s0">;</span>
+    <span class="s2">color</span><span class="s3">: </span><span class="s5">white</span><span class="s0">;</span>
+    <span class="s2">padding</span><span class="s3">: </span><span class="s6">10</span><span class="s5">px </span><span class="s6">20</span><span class="s5">px</span><span class="s0">;</span>
+    <span class="s2">border</span><span class="s3">: </span><span class="s5">none</span><span class="s0">;</span>
+    <span class="s2">border-radius</span><span class="s3">: </span><span class="s6">4</span><span class="s5">px</span><span class="s0">;</span>
+    <span class="s2">cursor</span><span class="s3">: </span><span class="s5">pointer</span><span class="s0">;</span>
+    <span class="s2">transition</span><span class="s3">: </span><span class="s5">background-color </span><span class="s6">0.3</span><span class="s5">s</span><span class="s0">;</span>
+    <span class="s2">font-size</span><span class="s3">: </span><span class="s6">1</span><span class="s5">em</span><span class="s0">; </span><span class="s4">/* Added font-size to ensure readability */</span>
+<span class="s0">}</span>
+
+<span class="s0">.</span><span class="s1">homeowner-button</span><span class="s3">:</span><span class="s1">hover</span><span class="s0">,</span>
+<span class="s0">.</span><span class="s1">policy-button</span><span class="s3">:</span><span class="s1">hover </span><span class="s0">{</span>
+    <span class="s2">background-color</span><span class="s3">: </span><span class="s1">#357abd</span><span class="s0">; </span><span class="s4">/* Darker blue on hover */</span>
+<span class="s0">}</span>
+
+</pre>
+</body>
+</html>

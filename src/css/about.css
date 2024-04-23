@@ -1,0 +1,39 @@
+.about-header {
+    color: #4a90e2; /* A shade of blue for the header */
+    text-align: center;
+    margin: 20px 0;
+}
+
+h2 {
+    color: #4a90e2; /* Blue text for the header */
+}
+
+p {
+    text-align: justify; /* Justify text for better readability */
+}
+
+/* Global styling for containers in home, about, faq and contact pages to center them */
+.mission-container,
+.vision-container,
+.why-container,
+.team-container,
+.join-container {
+    background-color: #ffffff; /* White background for cleanliness */
+    border: 1px solid #e0e0e0; /* Light gray border */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+    border-radius: 8px; /* Rounded corners for modern look */
+}
+
+.mission-container,
+.vision-container,
+.why-container,
+.team-container,
+.join-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%; /* Adjust based on your layout */
+    margin: 20px auto; /* Adjust margin as needed */
+    padding: 20px; /* Adjust padding as needed */
+    max-width: 90%; /* Max-width can also be 80% */
+}

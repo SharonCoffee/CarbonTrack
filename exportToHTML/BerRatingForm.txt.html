@@ -1,0 +1,323 @@
+<html>
+<head>
+<title>BerRatingForm.txt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #080808;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+BerRatingForm.txt</font>
+</center></td></tr></table>
+<pre><span class="s0">BerRatingForm.js code before change2</span>
+<span class="s0">import React, { useState, useEffect } from 'react';</span>
+<span class="s0">import { useNavigate } from 'react-router-dom';</span>
+<span class="s0">import { getStorage, ref, getDownloadURL } from 'firebase/storage';</span>
+
+<span class="s0">function BerRatingForm () {</span>
+  <span class="s0">const [selectedCounty, setSelectedCounty] = useState('');</span>
+  <span class="s0">const [energyRating, setEnergyRating] = useState('');</span>
+  <span class="s0">const [propertyData, setPropertyData] = useState(null);</span>
+  <span class="s0">const [isPropertyConfirmed, setIsPropertyConfirmed] = useState(false);</span>
+  <span class="s0">const [imageUrl, setImageUrl] = useState('');</span>
+
+  <span class="s0">const counties = [</span>
+    <span class="s0">'Carlow', 'Cavan', 'Clare', 'Cork', 'Donegal', 'Dublin', 'Galway', 'Kerry',</span>
+    <span class="s0">'Kildare', 'Kilkenny', 'Laois', 'Leitrim', 'Limerick', 'Louth', 'Longford',</span>
+    <span class="s0">'Mayo', 'Meath', 'Monaghan', 'Offaly', 'Roscommon', 'Sligo',</span>
+    <span class="s0">'Tipperary', 'Waterford', 'Westmeath', 'Wexford', 'Wicklow'</span>
+  <span class="s0">];</span>
+
+  <span class="s0">const energyRatings = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3', 'D1', 'D2', 'E1', 'E2', 'F', 'G'];</span>
+
+  <span class="s0">const [propertyType, setPropertyType] = useState(''); // New state for property type</span>
+
+  <span class="s0">const propertyTypes = [</span>
+    <span class="s0">'Apartment',</span>
+    <span class="s0">'Basement Dwelling',</span>
+    <span class="s0">'Detached house',</span>
+    <span class="s0">'End of terrace house',</span>
+    <span class="s0">'Ground-floor apartment',</span>
+    <span class="s0">'House',</span>
+    <span class="s0">'Maisonette',</span>
+    <span class="s0">'Mid-floor apartment',</span>
+    <span class="s0">'Mid-terrace house',</span>
+    <span class="s0">'Semi-detached house',</span>
+    <span class="s0">'Top-floor apartment'</span>
+  <span class="s0">];</span>
+
+  <span class="s0">const navigate = useNavigate();</span>
+
+  <span class="s0">useEffect(() =&gt; {</span>
+    <span class="s0">if (selectedCounty) {</span>
+      <span class="s0">const storage = getStorage();</span>
+      <span class="s0">const pathReference = ref(storage, `graphs/${selectedCounty}.png`);</span>
+
+      <span class="s0">getDownloadURL(pathReference)</span>
+        <span class="s0">.then((url) =&gt; {</span>
+          <span class="s0">setImageUrl(url);</span>
+        <span class="s0">})</span>
+        <span class="s0">.catch((error) =&gt; {</span>
+          <span class="s0">console.error('Error fetching image:', error);</span>
+        <span class="s0">});</span>
+    <span class="s0">}</span>
+  <span class="s0">}, [selectedCounty]);</span>
+
+  <span class="s0">const handleSearch = async () =&gt; {</span>
+    <span class="s0">// Logic to search the CSV and find data based on selectedCounty, propertyType, and energyRating and propertyData</span>
+    <span class="s0">try {</span>
+      <span class="s0">const searchResponse = await fetch('http://localhost:8000/api/search', {</span>
+        <span class="s0">method: 'POST',</span>
+        <span class="s0">headers: {</span>
+          <span class="s0">'Content-Type': 'application/json'</span>
+        <span class="s0">},</span>
+        <span class="s0">body: JSON.stringify({</span>
+          <span class="s0">county: selectedCounty,</span>
+          <span class="s0">propertyType,</span>
+          <span class="s0">energyRating,</span>
+          <span class="s0">propertyData</span>
+        <span class="s0">})</span>
+      <span class="s0">});</span>
+      <span class="s0">const searchData = await searchResponse.json();</span>
+      <span class="s0">setPropertyData(searchData);</span>
+    <span class="s0">} catch (error) {</span>
+      <span class="s0">console.error('Search Error:', error);</span>
+    <span class="s0">}</span>
+  <span class="s0">};</span>
+
+  <span class="s0">const handleConfirmProperty = () =&gt; {</span>
+    <span class="s0">setIsPropertyConfirmed(true);</span>
+  <span class="s0">};</span>
+
+  <span class="s0">const handleSubmit = async (e) =&gt; {</span>
+    <span class="s0">e.preventDefault();</span>
+
+    <span class="s0">// Here you would gather the data from the form, for example:</span>
+    <span class="s0">const formData = {</span>
+      <span class="s0">county: selectedCounty,</span>
+      <span class="s0">currentRating: currentEnergyRating,</span>
+      <span class="s0">desiredRating: desiredEnergyRating,</span>
+      <span class="s0">propertyType</span>
+    <span class="s0">// Add other form data as needed</span>
+    <span class="s0">};</span>
+
+    <span class="s0">try {</span>
+      <span class="s0">const response = await fetch('http://localhost:8000/api/suggestions', {</span>
+        <span class="s0">method: 'POST',</span>
+        <span class="s0">headers: {</span>
+          <span class="s0">'Content-Type': 'application/json'</span>
+        <span class="s0">},</span>
+        <span class="s0">body: JSON.stringify(formData) // Ensure formData is passed here</span>
+      <span class="s0">});</span>
+      <span class="s0">const data = await response.json();</span>
+      <span class="s0">navigate('/suggestions', { state: { data } });</span>
+    <span class="s0">} catch (error) {</span>
+      <span class="s0">console.error('There was an error!', error);</span>
+    <span class="s0">}</span>
+  <span class="s0">};</span>
+
+  <span class="s0">// Dynamically filter desired BerRatings based on the current selection</span>
+  <span class="s0">const getFilteredDesiredBerRatings = () =&gt; {</span>
+    <span class="s0">const currentIndex = energyRatings.indexOf(currentEnergyRating);</span>
+    <span class="s0">const maxDesiredIndex = energyRatings.indexOf('D2'); // Index of 'D2' rating</span>
+    <span class="s0">// Determine if the current rating is 'E1' or higher</span>
+    <span class="s0">const isCurrentRatingBeyondD2 = currentIndex &gt; maxDesiredIndex;</span>
+
+    <span class="s0">// If current rating is 'E1', 'E2', 'F', or 'G', limit desired ratings up to 'D2'</span>
+    <span class="s0">if (isCurrentRatingBeyondD2) {</span>
+      <span class="s0">return energyRatings.slice(0, maxDesiredIndex + 1); // Include up to 'D2'</span>
+    <span class="s0">}</span>
+
+    <span class="s0">// For all other ratings, include up to the current rating</span>
+    <span class="s0">return energyRatings.slice(0, currentIndex);</span>
+  <span class="s0">};</span>
+
+  <span class="s0">return (</span>
+      <span class="s0">&lt;form onSubmit={handleSubmit}&gt;</span>
+        <span class="s0">&lt;div&gt;</span>
+          <span class="s0">&lt;select value={selectedCounty} onChange={(e) =&gt; setSelectedCounty(e.target.value)}&gt;</span>
+            <span class="s0">&lt;option value=&quot;&quot;&gt;Select a County&lt;/option&gt;</span>
+            <span class="s0">{counties.map((county, index) =&gt; (</span>
+                <span class="s0">&lt;option key={index} value={county}&gt;{county}&lt;/option&gt;</span>
+            <span class="s0">))}</span>
+          <span class="s0">&lt;/select&gt;</span>
+
+          <span class="s0">&lt;select value={propertyType} onChange={(e) =&gt; setPropertyType(e.target.value)}&gt;</span>
+            <span class="s0">&lt;option value=&quot;&quot;&gt;Select Property Type&lt;/option&gt;</span>
+            <span class="s0">{propertyTypes.map((type, index) =&gt; (</span>
+                <span class="s0">&lt;option key={index} value={type}&gt;{type}&lt;/option&gt;</span>
+            <span class="s0">))}</span>
+          <span class="s0">&lt;/select&gt;</span>
+
+          <span class="s0">&lt;select value={currentEnergyRating} onChange={(e) =&gt; setCurrentEnergyRating(e.target.value)}&gt;</span>
+            <span class="s0">&lt;option value=&quot;&quot;&gt;Select Current BerRating&lt;/option&gt;</span>
+            <span class="s0">{energyRatings.map((rating, index) =&gt; (</span>
+                <span class="s0">&lt;option key={index} value={rating}&gt;{rating}&lt;/option&gt;</span>
+            <span class="s0">))}</span>
+          <span class="s0">&lt;/select&gt;</span>
+
+          <span class="s0">{currentEnergyRating &amp;&amp; (</span>
+              <span class="s0">&lt;select value={desiredEnergyRating} onChange={(e) =&gt; setDesiredEnergyRating(e.target.value)}&gt;</span>
+                <span class="s0">&lt;option value=&quot;&quot;&gt;Select Desired BerRating&lt;/option&gt;</span>
+                <span class="s0">{getFilteredDesiredBerRatings().map((rating, index) =&gt; (</span>
+                    <span class="s0">&lt;option key={index} value={rating}&gt;{rating}&lt;/option&gt;</span>
+                <span class="s0">))}</span>
+              <span class="s0">&lt;/select&gt;</span>
+          <span class="s0">)}</span>
+
+          <span class="s0">{currentEnergyRating &amp;&amp; desiredEnergyRating &amp;&amp; &lt;button type=&quot;submit&quot;&gt;Submit&lt;/button&gt;}</span>
+
+          <span class="s0">{imageUrl &amp;&amp; &lt;img src={imageUrl} alt={`BER Rating for ${selectedCounty}`}/&gt;}</span>
+        <span class="s0">&lt;/div&gt;</span>
+      <span class="s0">&lt;/form&gt;</span>
+  <span class="s0">);</span>
+<span class="s0">}</span>
+
+<span class="s0">export default BerRatingForm;</span>
+
+
+
+<span class="s0">BerRatingForm.js code before changes</span>
+
+<span class="s0">import React, { useState, useEffect } from 'react';</span>
+<span class="s0">import { useNavigate } from 'react-router-dom';</span>
+<span class="s0">import { getStorage, ref, getDownloadURL } from 'firebase/storage';</span>
+
+<span class="s0">function BerRatingForm () {</span>
+  <span class="s0">const [selectedCounty, setSelectedCounty] = useState('');</span>
+  <span class="s0">const [currentEnergyRating, setCurrentEnergyRating] = useState('');</span>
+  <span class="s0">const [desiredEnergyRating, setDesiredEnergyRating] = useState('');</span>
+  <span class="s0">const [imageUrl, setImageUrl] = useState('');</span>
+
+  <span class="s0">const counties = [</span>
+    <span class="s0">'Carlow', 'Cavan', 'Clare', 'Cork', 'Donegal', 'Dublin', 'Galway', 'Kerry',</span>
+    <span class="s0">'Kildare', 'Kilkenny', 'Laois', 'Leitrim', 'Limerick', 'Louth', 'Longford',</span>
+    <span class="s0">'Mayo', 'Meath', 'Monaghan', 'Offaly', 'Roscommon', 'Sligo',</span>
+    <span class="s0">'Tipperary', 'Waterford', 'Westmeath', 'Wexford', 'Wicklow'</span>
+  <span class="s0">];</span>
+
+  <span class="s0">const energyRatings = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3', 'D1', 'D2', 'E1', 'E2', 'F', 'G'];</span>
+
+  <span class="s0">const [propertyType, setPropertyType] = useState(''); // New state for property type</span>
+
+  <span class="s0">const propertyTypes = [</span>
+    <span class="s0">'Apartment',</span>
+    <span class="s0">'Basement Dwelling',</span>
+    <span class="s0">'Detached house',</span>
+    <span class="s0">'End of terrace house',</span>
+    <span class="s0">'Ground-floor apartment',</span>
+    <span class="s0">'House',</span>
+    <span class="s0">'Maisonette',</span>
+    <span class="s0">'Mid-floor apartment',</span>
+    <span class="s0">'Mid-terrace house',</span>
+    <span class="s0">'Semi-detached house',</span>
+    <span class="s0">'Top-floor apartment'</span>
+  <span class="s0">];</span>
+
+  <span class="s0">const navigate = useNavigate();</span>
+
+  <span class="s0">useEffect(() =&gt; {</span>
+    <span class="s0">if (selectedCounty) {</span>
+      <span class="s0">const storage = getStorage();</span>
+      <span class="s0">const pathReference = ref(storage, `graphs/${selectedCounty}.png`);</span>
+
+      <span class="s0">getDownloadURL(pathReference)</span>
+        <span class="s0">.then((url) =&gt; {</span>
+          <span class="s0">setImageUrl(url);</span>
+        <span class="s0">})</span>
+        <span class="s0">.catch((error) =&gt; {</span>
+          <span class="s0">console.error('Error fetching image:', error);</span>
+        <span class="s0">});</span>
+    <span class="s0">}</span>
+  <span class="s0">}, [selectedCounty]);</span>
+
+  <span class="s0">const handleSubmit = async (e) =&gt; {</span>
+    <span class="s0">e.preventDefault();</span>
+
+    <span class="s0">// Here you would gather the data from the form, for example:</span>
+    <span class="s0">const formData = {</span>
+      <span class="s0">county: selectedCounty,</span>
+      <span class="s0">currentRating: currentEnergyRating,</span>
+      <span class="s0">desiredRating: desiredEnergyRating,</span>
+      <span class="s0">propertyType</span>
+    <span class="s0">// Add other form data as needed</span>
+    <span class="s0">};</span>
+
+    <span class="s0">try {</span>
+      <span class="s0">const response = await fetch('http://localhost:8000/api/suggestions', {</span>
+        <span class="s0">method: 'POST',</span>
+        <span class="s0">headers: {</span>
+          <span class="s0">'Content-Type': 'application/json'</span>
+        <span class="s0">},</span>
+        <span class="s0">body: JSON.stringify(formData) // Ensure formData is passed here</span>
+      <span class="s0">});</span>
+      <span class="s0">const data = await response.json();</span>
+      <span class="s0">navigate('/suggestions', { state: { data } });</span>
+    <span class="s0">} catch (error) {</span>
+      <span class="s0">console.error('There was an error!', error);</span>
+    <span class="s0">}</span>
+  <span class="s0">};</span>
+
+  <span class="s0">// Dynamically filter desired BerRatings based on the current selection</span>
+  <span class="s0">const getFilteredDesiredBerRatings = () =&gt; {</span>
+    <span class="s0">const currentIndex = energyRatings.indexOf(currentEnergyRating);</span>
+    <span class="s0">const maxDesiredIndex = energyRatings.indexOf('D2'); // Index of 'D2' rating</span>
+    <span class="s0">// Determine if the current rating is 'E1' or higher</span>
+    <span class="s0">const isCurrentRatingBeyondD2 = currentIndex &gt; maxDesiredIndex;</span>
+
+    <span class="s0">// If current rating is 'E1', 'E2', 'F', or 'G', limit desired ratings up to 'D2'</span>
+    <span class="s0">if (isCurrentRatingBeyondD2) {</span>
+      <span class="s0">return energyRatings.slice(0, maxDesiredIndex + 1); // Include up to 'D2'</span>
+    <span class="s0">}</span>
+
+    <span class="s0">// For all other ratings, include up to the current rating</span>
+    <span class="s0">return energyRatings.slice(0, currentIndex);</span>
+  <span class="s0">};</span>
+
+  <span class="s0">return (</span>
+      <span class="s0">&lt;form onSubmit={handleSubmit}&gt;</span>
+        <span class="s0">&lt;div&gt;</span>
+          <span class="s0">&lt;select value={selectedCounty} onChange={(e) =&gt; setSelectedCounty(e.target.value)}&gt;</span>
+            <span class="s0">&lt;option value=&quot;&quot;&gt;Select a County&lt;/option&gt;</span>
+            <span class="s0">{counties.map((county, index) =&gt; (</span>
+                <span class="s0">&lt;option key={index} value={county}&gt;{county}&lt;/option&gt;</span>
+            <span class="s0">))}</span>
+          <span class="s0">&lt;/select&gt;</span>
+
+          <span class="s0">&lt;select value={propertyType} onChange={(e) =&gt; setPropertyType(e.target.value)}&gt;</span>
+            <span class="s0">&lt;option value=&quot;&quot;&gt;Select Property Type&lt;/option&gt;</span>
+            <span class="s0">{propertyTypes.map((type, index) =&gt; (</span>
+                <span class="s0">&lt;option key={index} value={type}&gt;{type}&lt;/option&gt;</span>
+            <span class="s0">))}</span>
+          <span class="s0">&lt;/select&gt;</span>
+
+          <span class="s0">&lt;select value={currentEnergyRating} onChange={(e) =&gt; setCurrentEnergyRating(e.target.value)}&gt;</span>
+            <span class="s0">&lt;option value=&quot;&quot;&gt;Select Current BerRating&lt;/option&gt;</span>
+            <span class="s0">{energyRatings.map((rating, index) =&gt; (</span>
+                <span class="s0">&lt;option key={index} value={rating}&gt;{rating}&lt;/option&gt;</span>
+            <span class="s0">))}</span>
+          <span class="s0">&lt;/select&gt;</span>
+
+          <span class="s0">{currentEnergyRating &amp;&amp; (</span>
+              <span class="s0">&lt;select value={desiredEnergyRating} onChange={(e) =&gt; setDesiredEnergyRating(e.target.value)}&gt;</span>
+                <span class="s0">&lt;option value=&quot;&quot;&gt;Select Desired BerRating&lt;/option&gt;</span>
+                <span class="s0">{getFilteredDesiredBerRatings().map((rating, index) =&gt; (</span>
+                    <span class="s0">&lt;option key={index} value={rating}&gt;{rating}&lt;/option&gt;</span>
+                <span class="s0">))}</span>
+              <span class="s0">&lt;/select&gt;</span>
+          <span class="s0">)}</span>
+
+          <span class="s0">{currentEnergyRating &amp;&amp; desiredEnergyRating &amp;&amp; &lt;button type=&quot;submit&quot;&gt;Submit&lt;/button&gt;}</span>
+
+          <span class="s0">{imageUrl &amp;&amp; &lt;img src={imageUrl} alt={`BER Rating for ${selectedCounty}`}/&gt;}</span>
+        <span class="s0">&lt;/div&gt;</span>
+      <span class="s0">&lt;/form&gt;</span>
+  <span class="s0">);</span>
+<span class="s0">}</span>
+
+<span class="s0">export default BerRatingForm;</span></pre>
+</body>
+</html>

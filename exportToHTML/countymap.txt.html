@@ -1,0 +1,111 @@
+<html>
+<head>
+<title>countymap.txt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #080808;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+countymap.txt</font>
+</center></td></tr></table>
+<pre><span class="s0">import React, { useEffect, useRef } from 'react';</span>
+<span class="s0">import { useNavigate } from 'react-router-dom';</span>
+<span class="s0">import { getAuth, signOut } from 'firebase/auth';</span>
+<span class="s0">import * as am5 from '@amcharts/amcharts5';</span>
+<span class="s0">import * as am5map from '@amcharts/amcharts5/map';</span>
+<span class="s0">import irelandGeodata from '@amcharts/amcharts5-geodata/irelandLow';</span>
+
+<span class="s0">const Countymap = () =&gt; {</span>
+  <span class="s0">const navigate = useNavigate();</span>
+  <span class="s0">const chartRef = useRef(null);</span>
+
+  <span class="s0">const handleLogout = () =&gt; {</span>
+    <span class="s0">const auth = getAuth();</span>
+    <span class="s0">signOut(auth).then(() =&gt; {</span>
+      <span class="s0">// Sign-out successful.</span>
+      <span class="s0">navigate('/login'); // Redirect to login page after logout</span>
+    <span class="s0">}).catch((error) =&gt; {</span>
+      <span class="s0">// An error happened.</span>
+      <span class="s0">console.error('Logout Error:', error);</span>
+    <span class="s0">});</span>
+  <span class="s0">};</span>
+
+  <span class="s0">useEffect(() =&gt; {</span>
+    <span class="s0">const root = am5.Root.new('chartdiv');</span>
+
+    <span class="s0">// Create a map chart</span>
+    <span class="s0">const chart = root.container.children.push(am5map.MapChart.new(root, {</span>
+      <span class="s0">panX: 'translateX',</span>
+      <span class="s0">panY: 'translateY',</span>
+      <span class="s0">projection: am5map.geoMercator()</span>
+    <span class="s0">}));</span>
+
+    <span class="s0">// Create polygon series for map polygons</span>
+    <span class="s0">const polygonSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {</span>
+      <span class="s0">geoJSON: irelandGeodata,</span>
+      <span class="s0">valueField: 'value',</span>
+      <span class="s0">calculateAggregates: true</span>
+    <span class="s0">}));</span>
+
+    <span class="s0">// Set the initial fill color for the polygons</span>
+    <span class="s0">const template = polygonSeries.mapPolygons.template;</span>
+    <span class="s0">template.setAll({</span>
+      <span class="s0">tooltipText: '{name}',</span>
+      <span class="s0">interactive: true,</span>
+      <span class="s0">fill: am5.color(0xCCCCCC) // Grey color</span>
+    <span class="s0">});</span>
+
+    <span class="s0">// Define hover state and its properties directly for changing color on hover</span>
+    <span class="s0">template.states.create('hover', { properties: { fill: am5.color(0x1E90FF) } }); // Blue color on hover</span>
+
+    <span class="s0">// Add click event for navigation</span>
+    <span class="s0">polygonSeries.mapPolygons.template.events.on('click', function (ev) {</span>
+      <span class="s0">const countyName = ev.target.dataItem.dataContext.name;</span>
+      <span class="s0">navigate(`/dashboard/${countyName.toLowerCase()}`);</span>
+    <span class="s0">});</span>
+
+    <span class="s0">chartRef.current = root;</span>
+
+    <span class="s0">return () =&gt; {</span>
+      <span class="s0">root.dispose();</span>
+    <span class="s0">};</span>
+  <span class="s0">}, [navigate]);</span>
+
+  <span class="s0">return (</span>
+      <span class="s0">&lt;&gt;</span>
+          <span class="s0">&lt;div&gt;</span>
+              <span class="s0">{/* Logout Button */}</span>
+              <span class="s0">&lt;button type=&quot;button&quot; className=&quot;logout-button&quot; onClick={handleLogout}&gt;Logout&lt;/button&gt;</span>
+          <span class="s0">&lt;/div&gt;</span>
+          <span class="s0">&lt;div&gt;</span>
+              <span class="s0">&lt;h1&gt;Overview&lt;/h1&gt;</span>
+              <span class="s0">&lt;p&gt;&lt;/p&gt;</span>
+          <span class="s0">&lt;/div&gt;</span>
+          <span class="s0">&lt;div className=&quot;policy-container&quot;&gt;</span>
+              <span class="s0">&lt;p&gt;</span>
+                  <span class="s0">Our interactive map is designed specifically for policymakers and environmental strategists, this feature allows you to click</span>
+                  <span class="s0">on any county to access a specialized dashboard.</span>
+                  <span class="s0">Each county&amp;apos;s dashboard offers a comprehensive analysis of properties within the county that have an energy rating of E1, E2, F and G,</span>
+                  <span class="s0">grant supports provided, and data on properties in need of support specific to that area.</span>
+                  <span class="s0">Explore the map to gain insights and inform your strategic decisions in promoting sustainable energy</span>
+                  <span class="s0">practices within your jurisdiction.</span>
+              <span class="s0">&lt;/p&gt;</span>
+              <span class="s0">{/* Similar changes for other sections */}</span>
+              <span class="s0">&lt;div&gt;</span>
+                  <span class="s0">&lt;h2&gt;County Map&lt;/h2&gt;</span>
+                  <span class="s0">&lt;p&gt;Click on a county to view the dashboard.&lt;/p&gt;</span>
+              <span class="s0">&lt;/div&gt;</span>
+              <span class="s0">&lt;div id=&quot;chartdiv&quot; style={{ width: '100%', height: '500px' }}&gt;&lt;/div&gt;</span>
+          <span class="s0">&lt;/div&gt;</span>
+
+      <span class="s0">&lt;/&gt;</span>
+  <span class="s0">);</span>
+<span class="s0">};</span>
+
+<span class="s0">export default Countymap;</span></pre>
+</body>
+</html>

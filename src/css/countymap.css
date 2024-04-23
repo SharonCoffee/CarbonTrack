@@ -1,0 +1,30 @@
+h1 h2 {
+    text-align: center; /* Center the text within the h3 */
+    margin-top: 20px; /* Space above the heading */
+    margin-bottom: 20px; /* Space below the heading */
+    color: #4a90e2; /* Blue color for heading */
+    width: 100%; /* Ensure full width to maintain center alignment */
+}
+
+.policy-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%; /* Adjust based on your layout */
+    margin: auto;
+    padding: 20px; /* Adjust padding as needed */
+    max-width: 80%; /* Max-width can also be 80% */
+    background-color: #ffffff; /* White background for cleanliness */
+    border: 1px solid #e0e0e0; /* Light gray border */
+    gap: 15px; /* Same gap as in login-form for consistency */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+    border-radius: 8px; /* Rounded corners for modern look */
+}
+
+p {
+    text-align: justify; /* Justify text for better readability */
+    font-size: medium; /* Medium font size for paragraphs */
+    margin-bottom: 20px; /* Space below the paragraph */
+    color: #333; /* Darker text for better readability */
+}
+

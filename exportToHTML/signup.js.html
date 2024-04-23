@@ -1,0 +1,92 @@
+<html>
+<head>
+<title>signup.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #0033b3;}
+.s1 { color: #080808;}
+.s2 { color: #067d17;}
+.s3 { color: #264eff;}
+.s4 { color: #8c8c8c; font-style: italic;}
+.s5 { color: #174ad4;}
+.s6 { color: #080808;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+signup.js</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">React, { useState } from </span><span class="s2">'react'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">{ getAuth, createUserWithEmailAndPassword } from </span><span class="s2">'firebase/auth'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">{ Link, useNavigate } from </span><span class="s2">'react-router-dom'</span><span class="s1">;</span>
+
+<span class="s0">const </span><span class="s1">Signup = () =&gt; {</span>
+  <span class="s0">const </span><span class="s1">[email, setEmail] = useState(</span><span class="s2">''</span><span class="s1">);</span>
+  <span class="s0">const </span><span class="s1">[password, setPassword] = useState(</span><span class="s2">''</span><span class="s1">);</span>
+  <span class="s0">const </span><span class="s1">[confirmPassword, setConfirmPassword] = useState(</span><span class="s2">''</span><span class="s1">);</span>
+  <span class="s0">const </span><span class="s1">[signupError, setSignupError] = useState(</span><span class="s2">''</span><span class="s1">);</span>
+  <span class="s0">const </span><span class="s1">navigate = useNavigate();</span>
+
+  <span class="s0">const </span><span class="s1">handleSignup = async (e) =&gt; {</span>
+    <span class="s1">e.preventDefault();</span>
+    <span class="s0">if </span><span class="s1">(password !== confirmPassword) {</span>
+      <span class="s1">setSignupError(</span><span class="s2">'Passwords do not match.'</span><span class="s1">);</span>
+      <span class="s0">return</span><span class="s1">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">const </span><span class="s1">passwordRegex = </span><span class="s3">/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#@$!&amp;])[A-Za-z\d#@$!&amp;]{8,}$/</span><span class="s1">;</span>
+    <span class="s0">if </span><span class="s1">(!passwordRegex.test(password)) {</span>
+      <span class="s1">setSignupError(</span><span class="s2">'Password must be at least 8 characters long, containing at least one uppercase letter, one lowercase letter, one number, and one symbol (#, $, @, !, &amp;).'</span><span class="s1">);</span>
+      <span class="s0">return</span><span class="s1">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">const </span><span class="s1">auth = getAuth();</span>
+    <span class="s0">try </span><span class="s1">{</span>
+      <span class="s0">await </span><span class="s1">createUserWithEmailAndPassword(auth, email, password);</span>
+      <span class="s1">navigate(</span><span class="s2">'/ber'</span><span class="s1">); </span><span class="s4">// Navigate to the BerRating Form after signup</span>
+    <span class="s1">} </span><span class="s0">catch </span><span class="s1">(error) {</span>
+      <span class="s1">setSignupError(</span><span class="s2">'An error occurred. Please try again.'</span><span class="s1">); </span><span class="s4">// Update this as per your error message</span>
+    <span class="s1">}</span>
+  <span class="s1">};</span>
+
+  <span class="s0">return </span><span class="s1">(</span>
+        <span class="s1">&lt;</span><span class="s0">div </span><span class="s5">className</span><span class="s2">=&quot;form-container&quot;</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">h2</span><span class="s1">&gt;</span><span class="s6">Signup</span><span class="s1">&lt;/</span><span class="s0">h2</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">form </span><span class="s5">onSubmit</span><span class="s2">=</span><span class="s1">{handleSignup} </span><span class="s5">className</span><span class="s2">=&quot;form&quot;</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;</span><span class="s0">input</span>
+                    <span class="s5">type</span><span class="s2">=&quot;email&quot;</span>
+                    <span class="s5">value</span><span class="s2">=</span><span class="s1">{email}</span>
+                    <span class="s5">onChange</span><span class="s2">=</span><span class="s1">{(e) =&gt; setEmail(e.target.value)}</span>
+                    <span class="s5">placeholder</span><span class="s2">=&quot;Email&quot;</span>
+                    <span class="s5">required</span>
+                <span class="s1">/&gt;</span>
+                <span class="s1">&lt;</span><span class="s0">input</span>
+                    <span class="s5">type</span><span class="s2">=&quot;password&quot;</span>
+                    <span class="s5">value</span><span class="s2">=</span><span class="s1">{password}</span>
+                    <span class="s5">onChange</span><span class="s2">=</span><span class="s1">{(e) =&gt; setPassword(e.target.value)}</span>
+                    <span class="s5">placeholder</span><span class="s2">=&quot;Password&quot;</span>
+                    <span class="s5">required</span>
+                <span class="s1">/&gt;</span>
+                <span class="s1">&lt;</span><span class="s0">input</span>
+                    <span class="s5">type</span><span class="s2">=&quot;password&quot;</span>
+                    <span class="s5">value</span><span class="s2">=</span><span class="s1">{confirmPassword}</span>
+                    <span class="s5">onChange</span><span class="s2">=</span><span class="s1">{(e) =&gt; setConfirmPassword(e.target.value)}</span>
+                    <span class="s5">placeholder</span><span class="s2">=&quot;Confirm Password&quot;</span>
+                    <span class="s5">required</span>
+                <span class="s1">/&gt;</span>
+                <span class="s1">{signupError &amp;&amp; &lt;</span><span class="s0">div </span><span class="s5">className</span><span class="s2">=&quot;error-message&quot;</span><span class="s1">&gt;{signupError}&lt;/</span><span class="s0">div</span><span class="s1">&gt;}</span>
+                <span class="s1">&lt;</span><span class="s0">button </span><span class="s5">type</span><span class="s2">=&quot;submit&quot; </span><span class="s5">className</span><span class="s2">=&quot;form-button&quot;</span><span class="s1">&gt;</span><span class="s6">Register</span><span class="s1">&lt;/</span><span class="s0">button</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s0">form</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">p </span><span class="s5">className</span><span class="s2">=&quot;form-footer&quot;</span><span class="s1">&gt;</span>
+                <span class="s6">Already have an account? </span><span class="s1">&lt;</span><span class="s0">Link </span><span class="s5">to</span><span class="s2">=&quot;/login&quot;</span><span class="s1">&gt;</span><span class="s6">Log in</span><span class="s1">&lt;/</span><span class="s0">Link</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s0">p</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+  <span class="s1">);</span>
+<span class="s1">};</span>
+
+<span class="s0">export default </span><span class="s1">Signup;</span>
+</pre>
+</body>
+</html>

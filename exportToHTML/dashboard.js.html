@@ -1,0 +1,411 @@
+<html>
+<head>
+<title>dashboard.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #0033b3;}
+.s1 { color: #080808;}
+.s2 { color: #067d17;}
+.s3 { color: #8c8c8c; font-style: italic;}
+.s4 { color: #1750eb;}
+.s5 { color: #174ad4;}
+.s6 { color: #080808;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+dashboard.js</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">React, { useState, useEffect } from </span><span class="s2">'react'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">{ useNavigate, useParams } from </span><span class="s2">'react-router-dom'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">{ BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell } from </span><span class="s2">'recharts'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">Papa from </span><span class="s2">'papaparse'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">jsPDF from </span><span class="s2">'jspdf'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">html2canvas from </span><span class="s2">'html2canvas'</span><span class="s1">;</span>
+
+<span class="s0">const </span><span class="s1">Dashboard = () =&gt; {</span>
+  <span class="s0">const </span><span class="s1">navigate = useNavigate(); </span><span class="s3">// Hook to navigate</span>
+
+  <span class="s0">const </span><span class="s1">{ countyName } = useParams(); </span><span class="s3">// This captures the dynamic part of the URL</span>
+  <span class="s0">const </span><span class="s1">[data, setData] = useState({});</span>
+  <span class="s0">const </span><span class="s1">[propertyData, setPropertyData] = useState([]);</span>
+  <span class="s0">const </span><span class="s1">[grantSupportDataByYear, setGrantSupportDataByYear] = useState([]);</span>
+  <span class="s0">const </span><span class="s1">[grantSupportEnergyRatingsData, setGrantSupportEnergyRatingsData] = useState([]);</span>
+  <span class="s0">const </span><span class="s1">[totalProperties, setTotalProperties] = useState(</span><span class="s4">0</span><span class="s1">);</span>
+  <span class="s0">const </span><span class="s1">[totalEFGProperties, setTotalEFGProperties] = useState(</span><span class="s4">0</span><span class="s1">);</span>
+  <span class="s0">const </span><span class="s1">[efgPercentage, setEFGPercentage] = useState(</span><span class="s4">0</span><span class="s1">);</span>
+  <span class="s0">const </span><span class="s1">[totalGrantSupportProperties, setTotalGrantSupportProperties] = useState(</span><span class="s4">0</span><span class="s1">);</span>
+  <span class="s0">const </span><span class="s1">[totalGrantSupportedEFGProperties, setTotalGrantSupportedEFGProperties] = useState(</span><span class="s4">0</span><span class="s1">);</span>
+  <span class="s0">const </span><span class="s1">[efgDifferences, setEFGDifferences] = useState([]);</span>
+  <span class="s0">const </span><span class="s1">[propertiesStillNeedingSupport, setPropertiesStillNeedingSupport] = useState(</span><span class="s4">0</span><span class="s1">);</span>
+  <span class="s0">const </span><span class="s1">[isLoading, setIsLoading] = useState(</span><span class="s0">false</span><span class="s1">);</span>
+  <span class="s0">const </span><span class="s1">[error, setError] = useState(</span><span class="s0">null</span><span class="s1">);</span>
+
+  <span class="s3">// Define your energy rating colors here</span>
+  <span class="s0">const </span><span class="s1">energyRatingColors = {</span>
+    <span class="s1">A1: </span><span class="s2">'#008000'</span><span class="s1">,</span>
+    <span class="s1">A2: </span><span class="s2">'#008000'</span><span class="s1">,</span>
+    <span class="s1">A3: </span><span class="s2">'#008000'</span><span class="s1">,</span>
+    <span class="s1">B1: </span><span class="s2">'#3fc43f'</span><span class="s1">,</span>
+    <span class="s1">B2: </span><span class="s2">'#3fc43f'</span><span class="s1">,</span>
+    <span class="s1">B3: </span><span class="s2">'#3fc43f'</span><span class="s1">,</span>
+    <span class="s1">C1: </span><span class="s2">'#eeec20'</span><span class="s1">,</span>
+    <span class="s1">C2: </span><span class="s2">'#eeec20'</span><span class="s1">,</span>
+    <span class="s1">C3: </span><span class="s2">'#eeec20'</span><span class="s1">,</span>
+    <span class="s1">D1: </span><span class="s2">'#FFC300'</span><span class="s1">,</span>
+    <span class="s1">D2: </span><span class="s2">'#FFC300'</span><span class="s1">,</span>
+    <span class="s1">E1: </span><span class="s2">'#e7ac4a'</span><span class="s1">,</span>
+    <span class="s1">E2: </span><span class="s2">'#e7ac4a'</span><span class="s1">,</span>
+    <span class="s1">F: </span><span class="s2">'#ee8908'</span><span class="s1">,</span>
+    <span class="s1">G: </span><span class="s2">'#cc0000'</span>
+  <span class="s1">};</span>
+
+  <span class="s0">function </span><span class="s1">capitalizeFirstLetter (string) {</span>
+    <span class="s0">return </span><span class="s1">string.charAt(</span><span class="s4">0</span><span class="s1">).toUpperCase() + string.slice(</span><span class="s4">1</span><span class="s1">);</span>
+  <span class="s1">}</span>
+
+  <span class="s0">function </span><span class="s1">sortEnergyRatings (a, b) {</span>
+    <span class="s0">return </span><span class="s1">a.ratingType.localeCompare(b.ratingType);</span>
+  <span class="s1">}</span>
+
+  <span class="s0">const </span><span class="s1">handleBarClick = (entry) =&gt; {</span>
+    <span class="s3">// Navigate to the EFG properties page with the selected ratingType and countyName</span>
+    <span class="s1">navigate(</span><span class="s2">`/efgproperties/</span><span class="s1">${entry.ratingType}</span><span class="s2">/</span><span class="s1">${countyName}</span><span class="s2">`</span><span class="s1">);</span>
+  <span class="s1">};</span>
+
+  <span class="s0">const </span><span class="s1">handleBackToCountyMap = () =&gt; {</span>
+    <span class="s1">navigate(</span><span class="s2">'/countymap'</span><span class="s1">);</span>
+  <span class="s1">};</span>
+
+  <span class="s3">// Function to generate PDF report</span>
+  <span class="s0">const </span><span class="s1">generatePDF = async () =&gt; {</span>
+    <span class="s3">// eslint-disable-next-line new-cap</span>
+    <span class="s0">const </span><span class="s1">doc = </span><span class="s0">new </span><span class="s1">jsPDF({</span>
+      <span class="s1">orientation: </span><span class="s2">'landscape'</span>
+    <span class="s1">});</span>
+
+    <span class="s0">const </span><span class="s1">titles = [</span>
+      <span class="s2">`Energy Rating Distribution for County </span><span class="s1">${capitalizeFirstLetter(countyName)}</span><span class="s2">`</span><span class="s1">,</span>
+      <span class="s2">`Grant Support by Year for County </span><span class="s1">${capitalizeFirstLetter(countyName)}</span><span class="s2">`</span><span class="s1">,</span>
+      <span class="s2">`Energy Ratings for Grant Support Properties in County </span><span class="s1">${capitalizeFirstLetter(countyName)}</span><span class="s2">`</span><span class="s1">,</span>
+      <span class="s2">`EFG Properties Still Needing Support in County </span><span class="s1">${capitalizeFirstLetter(countyName)}</span><span class="s2">`</span>
+    <span class="s1">];</span>
+
+    <span class="s0">const </span><span class="s1">chartElements = document.querySelectorAll(</span><span class="s2">'.recharts-wrapper'</span><span class="s1">);</span>
+
+    <span class="s3">// Use for...of loop to handle asynchronous operations</span>
+    <span class="s0">for </span><span class="s1">(</span><span class="s0">let </span><span class="s1">i = </span><span class="s4">0</span><span class="s1">; i &lt; chartElements.length; i++) {</span>
+      <span class="s0">const </span><span class="s1">chartElement = chartElements[i];</span>
+      <span class="s0">const </span><span class="s1">title = titles[i];</span>
+
+      <span class="s0">if </span><span class="s1">(i &gt; </span><span class="s4">0</span><span class="s1">) { </span><span class="s3">// Add a new page for each chart except the first one</span>
+        <span class="s1">doc.addPage();</span>
+      <span class="s1">}</span>
+
+      <span class="s1">doc.text(title, </span><span class="s4">14</span><span class="s1">, </span><span class="s4">15</span><span class="s1">); </span><span class="s3">// Add title at the top of the page</span>
+
+      <span class="s0">const </span><span class="s1">canvas = </span><span class="s0">await </span><span class="s1">html2canvas(chartElement); </span><span class="s3">// Generate image from chart</span>
+      <span class="s0">const </span><span class="s1">imgData = canvas.toDataURL(</span><span class="s2">'image/png'</span><span class="s1">);</span>
+
+      <span class="s1">doc.addImage(imgData, </span><span class="s2">'PNG'</span><span class="s1">, </span><span class="s4">15</span><span class="s1">, </span><span class="s4">25</span><span class="s1">, </span><span class="s4">260</span><span class="s1">, </span><span class="s4">100</span><span class="s1">); </span><span class="s3">// Add the image below the title</span>
+    <span class="s1">}</span>
+
+    <span class="s3">// Save the PDF after processing all charts</span>
+    <span class="s1">doc.save(</span><span class="s2">'dashboard-report.pdf'</span><span class="s1">);</span>
+  <span class="s1">};</span>
+
+  <span class="s3">// Function to fetch county-specific data</span>
+  <span class="s0">const </span><span class="s1">fetchDataForCounty = async () =&gt; {</span>
+    <span class="s1">setIsLoading(</span><span class="s0">true</span><span class="s1">);</span>
+    <span class="s0">try </span><span class="s1">{</span>
+      <span class="s3">// Fetching CSV data from the server</span>
+      <span class="s0">const </span><span class="s1">response = </span><span class="s0">await </span><span class="s1">fetch(</span><span class="s2">`/data/data_</span><span class="s1">${countyName}</span><span class="s2">.csv`</span><span class="s1">);</span>
+      <span class="s0">if </span><span class="s1">(!response.ok) {</span>
+        <span class="s0">throw new </span><span class="s1">Error(</span><span class="s2">`HTTP error! status: </span><span class="s1">${response.status}</span><span class="s2">`</span><span class="s1">);</span>
+      <span class="s1">}</span>
+
+      <span class="s3">// Check if the response is in CSV format</span>
+      <span class="s0">if </span><span class="s1">(!response.headers.get(</span><span class="s2">'Content-Type'</span><span class="s1">)?.includes(</span><span class="s2">'text/csv'</span><span class="s1">)) {</span>
+        <span class="s0">throw new </span><span class="s1">Error(</span><span class="s2">'Did not receive CSV'</span><span class="s1">);</span>
+      <span class="s1">}</span>
+
+      <span class="s3">// Reading CSV text</span>
+      <span class="s0">const </span><span class="s1">csvText = </span><span class="s0">await </span><span class="s1">response.text();</span>
+      <span class="s3">// Parsing CSV text into JSON using PapaParse</span>
+      <span class="s0">const </span><span class="s1">parsedData = Papa.parse(csvText, { header: </span><span class="s0">true </span><span class="s1">});</span>
+
+      <span class="s3">// Assuming you want to convert parsed CSV data into a specific format for your application</span>
+      <span class="s0">const </span><span class="s1">formattedData = parsedData.data.map(item =&gt; ({</span>
+        <span class="s3">// Define data structure from CSV fields</span>
+        <span class="s1">id: item.PropertyID,</span>
+        <span class="s1">dwellingType: item.DwellingTypeDescr</span>
+        <span class="s3">// Add more fields as needed</span>
+      <span class="s1">}));</span>
+
+      <span class="s1">setData(formattedData);</span>
+    <span class="s1">} </span><span class="s0">catch </span><span class="s1">(error) {</span>
+      <span class="s1">console.error(</span><span class="s2">'Fetching county data failed:'</span><span class="s1">, error);</span>
+      <span class="s1">setError(</span><span class="s2">`There was a problem retrieving the data: </span><span class="s1">${error.message}</span><span class="s2">`</span><span class="s1">);</span>
+    <span class="s1">} </span><span class="s0">finally </span><span class="s1">{</span>
+      <span class="s1">setIsLoading(</span><span class="s0">false</span><span class="s1">);</span>
+    <span class="s1">}</span>
+  <span class="s1">};</span>
+
+  <span class="s3">// Function to fetch Leitrim data</span>
+  <span class="s0">const </span><span class="s1">fetchCountyData = async () =&gt; {</span>
+    <span class="s0">const </span><span class="s1">selectedCounty = countyName.toLowerCase();</span>
+    <span class="s0">try </span><span class="s1">{</span>
+      <span class="s0">const </span><span class="s1">response = </span><span class="s0">await </span><span class="s1">fetch(</span><span class="s2">`/data/data_</span><span class="s1">${selectedCounty}</span><span class="s2">.csv`</span><span class="s1">);</span>
+      <span class="s0">if </span><span class="s1">(!response.ok) {</span>
+        <span class="s0">throw new </span><span class="s1">Error(</span><span class="s2">`HTTP error! status: </span><span class="s1">${response.status}</span><span class="s2">`</span><span class="s1">);</span>
+      <span class="s1">}</span>
+      <span class="s0">const </span><span class="s1">csvText = </span><span class="s0">await </span><span class="s1">response.text(); </span><span class="s3">// Get CSV text from response</span>
+      <span class="s0">const </span><span class="s1">parsedData = Papa.parse(csvText, {</span>
+        <span class="s1">header: </span><span class="s0">true</span><span class="s1">,</span>
+        <span class="s1">dynamicTyping: </span><span class="s0">true</span><span class="s1">,</span>
+        <span class="s1">skipEmptyLines: </span><span class="s0">true</span>
+      <span class="s1">});</span>
+
+      <span class="s0">let </span><span class="s1">totalProperties = </span><span class="s4">0</span><span class="s1">;</span>
+      <span class="s0">let </span><span class="s1">totalEFGProperties = </span><span class="s4">0</span><span class="s1">;</span>
+      <span class="s0">let </span><span class="s1">totalGrantSupportProperties = </span><span class="s4">0</span><span class="s1">;</span>
+      <span class="s0">let </span><span class="s1">totalGrantSupportedEFGProperties = </span><span class="s4">0</span><span class="s1">;</span>
+
+      <span class="s3">// Initialize an object to count energy ratings &amp; grant support by year</span>
+      <span class="s0">const </span><span class="s1">energyRatingsCount = {};</span>
+      <span class="s0">const </span><span class="s1">grantSupportByYear = {};</span>
+      <span class="s0">const </span><span class="s1">grantSupportEnergyRatings = {};</span>
+
+      <span class="s3">// Iterate over each item in parsed CSV data</span>
+      <span class="s1">parsedData.data.forEach(item =&gt; {</span>
+        <span class="s0">const </span><span class="s1">rating = item.EnergyRating;</span>
+        <span class="s0">if </span><span class="s1">(rating) {</span>
+          <span class="s1">totalProperties++;</span>
+          <span class="s0">if </span><span class="s1">([</span><span class="s2">'E1'</span><span class="s1">, </span><span class="s2">'E2'</span><span class="s1">, </span><span class="s2">'F'</span><span class="s1">, </span><span class="s2">'G'</span><span class="s1">].includes(rating)) {</span>
+            <span class="s1">totalEFGProperties++;</span>
+          <span class="s1">}</span>
+          <span class="s1">energyRatingsCount[rating] = (energyRatingsCount[rating] || </span><span class="s4">0</span><span class="s1">) + </span><span class="s4">1</span><span class="s1">;</span>
+        <span class="s1">}</span>
+        <span class="s0">if </span><span class="s1">(item.PurposeOfRating === </span><span class="s2">'Grant Support'</span><span class="s1">) {</span>
+          <span class="s1">totalGrantSupportProperties++;</span>
+          <span class="s0">const </span><span class="s1">year = item.DateOfAssessment.slice(-</span><span class="s4">4</span><span class="s1">);</span>
+          <span class="s1">grantSupportByYear[year] = (grantSupportByYear[year] || </span><span class="s4">0</span><span class="s1">) + </span><span class="s4">1</span><span class="s1">;</span>
+          <span class="s0">const </span><span class="s1">newRating = item.EnergyRating;</span>
+          <span class="s1">grantSupportEnergyRatings[newRating] = (grantSupportEnergyRatings[newRating] || </span><span class="s4">0</span><span class="s1">) + </span><span class="s4">1</span><span class="s1">;</span>
+
+          <span class="s0">if </span><span class="s1">([</span><span class="s2">'E1'</span><span class="s1">, </span><span class="s2">'E2'</span><span class="s1">, </span><span class="s2">'F'</span><span class="s1">, </span><span class="s2">'G'</span><span class="s1">].includes(newRating)) {</span>
+            <span class="s1">totalGrantSupportedEFGProperties++;</span>
+          <span class="s1">}</span>
+          <span class="s3">// After fetching and processing data in fetchCountyData</span>
+          <span class="s0">const </span><span class="s1">differences = [</span><span class="s2">'E1'</span><span class="s1">, </span><span class="s2">'E2'</span><span class="s1">, </span><span class="s2">'F'</span><span class="s1">, </span><span class="s2">'G'</span><span class="s1">].map(rating =&gt; ({</span>
+            <span class="s1">ratingType: rating,</span>
+            <span class="s1">difference: (energyRatingsCount[rating] || </span><span class="s4">0</span><span class="s1">) - (grantSupportEnergyRatings[rating] || </span><span class="s4">0</span><span class="s1">)</span>
+          <span class="s1">}));</span>
+          <span class="s1">setEFGDifferences(differences);</span>
+        <span class="s1">}</span>
+      <span class="s1">});</span>
+
+      <span class="s0">const </span><span class="s1">efgPercentage = totalProperties &gt; </span><span class="s4">0 </span><span class="s1">? ((totalEFGProperties / totalProperties) * </span><span class="s4">100</span><span class="s1">).toFixed(</span><span class="s4">2</span><span class="s1">) : </span><span class="s4">0</span><span class="s1">;</span>
+      <span class="s3">// Properties still needing retrofitting</span>
+      <span class="s0">const </span><span class="s1">propertiesStillNeedingSupport = totalEFGProperties - totalGrantSupportedEFGProperties;</span>
+
+      <span class="s3">// Update state with the new data</span>
+      <span class="s1">setTotalProperties(totalProperties);</span>
+      <span class="s1">setTotalEFGProperties(totalEFGProperties);</span>
+      <span class="s1">setEFGPercentage(efgPercentage);</span>
+      <span class="s1">setTotalGrantSupportProperties(totalGrantSupportProperties);</span>
+      <span class="s1">setTotalGrantSupportedEFGProperties(totalGrantSupportedEFGProperties);</span>
+      <span class="s1">setPropertiesStillNeedingSupport(propertiesStillNeedingSupport);</span>
+      <span class="s1">setPropertyData(Object.keys(energyRatingsCount).map(rating =&gt; ({</span>
+        <span class="s1">ratingType: rating,</span>
+        <span class="s1">ratingCount: energyRatingsCount[rating]</span>
+      <span class="s1">})).sort(sortEnergyRatings));</span>
+      <span class="s1">setGrantSupportDataByYear(Object.keys(grantSupportByYear).map(year =&gt; ({</span>
+        <span class="s1">year,</span>
+        <span class="s1">count: grantSupportByYear[year]</span>
+      <span class="s1">})));</span>
+      <span class="s1">setGrantSupportEnergyRatingsData(Object.keys(grantSupportEnergyRatings).map(rating =&gt; ({</span>
+        <span class="s1">ratingType: rating,</span>
+        <span class="s1">count: grantSupportEnergyRatings[rating]</span>
+      <span class="s1">})).sort(sortEnergyRatings));</span>
+    <span class="s1">} </span><span class="s0">catch </span><span class="s1">(error) {</span>
+      <span class="s1">console.error(</span><span class="s2">'Error fetching or parsing Leitrim data:'</span><span class="s1">, error);</span>
+    <span class="s1">}</span>
+  <span class="s1">};</span>
+
+  <span class="s1">useEffect(() =&gt; {</span>
+    <span class="s1">fetchDataForCounty();</span>
+    <span class="s1">fetchCountyData();</span>
+  <span class="s1">}, [countyName]);</span>
+
+  <span class="s0">if </span><span class="s1">(data.length === </span><span class="s4">0</span><span class="s1">) {</span>
+    <span class="s0">return</span><span class="s1">;</span>
+  <span class="s1">}</span>
+
+  <span class="s0">const </span><span class="s1">renderRetrofitProgress = () =&gt; {</span>
+    <span class="s0">return </span><span class="s1">(</span>
+        <span class="s1">&lt;</span><span class="s0">BarChart</span>
+            <span class="s5">width</span><span class="s2">=</span><span class="s1">{</span><span class="s4">1000</span><span class="s1">}</span>
+            <span class="s5">height</span><span class="s2">=</span><span class="s1">{</span><span class="s4">400</span><span class="s1">}</span>
+            <span class="s5">data</span><span class="s2">=</span><span class="s1">{propertyData}</span>
+            <span class="s5">margin</span><span class="s2">=</span><span class="s1">{{ top: </span><span class="s4">20</span><span class="s1">, right: </span><span class="s4">30</span><span class="s1">, bottom: </span><span class="s4">30</span><span class="s1">, left: </span><span class="s4">20 </span><span class="s1">}}</span>
+            <span class="s5">className</span><span class="s2">=&quot;barChart&quot;</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">CartesianGrid </span><span class="s5">strokeDasharray</span><span class="s2">=&quot;3 3&quot; </span><span class="s1">/&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">XAxis </span><span class="s5">dataKey</span><span class="s2">=&quot;ratingType&quot; </span><span class="s5">label</span><span class="s2">=</span><span class="s1">{{ value: </span><span class="s2">'Energy Rating Category'</span><span class="s1">, position: </span><span class="s2">'insideBottom'</span><span class="s1">, offset: -</span><span class="s4">5 </span><span class="s1">}} /&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">YAxis </span><span class="s5">label</span><span class="s2">=</span><span class="s1">{{ value: </span><span class="s2">'Number of Properties'</span><span class="s1">, angle: -</span><span class="s4">90</span><span class="s1">, position: </span><span class="s2">'insideLeft'</span><span class="s1">, offset: </span><span class="s4">10 </span><span class="s1">}} /&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">Tooltip </span><span class="s1">/&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">Legend </span><span class="s1">/&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">Bar </span><span class="s5">dataKey</span><span class="s2">=&quot;ratingCount&quot; </span><span class="s5">name</span><span class="s2">=&quot;Energy Rating&quot;</span><span class="s1">&gt;</span>
+            <span class="s1">{</span>
+              <span class="s1">propertyData.map((entry, index) =&gt; (</span>
+                  <span class="s1">&lt;</span><span class="s0">Cell </span><span class="s5">key</span><span class="s2">=</span><span class="s1">{</span><span class="s2">`cell-</span><span class="s1">${index}</span><span class="s2">`</span><span class="s1">} </span><span class="s5">fill</span><span class="s2">=</span><span class="s1">{energyRatingColors[entry.ratingType] || </span><span class="s2">'#8884d8'</span><span class="s1">} /&gt;</span>
+              <span class="s1">))</span>
+            <span class="s1">}</span>
+          <span class="s1">&lt;/</span><span class="s0">Bar</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;/</span><span class="s0">BarChart</span><span class="s1">&gt;</span>
+    <span class="s1">);</span>
+  <span class="s1">};</span>
+
+  <span class="s0">const </span><span class="s1">renderGrantSupportYearlyProgress = (data) =&gt; {</span>
+    <span class="s0">return </span><span class="s1">(</span>
+        <span class="s1">&lt;</span><span class="s0">BarChart</span>
+            <span class="s5">width</span><span class="s2">=</span><span class="s1">{</span><span class="s4">750</span><span class="s1">}</span>
+            <span class="s5">height</span><span class="s2">=</span><span class="s1">{</span><span class="s4">400</span><span class="s1">}</span>
+            <span class="s5">data</span><span class="s2">=</span><span class="s1">{data}</span>
+            <span class="s5">margin</span><span class="s2">=</span><span class="s1">{{ top: </span><span class="s4">20</span><span class="s1">, right: </span><span class="s4">30</span><span class="s1">, bottom: </span><span class="s4">30</span><span class="s1">, left: </span><span class="s4">20 </span><span class="s1">}}</span>
+            <span class="s5">className</span><span class="s2">=&quot;barChart&quot;</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">CartesianGrid </span><span class="s5">strokeDasharray</span><span class="s2">=&quot;3 3&quot; </span><span class="s1">/&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">XAxis </span><span class="s5">dataKey</span><span class="s2">=&quot;year&quot; </span><span class="s5">label</span><span class="s2">=</span><span class="s1">{{ value: </span><span class="s2">'Year'</span><span class="s1">, position: </span><span class="s2">'insideBottom'</span><span class="s1">, offset: -</span><span class="s4">5 </span><span class="s1">}} /&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">YAxis </span><span class="s5">label</span><span class="s2">=</span><span class="s1">{{ value: </span><span class="s2">'Number of Properties'</span><span class="s1">, angle: -</span><span class="s4">90</span><span class="s1">, position: </span><span class="s2">'insideLeft'</span><span class="s1">, offset: </span><span class="s4">10 </span><span class="s1">}} /&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">Tooltip </span><span class="s1">/&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">Legend </span><span class="s1">/&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">Bar </span><span class="s5">dataKey</span><span class="s2">=&quot;count&quot; </span><span class="s5">name</span><span class="s2">=&quot;Grant support provided&quot; </span><span class="s5">fill</span><span class="s2">=&quot;#4a90e2&quot; </span><span class="s1">/&gt;</span>
+        <span class="s1">&lt;/</span><span class="s0">BarChart</span><span class="s1">&gt;</span>
+    <span class="s1">);</span>
+  <span class="s1">};</span>
+
+  <span class="s0">const </span><span class="s1">renderGrantSupportEnergyRatings = () =&gt; {</span>
+    <span class="s0">return </span><span class="s1">(</span>
+        <span class="s1">&lt;</span><span class="s0">BarChart</span>
+            <span class="s5">width</span><span class="s2">=</span><span class="s1">{</span><span class="s4">750</span><span class="s1">}</span>
+            <span class="s5">height</span><span class="s2">=</span><span class="s1">{</span><span class="s4">400</span><span class="s1">}</span>
+            <span class="s5">data</span><span class="s2">=</span><span class="s1">{grantSupportEnergyRatingsData}</span>
+            <span class="s5">margin</span><span class="s2">=</span><span class="s1">{{ top: </span><span class="s4">20</span><span class="s1">, right: </span><span class="s4">30</span><span class="s1">, bottom: </span><span class="s4">30</span><span class="s1">, left: </span><span class="s4">20 </span><span class="s1">}}</span>
+            <span class="s5">className</span><span class="s2">=&quot;barChart&quot;</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">CartesianGrid </span><span class="s5">strokeDasharray</span><span class="s2">=&quot;3 3&quot; </span><span class="s1">/&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">XAxis </span><span class="s5">dataKey</span><span class="s2">=&quot;ratingType&quot; </span><span class="s5">label</span><span class="s2">=</span><span class="s1">{{ value: </span><span class="s2">'Energy Rating Category'</span><span class="s1">, position: </span><span class="s2">'insideBottom'</span><span class="s1">, offset: -</span><span class="s4">5 </span><span class="s1">}} /&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">YAxis </span><span class="s5">label</span><span class="s2">=</span><span class="s1">{{ value: </span><span class="s2">'Number of Properties'</span><span class="s1">, angle: -</span><span class="s4">90</span><span class="s1">, position: </span><span class="s2">'insideLeft'</span><span class="s1">, offset: </span><span class="s4">10 </span><span class="s1">}} /&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">Tooltip </span><span class="s1">/&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">Legend </span><span class="s1">/&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">Bar </span><span class="s5">dataKey</span><span class="s2">=&quot;count&quot; </span><span class="s5">name</span><span class="s2">=&quot;Grant Support by Energy Rating Category&quot; </span><span class="s1">&gt;</span>
+            <span class="s1">{grantSupportEnergyRatingsData.map((entry, index) =&gt; (</span>
+                <span class="s1">&lt;</span><span class="s0">Cell </span><span class="s5">key</span><span class="s2">=</span><span class="s1">{</span><span class="s2">`cell-</span><span class="s1">${index}</span><span class="s2">`</span><span class="s1">} </span><span class="s5">fill</span><span class="s2">=</span><span class="s1">{energyRatingColors[entry.ratingType] || </span><span class="s2">'#8884d8'</span><span class="s1">} /&gt;</span>
+            <span class="s1">))}</span>
+          <span class="s1">&lt;/</span><span class="s0">Bar</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;/</span><span class="s0">BarChart</span><span class="s1">&gt;</span>
+    <span class="s1">);</span>
+  <span class="s1">};</span>
+
+  <span class="s0">const </span><span class="s1">renderEFGDifferencesChart = () =&gt; {</span>
+    <span class="s0">return </span><span class="s1">(</span>
+        <span class="s1">&lt;</span><span class="s0">BarChart</span>
+            <span class="s5">width</span><span class="s2">=</span><span class="s1">{</span><span class="s4">600</span><span class="s1">}</span>
+            <span class="s5">height</span><span class="s2">=</span><span class="s1">{</span><span class="s4">400</span><span class="s1">}</span>
+            <span class="s5">data</span><span class="s2">=</span><span class="s1">{efgDifferences}</span>
+            <span class="s5">margin</span><span class="s2">=</span><span class="s1">{{ top: </span><span class="s4">20</span><span class="s1">, right: </span><span class="s4">30</span><span class="s1">, bottom: </span><span class="s4">30</span><span class="s1">, left: </span><span class="s4">20 </span><span class="s1">}}</span>
+            <span class="s5">className</span><span class="s2">=&quot;barChart&quot;</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">CartesianGrid </span><span class="s5">strokeDasharray</span><span class="s2">=&quot;3 3&quot; </span><span class="s1">/&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">XAxis </span><span class="s5">dataKey</span><span class="s2">=&quot;ratingType&quot; </span><span class="s5">label</span><span class="s2">=</span><span class="s1">{{ value: </span><span class="s2">'Energy Rating Category'</span><span class="s1">, position: </span><span class="s2">'insideBottom'</span><span class="s1">, offset: -</span><span class="s4">5 </span><span class="s1">}} /&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">YAxis </span><span class="s5">label</span><span class="s2">=</span><span class="s1">{{ value: </span><span class="s2">'Number of Properties'</span><span class="s1">, angle: -</span><span class="s4">90</span><span class="s1">, position: </span><span class="s2">'insideLeft'</span><span class="s1">, offset: </span><span class="s4">10 </span><span class="s1">}} /&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">Tooltip </span><span class="s1">/&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">Legend </span><span class="s1">/&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">Bar </span><span class="s5">dataKey</span><span class="s2">=&quot;difference&quot; </span><span class="s5">name</span><span class="s2">=&quot;Difference in Number of Properties&quot; </span><span class="s5">fill</span><span class="s2">=&quot;#82ca9d&quot;</span><span class="s1">&gt;</span>
+            <span class="s1">{efgDifferences.map((entry, index) =&gt; (</span>
+                <span class="s1">&lt;</span><span class="s0">Cell </span><span class="s5">key</span><span class="s2">=</span><span class="s1">{</span><span class="s2">`cell-</span><span class="s1">${index}</span><span class="s2">`</span><span class="s1">} </span><span class="s5">fill</span><span class="s2">=</span><span class="s1">{energyRatingColors[entry.ratingType] || </span><span class="s2">'#8884d8'</span><span class="s1">}</span>
+                      <span class="s5">onClick</span><span class="s2">=</span><span class="s1">{() =&gt; handleBarClick(entry)} </span><span class="s3">// Add onClick event here</span>
+                <span class="s1">/&gt;</span>
+            <span class="s1">))}</span>
+          <span class="s1">&lt;/</span><span class="s0">Bar</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;/</span><span class="s0">BarChart</span><span class="s1">&gt;</span>
+    <span class="s1">);</span>
+  <span class="s1">};</span>
+
+  <span class="s3">// Render dashboard UI</span>
+  <span class="s0">return </span><span class="s1">(</span>
+      <span class="s1">&lt;&gt;</span>
+        <span class="s1">&lt;</span><span class="s0">div </span><span class="s5">className</span><span class="s2">=&quot;energy-rating-container&quot;</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">br</span><span class="s1">&gt;&lt;/</span><span class="s0">br</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">h1</span><span class="s1">&gt;</span><span class="s6">County </span><span class="s1">{capitalizeFirstLetter(countyName)} </span><span class="s6">Dashboard</span><span class="s1">&lt;/</span><span class="s0">h1</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">br</span><span class="s1">&gt;&lt;/</span><span class="s0">br</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">button </span><span class="s5">className</span><span class="s2">=&quot;button-blue&quot; </span><span class="s5">onClick</span><span class="s2">=</span><span class="s1">{handleBackToCountyMap}&gt;</span><span class="s6">Select New County</span><span class="s1">&lt;/</span><span class="s0">button</span><span class="s1">&gt;</span>
+          <span class="s1">{isLoading &amp;&amp; &lt;</span><span class="s0">p</span><span class="s1">&gt;</span><span class="s6">Loading...</span><span class="s1">&lt;/</span><span class="s0">p</span><span class="s1">&gt;}</span>
+          <span class="s1">{error &amp;&amp; &lt;</span><span class="s0">div </span><span class="s5">className</span><span class="s2">=&quot;error-message&quot;</span><span class="s1">&gt;{error}&lt;/</span><span class="s0">div</span><span class="s1">&gt;} {</span><span class="s3">/* Display error message */</span><span class="s1">}</span>
+        <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;</span><span class="s0">div </span><span class="s5">className</span><span class="s2">=&quot;properties-summary-container&quot;</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">div </span><span class="s5">className</span><span class="s2">=&quot;properties-container&quot;</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">h2</span><span class="s1">&gt;</span><span class="s6">Total Properties in </span><span class="s1">{capitalizeFirstLetter(countyName)}&lt;/</span><span class="s0">h2</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">p </span><span class="s5">className</span><span class="s2">=&quot;big-number&quot;</span><span class="s1">&gt;{totalProperties}&lt;/</span><span class="s0">p</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">div </span><span class="s5">className</span><span class="s2">=&quot;efg-properties-container&quot;</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">h2</span><span class="s1">&gt;</span><span class="s6">Total Properties with E1, E2, F, or G Ratings</span><span class="s1">&lt;/</span><span class="s0">h2</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">p </span><span class="s5">className</span><span class="s2">=&quot;big-number&quot;</span><span class="s1">&gt;{totalEFGProperties}&lt;/</span><span class="s0">p</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">div </span><span class="s5">className</span><span class="s2">=&quot;efg-percentage-container&quot;</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">h2</span><span class="s1">&gt;</span><span class="s6">Percentage of E1, E2, F, or G Rated Properties</span><span class="s1">&lt;/</span><span class="s0">h2</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">p </span><span class="s5">className</span><span class="s2">=&quot;big-number&quot;</span><span class="s1">&gt;{efgPercentage}</span><span class="s6">%</span><span class="s1">&lt;/</span><span class="s0">p</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;</span><span class="s0">div </span><span class="s5">className</span><span class="s2">=&quot;energy-rating-chart-container&quot;</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">h2</span><span class="s1">&gt;</span><span class="s6">Property Energy Ratings Distribution</span><span class="s1">&lt;/</span><span class="s0">h2</span><span class="s1">&gt;</span>
+          <span class="s1">{propertyData.length &gt; </span><span class="s4">0 </span><span class="s1">? renderRetrofitProgress() : &lt;</span><span class="s0">p</span><span class="s1">&gt;</span><span class="s6">No data available.</span><span class="s1">&lt;/</span><span class="s0">p</span><span class="s1">&gt;}</span>
+        <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;</span><span class="s0">div </span><span class="s5">className</span><span class="s2">=&quot;grant-supported-properties-container&quot;</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">h2</span><span class="s1">&gt;</span><span class="s6">Total Grant supports allocated to properties since 2011</span><span class="s1">&lt;/</span><span class="s0">h2</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">p </span><span class="s5">className</span><span class="s2">=&quot;big-number&quot;</span><span class="s1">&gt;{totalGrantSupportProperties}&lt;/</span><span class="s0">p</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;</span><span class="s0">div </span><span class="s5">className</span><span class="s2">=&quot;grant-summary-container&quot;</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">div </span><span class="s5">className</span><span class="s2">=&quot;retrofit-yearly-chart-container&quot;</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">h2</span><span class="s1">&gt;</span><span class="s6">Grant supports distribution by Year</span><span class="s1">&lt;/</span><span class="s0">h2</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">p</span><span class="s1">&gt;</span><span class="s6">Number of properties per annum that received grant support, irrespective of Energy Rating category.</span><span class="s1">&lt;/</span><span class="s0">p</span><span class="s1">&gt;</span>
+            <span class="s1">{grantSupportDataByYear.length &gt; </span><span class="s4">0</span>
+              <span class="s1">? renderGrantSupportYearlyProgress(grantSupportDataByYear)</span>
+              <span class="s1">: &lt;</span><span class="s0">p</span><span class="s1">&gt;</span><span class="s6">No property data available.</span><span class="s1">&lt;/</span><span class="s0">p</span><span class="s1">&gt;}</span>
+          <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">div </span><span class="s5">className</span><span class="s2">=&quot;energy-rating-chart-container&quot;</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">h2</span><span class="s1">&gt;</span><span class="s6">Energy Ratings for Grant Support Properties</span><span class="s1">&lt;/</span><span class="s0">h2</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">p</span><span class="s1">&gt;</span><span class="s6">Properties with an E1, E2, F or G Energy Rating category that received grant support.</span><span class="s1">&lt;/</span><span class="s0">p</span><span class="s1">&gt;</span>
+            <span class="s1">{grantSupportEnergyRatingsData.length &gt; </span><span class="s4">0</span>
+              <span class="s1">? renderGrantSupportEnergyRatings()</span>
+              <span class="s1">: &lt;</span><span class="s0">p</span><span class="s1">&gt;</span><span class="s6">No property data available.</span><span class="s1">&lt;/</span><span class="s0">p</span><span class="s1">&gt;}</span>
+          <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;</span><span class="s0">div </span><span class="s5">className</span><span class="s2">=&quot;properties-needing-support-summary&quot;</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">div </span><span class="s5">className</span><span class="s2">=&quot;properties-received-support-container&quot;</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">h2</span><span class="s1">&gt;</span><span class="s6">Properties in E1, E2, F and G Energy Rating Category that have received grant support</span><span class="s1">&lt;/</span><span class="s0">h2</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">p </span><span class="s5">className</span><span class="s2">=&quot;big-number&quot;</span><span class="s1">&gt;{totalGrantSupportedEFGProperties}&lt;/</span><span class="s0">p</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">div </span><span class="s5">className</span><span class="s2">=&quot;properties-needing-support-container&quot;</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">h2</span><span class="s1">&gt;</span><span class="s6">Properties in E1, E2, F and G Energy Rating Category that still need support</span><span class="s1">&lt;/</span><span class="s0">h2</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">p </span><span class="s5">className</span><span class="s2">=&quot;big-number&quot;</span><span class="s1">&gt;{propertiesStillNeedingSupport}&lt;/</span><span class="s0">p</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;</span><span class="s0">div </span><span class="s5">className</span><span class="s2">=&quot;efg-differences-chart-container&quot;</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">h2</span><span class="s1">&gt;</span><span class="s6">Distribution of the </span><span class="s1">{propertiesStillNeedingSupport} </span><span class="s6">Properties in E1, E2, F and G Energy Rating Category that still need support</span><span class="s1">&lt;/</span><span class="s0">h2</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">p</span><span class="s1">&gt;</span><span class="s6">Click on each category in the table below to get more detailed information.</span><span class="s1">&lt;/</span><span class="s0">p</span><span class="s1">&gt;</span>
+          <span class="s1">{efgDifferences &amp;&amp; efgDifferences.length &gt; </span><span class="s4">0</span>
+            <span class="s1">? renderEFGDifferencesChart()</span>
+            <span class="s1">: &lt;</span><span class="s0">p</span><span class="s1">&gt;</span><span class="s6">No data available.</span><span class="s1">&lt;/</span><span class="s0">p</span><span class="s1">&gt;}</span>
+        <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;</span><span class="s0">div </span><span class="s5">className</span><span class="s2">=&quot;pdf-report-container&quot;</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">button </span><span class="s5">className</span><span class="s2">=&quot;button-blue&quot; </span><span class="s5">onClick</span><span class="s2">=</span><span class="s1">{generatePDF}&gt;</span><span class="s6">Download PDF Report</span><span class="s1">&lt;/</span><span class="s0">button</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;/&gt;</span>
+  <span class="s1">);</span>
+<span class="s1">};</span>
+
+<span class="s0">export default </span><span class="s1">Dashboard;</span>
+</pre>
+</body>
+</html>

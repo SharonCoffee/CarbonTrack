@@ -1,0 +1,101 @@
+<html>
+<head>
+<title>firebaseJSON.txt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #080808;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+firebaseJSON.txt</font>
+</center></td></tr></table>
+<pre><span class="s0">20240326 - firebase.json file content after adding carbontrack to it.</span>
+<span class="s0">{</span>
+  <span class="s0">&quot;hosting&quot;: [</span>
+    <span class="s0">{</span>
+      <span class="s0">&quot;target&quot;: &quot;carbontrack&quot;, // Specifies which hosting target to apply this configuration to</span>
+      <span class="s0">&quot;public&quot;: &quot;build&quot;, // Change this to your build directory if necessary</span>
+      <span class="s0">&quot;ignore&quot;: [</span>
+        <span class="s0">&quot;firebase.json&quot;,</span>
+        <span class="s0">&quot;**/.*&quot;,</span>
+        <span class="s0">&quot;**/node_modules/**&quot;</span>
+      <span class="s0">],</span>
+      <span class="s0">&quot;rewrites&quot;: [</span>
+        <span class="s0">{</span>
+          <span class="s0">&quot;source&quot;: &quot;**&quot;,</span>
+          <span class="s0">&quot;destination&quot;: &quot;/index.html&quot;</span>
+        <span class="s0">}</span>
+      <span class="s0">]</span>
+    <span class="s0">},</span>
+    <span class="s0">{</span>
+      <span class="s0">&quot;target&quot;: &quot;carbontrack-a99b7&quot;, // Your other site configuration</span>
+      <span class="s0">&quot;public&quot;: &quot;build&quot;, // Or your specific build directory for this site</span>
+      <span class="s0">&quot;ignore&quot;: [</span>
+        <span class="s0">&quot;firebase.json&quot;,</span>
+        <span class="s0">&quot;**/.*&quot;,</span>
+        <span class="s0">&quot;**/node_modules/**&quot;</span>
+      <span class="s0">],</span>
+      <span class="s0">&quot;rewrites&quot;: [</span>
+        <span class="s0">{</span>
+          <span class="s0">&quot;source&quot;: &quot;**&quot;,</span>
+          <span class="s0">&quot;destination&quot;: &quot;/index.html&quot;</span>
+        <span class="s0">}</span>
+      <span class="s0">]</span>
+    <span class="s0">}</span>
+  <span class="s0">],</span>
+  <span class="s0">&quot;functions&quot;: {</span>
+    <span class="s0">&quot;source&quot;: &quot;functions&quot;,</span>
+    <span class="s0">&quot;ignore&quot;: [</span>
+      <span class="s0">&quot;node_modules&quot;,</span>
+      <span class="s0">&quot;.git&quot;,</span>
+      <span class="s0">&quot;firebase-debug.log&quot;,</span>
+      <span class="s0">&quot;firebase-debug.*.log&quot;</span>
+    <span class="s0">],</span>
+    <span class="s0">&quot;predeploy&quot;: [</span>
+      <span class="s0">&quot;npm --prefix \&quot;$RESOURCE_DIR\&quot; run lint&quot;</span>
+    <span class="s0">]</span>
+  <span class="s0">}</span>
+<span class="s0">}</span>
+
+
+
+<span class="s0">20240326 - firebase.json file content before making changes to it.</span>
+
+
+<span class="s0">{</span>
+  <span class="s0">&quot;hosting&quot;: {</span>
+    <span class="s0">&quot;public&quot;: &quot;build&quot;,</span>
+    <span class="s0">&quot;ignore&quot;: [</span>
+      <span class="s0">&quot;firebase.json&quot;,</span>
+      <span class="s0">&quot;**/.*&quot;,</span>
+      <span class="s0">&quot;**/node_modules/**&quot;</span>
+    <span class="s0">],</span>
+    <span class="s0">&quot;rewrites&quot;: [</span>
+      <span class="s0">{</span>
+        <span class="s0">&quot;source&quot;: &quot;**&quot;,</span>
+        <span class="s0">&quot;destination&quot;: &quot;/index.html&quot;</span>
+      <span class="s0">}</span>
+    <span class="s0">]</span>
+  <span class="s0">},</span>
+  <span class="s0">&quot;functions&quot;: [</span>
+    <span class="s0">{</span>
+      <span class="s0">&quot;source&quot;: &quot;functions&quot;,</span>
+      <span class="s0">&quot;codebase&quot;: &quot;default&quot;,</span>
+      <span class="s0">&quot;ignore&quot;: [</span>
+        <span class="s0">&quot;node_modules&quot;,</span>
+        <span class="s0">&quot;.git&quot;,</span>
+        <span class="s0">&quot;firebase-debug.log&quot;,</span>
+        <span class="s0">&quot;firebase-debug.*.log&quot;</span>
+      <span class="s0">],</span>
+      <span class="s0">&quot;predeploy&quot;: [</span>
+        <span class="s0">&quot;npm --prefix \&quot;$RESOURCE_DIR\&quot; run lint&quot;</span>
+      <span class="s0">]</span>
+    <span class="s0">}</span>
+  <span class="s0">]</span>
+<span class="s0">}</span>
+</pre>
+</body>
+</html>

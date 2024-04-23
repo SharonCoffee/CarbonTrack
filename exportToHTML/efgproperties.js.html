@@ -1,0 +1,163 @@
+<html>
+<head>
+<title>efgproperties.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #0033b3;}
+.s1 { color: #080808;}
+.s2 { color: #067d17;}
+.s3 { color: #1750eb;}
+.s4 { color: #8c8c8c; font-style: italic;}
+.s5 { color: #080808;}
+.s6 { color: #174ad4;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+efgproperties.js</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">React, { useEffect, useState } from </span><span class="s2">'react'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">{ useNavigate, useParams } from </span><span class="s2">'react-router-dom'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">Papa from </span><span class="s2">'papaparse'</span><span class="s1">;</span>
+
+<span class="s0">const </span><span class="s1">EFGProperties = () =&gt; {</span>
+  <span class="s0">const </span><span class="s1">navigate = useNavigate();</span>
+  <span class="s0">const </span><span class="s1">{ ratingType, countyName } = useParams();</span>
+  <span class="s0">const </span><span class="s1">[isLoading, setIsLoading] = useState(</span><span class="s0">true</span><span class="s1">);</span>
+  <span class="s0">const </span><span class="s1">[dwellingData, setDwellingData] = useState([]);</span>
+  <span class="s0">const </span><span class="s1">[uValues, setUValues] = useState([]);</span>
+
+  <span class="s0">function </span><span class="s1">capitalizeFirstLetter (string) {</span>
+    <span class="s0">return </span><span class="s1">string.charAt(</span><span class="s3">0</span><span class="s1">).toUpperCase() + string.slice(</span><span class="s3">1</span><span class="s1">);</span>
+  <span class="s1">}</span>
+
+  <span class="s0">const </span><span class="s1">generateCampaignMessage = (data) =&gt; {</span>
+    <span class="s0">const </span><span class="s1">needsAttention = data.some(item =&gt;</span>
+      <span class="s1">Object.values(item).some(val =&gt; val.color === </span><span class="s2">'red'</span><span class="s1">)</span>
+    <span class="s1">);</span>
+    <span class="s0">const </span><span class="s1">noNeedForCampaign = data.every(item =&gt;</span>
+      <span class="s1">Object.values(item).some(val =&gt; val.color === </span><span class="s2">'green'</span><span class="s1">)</span>
+    <span class="s1">);</span>
+
+    <span class="s0">if </span><span class="s1">(needsAttention) {</span>
+      <span class="s0">return </span><span class="s2">'There are UValues for Dwelling Types that require attention. Tailored campaigns should be developed for residential properties with any red UValues to encourage retrofitting and improvements.'</span><span class="s1">;</span>
+    <span class="s1">} </span><span class="s0">else if </span><span class="s1">(noNeedForCampaign) {</span>
+      <span class="s0">return </span><span class="s2">'There are UValues for specific Dwelling Types that are performing well in terms of energy efficiency. It may not be necessary to tailor campaigns for these properties at this time.'</span><span class="s1">;</span>
+    <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+      <span class="s0">return </span><span class="s2">'Review the UValues for each dwelling type. Tailored campaigns may be necessary for specific areas needing improvement.'</span><span class="s1">;</span>
+    <span class="s1">}</span>
+  <span class="s1">};</span>
+
+  <span class="s0">const </span><span class="s1">handleBackToDashboard = () =&gt; {</span>
+    <span class="s1">navigate(</span><span class="s2">`/dashboard/</span><span class="s1">${countyName.toLowerCase()}</span><span class="s2">`</span><span class="s1">);</span>
+  <span class="s1">};</span>
+
+  <span class="s1">useEffect(() =&gt; {</span>
+    <span class="s0">const </span><span class="s1">fetchData = async () =&gt; {</span>
+      <span class="s1">setIsLoading(</span><span class="s0">true</span><span class="s1">);</span>
+      <span class="s0">try </span><span class="s1">{</span>
+        <span class="s0">const </span><span class="s1">countyDataResponse = </span><span class="s0">await </span><span class="s1">fetch(</span><span class="s2">`/data/efg_uvalues_</span><span class="s1">${countyName}</span><span class="s2">.csv`</span><span class="s1">);</span>
+        <span class="s0">const </span><span class="s1">archetypeDataResponse = </span><span class="s0">await </span><span class="s1">fetch(</span><span class="s2">'/data/data_building_archetype.csv'</span><span class="s1">);</span>
+        <span class="s0">if </span><span class="s1">(!countyDataResponse.ok || !archetypeDataResponse.ok) {</span>
+          <span class="s0">throw new </span><span class="s1">Error(</span><span class="s2">'Failed to fetch data'</span><span class="s1">);</span>
+        <span class="s1">}</span>
+        <span class="s0">const </span><span class="s1">[countyCsvText, archetypeCsvText] = </span><span class="s0">await </span><span class="s1">Promise.all([</span>
+          <span class="s1">countyDataResponse.text(),</span>
+          <span class="s1">archetypeDataResponse.text()</span>
+        <span class="s1">]);</span>
+
+        <span class="s0">const </span><span class="s1">parsedCountyData = Papa.parse(countyCsvText, { header: </span><span class="s0">true</span><span class="s1">, dynamicTyping: </span><span class="s0">true</span><span class="s1">, skipEmptyLines: </span><span class="s0">true </span><span class="s1">}).data;</span>
+        <span class="s1">setUValues(parsedCountyData);</span>
+
+        <span class="s0">const </span><span class="s1">parsedArchetypeData = Papa.parse(archetypeCsvText, { header: </span><span class="s0">true</span><span class="s1">, dynamicTyping: </span><span class="s0">true</span><span class="s1">, skipEmptyLines: </span><span class="s0">true </span><span class="s1">}).data;</span>
+
+        <span class="s0">const </span><span class="s1">a1ArchetypeData = parsedArchetypeData.filter(item =&gt; item.EnergyRating === </span><span class="s2">'A1'</span><span class="s1">);</span>
+
+        <span class="s0">const </span><span class="s1">MIN_VALID_ARCHETYPE_VALUE = </span><span class="s3">0.01</span><span class="s1">; </span><span class="s4">// Define a threshold for valid archetype values</span>
+
+        <span class="s0">const </span><span class="s1">getColor = (itemValue, archetypeValue) =&gt; {</span>
+          <span class="s4">// If archetype value is below a certain threshold, treat as insufficient data</span>
+          <span class="s0">if </span><span class="s1">(archetypeValue &lt; MIN_VALID_ARCHETYPE_VALUE) {</span>
+            <span class="s0">return </span><span class="s2">'red'</span><span class="s1">; </span><span class="s4">// Indicating lack of comparison baseline</span>
+          <span class="s1">}</span>
+
+          <span class="s0">if </span><span class="s1">(itemValue &gt; archetypeValue) </span><span class="s0">return </span><span class="s2">'red'</span><span class="s1">;</span>
+          <span class="s0">if </span><span class="s1">(itemValue &lt; archetypeValue) </span><span class="s0">return </span><span class="s2">'green'</span><span class="s1">;</span>
+          <span class="s0">return </span><span class="s2">'amber'</span><span class="s1">; </span><span class="s4">// Assuming equality means 'amber' or consider another logic for equality</span>
+        <span class="s1">};</span>
+
+        <span class="s4">// Example usage within your mapping logic</span>
+        <span class="s0">const </span><span class="s1">enhancedData = parsedCountyData</span>
+          <span class="s1">.filter(item =&gt; item.EnergyRating === ratingType)</span>
+          <span class="s1">.map(item =&gt; {</span>
+            <span class="s0">const </span><span class="s1">archetype = a1ArchetypeData.find(a =&gt; a.DwellingType === item.DwellingTypeDescr &amp;&amp; a.EnergyRating === </span><span class="s2">'A1'</span><span class="s1">);</span>
+
+            <span class="s0">return </span><span class="s1">{</span>
+              <span class="s1">...item,</span>
+              <span class="s1">UValueWallColor: getColor(item.UValueWallMean, archetype?.UValueWallMean),</span>
+              <span class="s1">UValueRoofColor: getColor(item.UValueRoofMean, archetype?.UValueRoofMean),</span>
+              <span class="s1">UValueFloorColor: getColor(item.UValueFloorMean, archetype?.UValueFloorMean),</span>
+              <span class="s1">UValueWindowColor: getColor(item.UValueWindowMean, archetype?.UValueWindowMean),</span>
+              <span class="s1">UValueDoorColor: getColor(item.UValueDoorMean, archetype?.UValueDoorMean)</span>
+            <span class="s1">};</span>
+          <span class="s1">});</span>
+
+        <span class="s1">setDwellingData(enhancedData);</span>
+      <span class="s1">} </span><span class="s0">catch </span><span class="s1">(error) {</span>
+        <span class="s1">console.error(</span><span class="s2">'Error fetching data:'</span><span class="s1">, error);</span>
+      <span class="s1">} </span><span class="s0">finally </span><span class="s1">{</span>
+        <span class="s1">setIsLoading(</span><span class="s0">false</span><span class="s1">);</span>
+      <span class="s1">}</span>
+    <span class="s1">};</span>
+
+    <span class="s1">fetchData();</span>
+  <span class="s1">}, [ratingType, countyName]);</span>
+
+  <span class="s0">if </span><span class="s1">(isLoading) </span><span class="s0">return </span><span class="s1">&lt;</span><span class="s0">div</span><span class="s1">&gt;</span><span class="s5">Loading...</span><span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;;</span>
+
+  <span class="s0">const </span><span class="s1">campaignMessage = generateCampaignMessage(uValues);</span>
+
+  <span class="s0">return </span><span class="s1">(</span>
+      <span class="s1">&lt;&gt;</span>
+        <span class="s1">&lt;</span><span class="s0">div </span><span class="s6">className</span><span class="s2">=&quot;average-container&quot;</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">h2</span><span class="s1">&gt;</span><span class="s5">Average UValues for </span><span class="s1">{ratingType} </span><span class="s5">Rated Properties in County </span><span class="s1">{capitalizeFirstLetter(countyName)} &lt;/</span><span class="s0">h2</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">p</span><span class="s1">&gt;{campaignMessage}&lt;/</span><span class="s0">p</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">table </span><span class="s6">className</span><span class="s2">=&quot;average-table&quot;</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">thead</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">tr</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s0">th</span><span class="s1">&gt;</span><span class="s5">Dwelling Type</span><span class="s1">&lt;/</span><span class="s0">th</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s0">th</span><span class="s1">&gt;</span><span class="s5">UValue Wall</span><span class="s1">&lt;/</span><span class="s0">th</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s0">th</span><span class="s1">&gt;</span><span class="s5">UValue Roof</span><span class="s1">&lt;/</span><span class="s0">th</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s0">th</span><span class="s1">&gt;</span><span class="s5">UValue Floor</span><span class="s1">&lt;/</span><span class="s0">th</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s0">th</span><span class="s1">&gt;</span><span class="s5">UValue Window</span><span class="s1">&lt;/</span><span class="s0">th</span><span class="s1">&gt;</span>
+              <span class="s1">&lt;</span><span class="s0">th</span><span class="s1">&gt;</span><span class="s5">UValue Door</span><span class="s1">&lt;/</span><span class="s0">th</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s0">tr</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;/</span><span class="s0">thead</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">tbody</span><span class="s1">&gt;</span>
+            <span class="s1">{dwellingData.map((item, index) =&gt; (</span>
+                <span class="s1">&lt;</span><span class="s0">tr </span><span class="s6">key</span><span class="s2">=</span><span class="s1">{index}&gt;</span>
+                  <span class="s1">&lt;</span><span class="s0">td</span><span class="s1">&gt;{item.DwellingTypeDescr}&lt;/</span><span class="s0">td</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s0">td </span><span class="s6">className</span><span class="s2">=</span><span class="s1">{item.UValueWallColor}&gt;{item.UValueWallMean}&lt;/</span><span class="s0">td</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s0">td </span><span class="s6">className</span><span class="s2">=</span><span class="s1">{item.UValueRoofColor}&gt;{item.UValueRoofMean}&lt;/</span><span class="s0">td</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s0">td </span><span class="s6">className</span><span class="s2">=</span><span class="s1">{item.UValueFloorColor}&gt;{item.UValueFloorMean}&lt;/</span><span class="s0">td</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s0">td </span><span class="s6">className</span><span class="s2">=</span><span class="s1">{item.UValueWindowColor}&gt;{item.UValueWindowMean}&lt;/</span><span class="s0">td</span><span class="s1">&gt;</span>
+                  <span class="s1">&lt;</span><span class="s0">td </span><span class="s6">className</span><span class="s2">=</span><span class="s1">{item.UValueDoorColor}&gt;{item.UValueDoorMean}&lt;/</span><span class="s0">td</span><span class="s1">&gt;</span>
+                <span class="s1">&lt;/</span><span class="s0">tr</span><span class="s1">&gt;</span>
+            <span class="s1">))}</span>
+            <span class="s1">&lt;/</span><span class="s0">tbody</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;/</span><span class="s0">table</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;</span><span class="s0">div</span><span class="s1">&gt;</span>
+            <span class="s1">&lt;</span><span class="s0">button </span><span class="s6">className</span><span class="s2">=&quot;button-blue&quot; </span><span class="s6">onClick</span><span class="s2">=</span><span class="s1">{handleBackToDashboard}&gt;</span><span class="s5">Select New Energy Rating</span><span class="s1">&lt;/</span><span class="s0">button</span><span class="s1">&gt;</span>
+          <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+        <span class="s1">&lt;/</span><span class="s0">div</span><span class="s1">&gt;</span>
+      <span class="s1">&lt;/&gt;</span>
+
+  <span class="s1">);</span>
+<span class="s1">};</span>
+
+<span class="s0">export default </span><span class="s1">EFGProperties;</span>
+</pre>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<html>
+<head>
+<title>protectedRoute.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #0033b3;}
+.s1 { color: #080808;}
+.s2 { color: #067d17;}
+.s3 { color: #8c8c8c; font-style: italic;}
+.s4 { color: #174ad4;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+protectedRoute.js</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">React from </span><span class="s2">'react'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">PropTypes from </span><span class="s2">'prop-types'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">{ Navigate } from </span><span class="s2">'react-router-dom'</span><span class="s1">;</span>
+<span class="s0">import </span><span class="s1">{ useAuth } from </span><span class="s2">'../contexts/authContext'</span><span class="s1">;</span>
+
+<span class="s0">const </span><span class="s1">ProtectedRoute = ({ children }) =&gt; {</span>
+  <span class="s0">const </span><span class="s1">{ currentUser } = useAuth();</span>
+
+  <span class="s3">// If there's no current user, redirect to the login page</span>
+  <span class="s0">if </span><span class="s1">(!currentUser) {</span>
+    <span class="s0">return </span><span class="s1">&lt;</span><span class="s0">Navigate </span><span class="s4">to</span><span class="s2">=&quot;/login&quot; </span><span class="s4">replace </span><span class="s1">/&gt;;</span>
+  <span class="s1">}</span>
+
+  <span class="s3">// If there's a current user, render the children components</span>
+  <span class="s0">return </span><span class="s1">children;</span>
+<span class="s1">};</span>
+
+<span class="s3">// Add prop types validation</span>
+<span class="s1">ProtectedRoute.propTypes = {</span>
+  <span class="s1">children: PropTypes.node.isRequired</span>
+<span class="s1">};</span>
+
+<span class="s0">export default </span><span class="s1">ProtectedRoute;</span>
+</pre>
+</body>
+</html>

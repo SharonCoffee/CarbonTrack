@@ -25,7 +25,7 @@ const BerPage = () => {
             <div>
                 <h1>Building Energy Rating (BER)</h1>
                 <BerRatingForm />
-                {/* You can add more components or information related to BER here */}
+                {/* Add more components or information related to BER here */}
             </div>
         </div>
   );
